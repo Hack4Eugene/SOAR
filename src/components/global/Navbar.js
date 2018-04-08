@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../../static/imgs/ecan_logo_trans.png';
+import logo from '../../static/imgs/ecan_logo.png';
 
 import './styles.scss';
 

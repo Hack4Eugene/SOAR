@@ -81,7 +81,7 @@ module.exports = {
                         updateProjectDocument[key] = value;
                     });
 
-                    updateProjectDocument[key] = value;
+                    updateProjectDocument.key = value;
                     return ProjectModel.update({ _id: req.params.project_id }, updatedRecord)
                         .then(result => {
                             res.status(200).send(result);
@@ -103,28 +103,26 @@ module.exports = {
             });
     },
 
-    // getEventsForProject: (req, res, next) => {
-    //     return ProjectModel.find({ _id: req.params.project_id })
-    //     .then(projectDocument => {
-    //         console.log('projectDocument', projectDocument[0].events);
-    //         return projectDocument[0].events.map(event_id => {
-    //             return EventModel.findById(event_id)
-    //                 .then(eventDocument => {
-    //                     console.log('eventDocument:\n', eventDocument);
-    //                     return eventDocument
-    //                 })
-    //         })
-    //     })
-    //     .then(console.log)
-    // // .then(mappedEvent => console.log('mapped events:\n',mappedEvent))
-    // }
-
     getEventsForProject: (req, res, next) => {
-        return EventModel.find({ 'project.id' : req.params.project_id })
-            .then(eventDocuments => {res.status(200).send(eventDocuments)})
-            .catch(error => {
-                console.log(error);
-                return res.status(error.status || 500).send(error);
-            });
+        return ProjectModel.findOne({ _id: req.params.project_id })
+        .then(projectDocument => {
+            console.log('projectDocument', projectDocument);
+            return Promise.all(projectDocument.events.map(event_id => {
+                return EventModel.findById(event_id)
+                    .then(eventDocument => {
+                        console.log('eventDocument:\n', eventDocument);
+                        return eventDocument
+                    })
+            }))
+        })
     }
+
+    // getEventsForProject: (req, res, next) => {
+    //     return EventModel.find({ 'project.id' : req.params.project_id })
+    //         .then(eventDocuments => {res.status(200).send(eventDocuments)})
+    //         .catch(error => {
+    //             console.log(error);
+    //             return res.status(error.status || 500).send(error);
+    //         });
+    // }
 }
