@@ -58,15 +58,37 @@ export const addEventToProject = (event) => {
 export const getEventsForProject = () => {
     return (dispatch, getState) => {
         axios.get('http://localhost:3000/events')
-        .then(result => dispatch({ type: GET_EVENTS_RESOLVED, payload: result }))
+        .then(result => {
+            // console.log(result.data)
+            dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
+        })
         .catch(err => dispatch({ type: GET_EVENTS_REJECTED, error: err }));
     }
 };
 
-export const addOrganizationForUser = () => {
+// export const addOrganizationForUser = () => {
+//     return (dispatch, getState) => {
+//         axios.post('https://jsonplaceholder.typicode.com/posts/')
+//         .then(result => dispatch({ type: ADD_ORG_RESOLVED, payload: result }))
+//         .catch(err => dispatch({ type: ADD_ORG_REJECTED, error: err }));
+//     }
+// }
+
+export const addOrganization = (org) => {
+    console.log('event', org)
     return (dispatch, getState) => {
-        axios.post('https://jsonplaceholder.typicode.com/posts/')
-        .then(result => dispatch({ type: ADD_ORG_RESOLVED, payload: result }))
+        axios({
+            method: 'post',
+            url: 'http://localhost:3000/organization',
+            data: org,
+            headers: {
+                'Content-Type': 'application/json'        
+            }
+          })
+        .then(result => {
+            dispatch({ type: ADD_ORG_RESOLVED, payload: result })
+            console.log(result)
+        })
         .catch(err => dispatch({ type: ADD_ORG_REJECTED, error: err }));
     }
 }

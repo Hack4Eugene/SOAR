@@ -28,7 +28,7 @@ class Project extends Component {
                 startDate={`This project was started ${moment().diff(moment(startDate), 'days')} days ago`}
                 link={<Link className="btn btn-primary" to={`projects/${id}`}>More Details</Link>}
             >
-                <div className="row justify-content-end">
+                <div className="row justify-content-end align-items-center">
                     <div className="col-3">
                         <ProgressBar
                             animationVal={animationVal}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 // import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { map, orderBy } from 'lodash';
+import { map, orderBy, find } from 'lodash';
 import moment from 'moment';
 
 import eventImg1 from '../static/imgs/stock-event-1.jpg';
@@ -16,7 +16,7 @@ const EventItem = ({ event, key }) => {
             <div className="card-header">{date}</div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
-                <span class="badge badge-secondary">{event.project}</span>
+                <span class="badge badge-secondary">{event.project.name}</span>
                 <h4 className="card-title mb-0">{event.name}</h4>
                 <p className="font-italic font-weight-light">{event.location}</p>
                 <p className="card-text">
@@ -35,14 +35,14 @@ const NoEvents = () => {
 }
 
 const EventsWidget = ({ events }) => {
-//   console.log(events)
-  const orderedEvents = orderBy(events, 'date', 'asc')
+  console.log('events', events);
+  const orderedEvents = orderBy(events.data, 'date', 'asc')
     
   const EventList = orderedEvents.length
       ? map(orderedEvents, event => 
           <EventItem event={event} key={event.id} />) 
       : <NoEvents />;
-
+    
   return (
     <div>
       {EventList}

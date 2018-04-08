@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { get, filter } from 'lodash';
+import { get, filter, cloneDeep } from 'lodash';
 import moment from 'moment';
 
 import EventsWidget from '../EventsWidget'
@@ -13,10 +13,7 @@ import Calendar from 'react-calendar';
 import { addEventToProject } from '../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
-  events: get(state, 'events', {}),
-  posts: get(state, 'posts', {})
-  // animationVal: _.get(state, 'events.animationVal', null),
-  // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
+  events: get(state, 'events', {})
 });
 
 const submitEvent = () => {
@@ -32,9 +29,15 @@ class AddEvent extends Component {
               eventDate: null,
               description: '',
               location: '',
-              project: '',
-              tags: [],
-              owner: 'Test User',
+              project: {
+                id: '5ac9877976448030b88ac636',
+                name: 'Winter Warmth Project'
+              },
+              tags: '',
+              organization: {
+                id: '5ac9877976448030b88ac636',
+                name: 'FOOD for Lane County'
+              },
               private: false
             }
         }
@@ -45,50 +48,65 @@ class AddEvent extends Component {
     }
 
     submitEvent() {
-      console.log('click')
-      const event = {
-        'name': 'event name',
-        'eventDate': '2017-08-12T09:30:00',
-        'description': 'event description',
-        'location': 'University of Oregon',
-        'projectID': '1234',
-        'tags': ['food', 'winter'],
-        'private': false,
-        'organization': {
-          'id': '5ac9877976448030b88ac636',
-          'name': 'FOOD for Lane County'
-        }
+      this.props.addEventToProject(JSON.stringify(this.state.newEvent))
+    }
+
+    handleFormInput(e) {
+      const newState = cloneDeep(this.state.newEvent);
+      switch(e.target.id) {
+        case 'eventName':
+          newState.name = e.target.value
+          this.setState({newEvent: newState})
+          break
+        case 'eventDate':
+          newState.eventDate = e.target.value
+          this.setState({newEvent: newState})
+          break
+        case 'eventDescription':
+          newState.description = e.target.value
+          this.setState({newEvent: newState})
+          break
+        case 'eventLocation':
+          newState.location = e.target.value
+          this.setState({newEvent: newState})
+          break
+        // case 'eventProject':
+        //   this.setState({ newEvent: {...this.state.newEvent, project: e.target.value} })
+        case 'eventTags':
+          newState.tags = e.target.value
+          this.setState({newEvent: newState})
+          break
+        case 'eventPrivate':
+          newState.private = e.target.checked
+          this.setState({newEvent: newState})
+          break
       }
-      // console.log('this.props', this.props)
-      this.props.addEventToProject(JSON.stringify(event))
     }
 
     renderForm() {
       return (
         <Card>
-          {/* <div className="card-header">{date}</div> */}
-          {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
           <div className="card-body">
             {/* <form> */}
               <div className="form-group">
                 <label for="eventName">Title</label>
-                <input type="text" className="form-control" id="eventName"/>
+                <input type="text" className="form-control" id="eventName" onChange={(e) => this.handleFormInput(e)}/>
               </div>
               <div className="form-group">
                 <label for="eventDate">Date</label>
-                <input type="datetime-local" className="form-control" id="eventDate"/>
+                <input type="datetime-local" className="form-control" id="eventDate" onChange={(e) => this.handleFormInput(e)}/>
               </div>
               <div className="form-group">
                 <label for="eventDescription">Description</label>
-                <textarea type="text" className="form-control" id="eventDescription"/>
+                <textarea type="text" className="form-control" id="eventDescription" onChange={(e) => this.handleFormInput(e)}/>
               </div>
               <div className="form-group">
                 <label for="eventLocation">Location</label>
-                <input type="text" className="form-control" id="eventLocation"/>
+                <input type="text" className="form-control" id="eventLocation" onChange={(e) => this.handleFormInput(e)}/>
               </div>
               <div className="form-group">
                 <label for="eventProject">Project</label>
-                <select className="form-control">
+                <select className="form-control" id="eventProject" onChange={(e) => this.handleFormInput(e)}>
                   <option>Select Project</option>
                   <option>Fall Food Initiative</option>
                   <option>Winter Warmth Project</option>
@@ -96,11 +114,11 @@ class AddEvent extends Component {
               </div>
               <div className="form-group">
                 <label for="eventTags">Tags</label>
-                <input type="text" className="form-control" id="eventTags" placeholder="Enter a comma separated list..."/>
+                <input type="text" className="form-control" id="eventTags" placeholder="Enter a comma separated list..." onChange={(e) => this.handleFormInput(e)}/>
               </div>
               <div className="form-check form-group">
-                <input className="form-check-input" type="checkbox" id="eventViewability" />
-                <label className="form-check-label" for="eventViewability">
+                <input className="form-check-input" type="checkbox" id="eventPrivate" onChange={(e) => this.handleFormInput(e)}/>
+                <label className="form-check-label" for="eventPrivate">
                   Private Event
                 </label>
               </div>
@@ -112,7 +130,6 @@ class AddEvent extends Component {
     }
 
     render() {
-      // console.log(this.props)
       return(
           <div className="container">                    
               <div className="row justify-content-center">
