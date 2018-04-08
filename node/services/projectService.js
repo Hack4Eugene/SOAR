@@ -26,7 +26,7 @@ module.exports = {
                 const now = moment();
                 _.forEach(eventDocuments, eventDocument => {
                     if (now > eventDocument.eventDate) {
-                        finishedEventsByProject[eventDocument. project.id] += 1;
+                        finishedEventsByProject[eventDocument.project.id] += 1;
                     }
                 });
 
@@ -81,8 +81,7 @@ module.exports = {
                         updateProjectDocument[key] = value;
                     });
 
-                    updateProjectDocument.key = value;
-                    return ProjectModel.update({ _id: req.params.project_id }, updatedRecord)
+                    return ProjectModel.update({ _id: req.params.project_id }, updateProjectDocument)
                         .then(result => {
                             res.status(200).send(result);
                         })
@@ -105,24 +104,18 @@ module.exports = {
 
     getEventsForProject: (req, res, next) => {
         return ProjectModel.findOne({ _id: req.params.project_id })
-        .then(projectDocument => {
-            console.log('projectDocument', projectDocument);
-            return Promise.all(projectDocument.events.map(event_id => {
-                return EventModel.findById(event_id)
-                    .then(eventDocument => {
-                        console.log('eventDocument:\n', eventDocument);
-                        return eventDocument
-                    })
-            }))
-        })
+            .then(projectDocument => {
+                return Promise.all(projectDocument.events.map(event_id => {
+                    return EventModel.findById(event_id)
+                        .then(eventDocument => {
+                            return eventDocument
+                        })
+                }))
+                .then(newEventDocuments => res.status(200).send(newEventDocuments))
+            })
+            .catch(error => {
+                console.log(error);
+                return res.status(error.status || 500).send(error);
+            });
     }
-
-    // getEventsForProject: (req, res, next) => {
-    //     return EventModel.find({ 'project.id' : req.params.project_id })
-    //         .then(eventDocuments => {res.status(200).send(eventDocuments)})
-    //         .catch(error => {
-    //             console.log(error);
-    //             return res.status(error.status || 500).send(error);
-    //         });
-    // }
 }

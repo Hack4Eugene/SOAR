@@ -62,10 +62,7 @@ module.exports = {
 
     deleteEvent: (req, res, next) => {
         return EventModel.remove({ _id: req.params.event_id })
-            .then(deletedRecord => {
-                return ProjectModel.findOneAndUpdate({ events: req.params.event_id }, { $pull: { events: req.params.event_id } })
-                    .then(projectDocument => res.status(204).send({ 'msg': 'deleted' }));
-            })
+            .then(res.status(204).send({ 'msg': 'deleted' }))
             .catch(error => {
                 console.log(error);
                 res.status(error.status || 500).send(error);
