@@ -1,0 +1,47 @@
+{
+  "name": "emerald-compassionate-action-network-client",
+  "version": "1.0.0",
+  "description": "Front End for ECAN H4C 2018",
+  "main": "index.js",
+  "repository": "git@github.com:rajansawhney/nerds-of-a-feather.git",
+  "author": "CBT Development",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start:webpack": "NODE_ENV=local webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
+    "start": "yarn run clean && yarn run start:webpack",
+    "clean": "rm -rf ./dist"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
+    "history": "^4.7.2",
+    "moment": "^2.22.0",
+    "node-sass": "^4.8.3",
+    "path": "^0.12.7",
+    "react": "^16.3.1",
+    "react-calendar": "^2.14.0",
+    "react-dom": "^16.3.1",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "redux": "^3.7.2",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-thunk": "^2.2.0",
+    "sass-loader": "^6.0.7",
+    "style-loader": "^0.20.3",
+    "url-loader": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14",
+    "webpack-dev-server": "^3.1.1"
+  }
+}
