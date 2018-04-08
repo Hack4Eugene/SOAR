@@ -9,7 +9,7 @@
   "private": false,
   "scripts": {
     "start:webpack": "NODE_ENV=local webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
-    "start": "yarn run clean && yarn run start:webpack",
+    "start": "npm run clean && npm run start:webpack",
     "clean": "rm -rf ./dist"
   },
   "dependencies": {
