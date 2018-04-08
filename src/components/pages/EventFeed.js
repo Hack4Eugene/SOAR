@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { get, filter, isEqual } from 'lodash';
+import { get, filter, isEqual, isArray } from 'lodash';
 import moment from 'moment';
 
 import EventsWidget from '../EventsWidget'
@@ -79,7 +79,7 @@ class EventFeed extends Component {
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-8">
-                        <EventsWidget events={this.props.events} />                      
+                    {isArray(this.props.events) && <EventsWidget events={this.props.events} />}                     
                     </div>                  
                     <div className="pull-right">
                         <Card>

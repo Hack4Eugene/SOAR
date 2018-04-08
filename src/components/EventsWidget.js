@@ -16,7 +16,7 @@ const EventItem = ({ event, key }) => {
             <div className="card-header">{date}</div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
-                <span class="badge badge-secondary">{event.project.name}</span>
+                <span class="badge badge-secondary">{event.project.title}</span>
                 <h4 className="card-title mb-0">{event.name}</h4>
                 <p className="font-italic font-weight-light">{event.location}</p>
                 <p className="card-text">
