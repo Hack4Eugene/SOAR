@@ -37,11 +37,11 @@ export const incrementEventsFinished = () => {
 };
 
 export const addEventToProject = (event) => {
-    console.log('event', event)
+    // console.log('event', event)
     return (dispatch, getState) => {
         axios({
             method: 'post',
-            url: 'http://localhost:3000/event',
+            url: 'http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/event',
             data: event,
             headers: {
                 'Content-Type': 'application/json'        
@@ -49,17 +49,18 @@ export const addEventToProject = (event) => {
           })
         .then(result => {
             dispatch({ type: ADD_EVENT_RESOLVED, payload: result })
-            console.log(result)
+            // console.log(result)
         })
+        .then(() => dispatch(getEventsForProject()))
         .catch(err => dispatch({ type: ADD_EVENT_REJECTED, error: err }));
     }
 };
 
 export const getEventsForProject = () => {
     return (dispatch, getState) => {
-        axios.get('http://localhost:3000/events')
+        axios.get('http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/events')
         .then(result => {
-            // console.log(result.data)
+            // console.log('action result', result)
             dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
         })
         .catch(err => dispatch({ type: GET_EVENTS_REJECTED, error: err }));
@@ -75,11 +76,11 @@ export const getEventsForProject = () => {
 // }
 
 export const addOrganization = (org) => {
-    console.log('event', org)
+    // console.log('event', org)
     return (dispatch, getState) => {
         axios({
             method: 'post',
-            url: 'http://localhost:3000/organization',
+            url: 'http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/organization',
             data: org,
             headers: {
                 'Content-Type': 'application/json'        
@@ -87,7 +88,7 @@ export const addOrganization = (org) => {
           })
         .then(result => {
             dispatch({ type: ADD_ORG_RESOLVED, payload: result })
-            console.log(result)
+            // console.log(result)
         })
         .catch(err => dispatch({ type: ADD_ORG_REJECTED, error: err }));
     }
@@ -97,7 +98,7 @@ export const loginUser = (username, password) => {
     return (dispatch, getState) => {
         axios({
             method: 'post',
-            url: 'http://localhost:3000/login',
+            url: 'http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/login',
             data: {
               username: username,
               password: password

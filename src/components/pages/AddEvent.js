@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { get, filter, cloneDeep } from 'lodash';
 import moment from 'moment';
 
@@ -31,12 +31,12 @@ class AddEvent extends Component {
               location: '',
               project: {
                 id: '5ac9877976448030b88ac636',
-                name: 'Winter Warmth Project'
+                name: 'Summer Hydration Series'
               },
               tags: '',
               organization: {
                 id: '5ac9877976448030b88ac636',
-                name: 'FOOD for Lane County'
+                name: 'Springfield Swim Team'
               },
               private: false
             }
@@ -48,7 +48,9 @@ class AddEvent extends Component {
     }
 
     submitEvent() {
-      this.props.addEventToProject(JSON.stringify(this.state.newEvent))
+      return new Promise((resolve, reject) => {
+        this.props.addEventToProject(JSON.stringify(this.state.newEvent))
+      })
     }
 
     handleFormInput(e) {
@@ -122,7 +124,7 @@ class AddEvent extends Component {
                   Private Event
                 </label>
               </div>
-              <button className="btn btn-primary" onClick={this.submitEvent.bind(this)}>Submit</button>
+              <button className="btn btn-primary" onClick={() => this.submitEvent()}>Submit</button>
             {/* </form> */}
           </div>
       </Card>
