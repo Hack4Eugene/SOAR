@@ -9,7 +9,7 @@ import eventImg1 from '../static/imgs/stock-event-1.jpg';
 import Card from './Card';
 
 const EventItem = ({ event, key }) => {
-  const date = moment(moment.unix(event.date)).format('MMMM D, YYYY - h:mm a');
+  const date = moment(event.eventDate).format('MMMM D, YYYY - h:mm a');
     return (
       <div className="mb-4">
         <Card key={key}>
@@ -35,12 +35,12 @@ const NoEvents = () => {
 }
 
 const EventsWidget = ({ events }) => {
-  console.log('events', events);
-  const orderedEvents = orderBy(events.data, 'date', 'asc')
+  console.log('events in widget', events);
+  const orderedEvents = orderBy(events, 'eventDate', 'asc')
     
   const EventList = orderedEvents.length
       ? map(orderedEvents, event => 
-          <EventItem event={event} key={event.id} />) 
+          <EventItem event={event} key={event._id} />) 
       : <NoEvents />;
     
   return (
