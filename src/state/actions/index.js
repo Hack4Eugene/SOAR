@@ -41,7 +41,7 @@ export const addEventToProject = (event) => {
     return (dispatch, getState) => {
         axios({
             method: 'post',
-            url: 'http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/event',
+            url: 'http://ec2-34-216-120-61.us-west-2.compute.amazonaws.com:3000/event',
             data: event,
             headers: {
                 'Content-Type': 'application/json'        
@@ -58,7 +58,7 @@ export const addEventToProject = (event) => {
 
 export const getEventsForProject = () => {
     return (dispatch, getState) => {
-        axios.get('http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/events')
+        axios.get('http://ec2-34-216-120-61.us-west-2.compute.amazonaws.com/events')
         .then(result => {
             // console.log('action result', result)
             dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
@@ -80,7 +80,7 @@ export const addOrganization = (org) => {
     return (dispatch, getState) => {
         axios({
             method: 'post',
-            url: 'http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/organization',
+            url: 'ec2-34-216-120-61.us-west-2.compute.amazonaws.com:3000/organization',
             data: org,
             headers: {
                 'Content-Type': 'application/json'        
@@ -98,7 +98,7 @@ export const loginUser = (username, password) => {
     return (dispatch, getState) => {
         axios({
             method: 'post',
-            url: 'http://ec2-34-229-195-178.compute-1.amazonaws.com:3000/login',
+            url: 'http://ec2-34-216-120-61.us-west-2.compute.amazonaws.com:3000/login',
             data: {
               username: username,
               password: password
