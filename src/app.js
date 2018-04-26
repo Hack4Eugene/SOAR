@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+
+import { RequireAuth } from './components/hoc/requireAuth';
 
 import './global.scss';
 
@@ -13,9 +17,18 @@ import AddUser from './components/pages/AddUser';
 import Project from './components/Project';
 import LoginPage from './components/pages/LoginPage';
 import ProfilePage from './components/pages/ProfilePage';
+import requireAuth from './components/hoc/requireAuth';
+
+const mapStateToProps = state => ({
+    isLoggedIn: _.get(state, 'user.Status', false) === true
+});
 
 class App extends Component {
+    getComponentOrLogin(restrictedComponent) {
+        return requireAuth(restrictedComponent, LoginPage)
+    }
     render() {
+        const { getComponentOrLogin } = this;
         return (
             <div>
                 <Header />
@@ -36,4 +49,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default connect(mapStateToProps)(App);

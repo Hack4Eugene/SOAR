@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { get, filter } from 'lodash';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom'
+
+import { SUCCESS } from '../../state/statusTypes';
 
 import Card from '../Card';
 import Calendar from 'react-calendar';
@@ -11,7 +13,8 @@ import Calendar from 'react-calendar';
 import { loginUser } from '../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
-    user: get(state, 'user', {})
+    user: get(state, 'user', {}),
+    isLoggedIn: get(state, 'user.Status') === SUCCESS
 });
 
 class LoginPage extends Component {
@@ -78,6 +81,8 @@ class LoginPage extends Component {
 
     render() {
         console.log(this.state);
+
+        if (this.props.isLoggedIn) return <Redirect to="/" />;
         return (
             <div className="container">
                 <div className="row justify-content-center">
