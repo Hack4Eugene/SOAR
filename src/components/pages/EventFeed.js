@@ -10,7 +10,7 @@ import eventImg1 from '../../static/imgs/stock-event-1.jpg';
 import Card from '../Card';
 import Calendar from 'react-calendar';
 
-import { getEventsForProject } from '../../state/actions/index.js'
+import { getEvents } from '../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
@@ -27,7 +27,7 @@ class EventFeed extends Component {
     }
 
     componentWillMount() {
-        this.props.getEventsForProject()
+        this.props.getEvents()
     }
 
     onDateChange(date) {
@@ -96,4 +96,4 @@ class EventFeed extends Component {
     }
 }
 
-export default connect(mapStateToProps, { getEventsForProject })(EventFeed);
+export default connect(mapStateToProps, { getEvents })(EventFeed);

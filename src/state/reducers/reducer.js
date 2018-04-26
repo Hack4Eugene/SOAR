@@ -42,8 +42,7 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_EVENTS_RESOLVED: {
-            // console.log('reducer payload.data', payload.data)
-            return _.assign(...state, {events: [ ...state.events, ...payload.data ] })
+            return _.assign(...state, { events: [ ...state.events, payload.data ] })
         }
 
         case LOGIN_USER_RESOLVED: {
