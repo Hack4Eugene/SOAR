@@ -1,9 +1,31 @@
 import _ from 'lodash';
-import axios from 'axios';
+
 import {
     request,
-    loadEndpoint
+    loadEndpoint,
 } from '../../lib/common';
+
+const {
+    LOGIN,
+    GET_USERS,
+    POST_USER,
+    DELETE_USER,
+    GET_USER_BY_ID,
+    GET_ORGANIZATIONS,
+    POST_ORGANIZATION,
+    DELETE_ORGANIZATION,
+    GET_ORGANIZATION_BY_ID,
+    GET_PROJECTS,
+    POST_PROJECT,
+    DELETE_PROJECT,
+    GET_PROJECT_BY_ID,
+    GET_PROJECTS_BY_ORGANIZATION,
+    GET_EVENTS,
+    POST_EVENT,
+    DELETE_EVENT,
+    GET_EVENT_BY_ID,
+    GET_EVENTS_FOR_PROJECTS,
+} = serviceRoutes;
 
 import {
     SET_EVENTS_FINISHED,
@@ -20,18 +42,28 @@ import {
     GET_PROJECTS_BY_ORG_RESOLVED
 } from '../types';
 
+import {
+    serviceRoutes
+} from '../../config/routes';
+
+/*
+    Todo: Make the id being passed as a param to certain routes dynamic.
+    Todo: Typically this is just a projectID or organizationID -
+    Todo: ideally both can be find in the user object in redux state.
+ */
+
 /*
  User Actions
  */
 
 export const loginUser = (username, password) => {
     return (dispatch, getState) => {
-        axios({
+        request({
             method: 'post',
-            url: 'http://localhost:3000/login',
+            url: loadEndpoint(LOGIN),
             data: {
-                username: username,
-                password: password
+                username,
+                password
             }
         })
             .then(result => dispatch({ type: LOGIN_USER_RESOLVED, payload: result.data }))
@@ -45,13 +77,10 @@ export const loginUser = (username, password) => {
 
 export const addOrganization = (org) => {
     return (dispatch, getState) => {
-        axios({
+        request({
             method: 'post',
-            url: 'http://localhost:3000/organization',
-            data: org,
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            url: loadEndpoint(POST_ORGANIZATION),
+            data: org
         })
             .then(result => {
                 dispatch({ type: ADD_ORG_RESOLVED, payload: result })
@@ -68,8 +97,8 @@ export const addOrganization = (org) => {
 export const getProjectsByOrganization = () => {
     return (dispatch, getState) => {
         request({
-            url: loadEndpoint('GET_PROJECTS_BY_ORGANIZATION') + '/5ac9877976448030b88ac636',
             method: 'get',
+            url: loadEndpoint(GET_PROJECTS_BY_ORGANIZATION) + '/5ac9877976448030b88ac636', //Todo is about this
         })
             .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }))
@@ -80,33 +109,31 @@ export const getProjectsByOrganization = () => {
     Event Actions
  */
 
+export const getEvents = () => {
+    return (dispatch, getState) => {
+        request({
+            method: 'get',
+            url: loadEndpoint(GET_EVENTS),
+        })
+            .then(result => {
+                dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
+            })
+            .catch(err => dispatch({ type: GET_EVENTS_REJECTED, error: err }));
+    }
+};
+
 export const createEvent = (event) => {
     return (dispatch, getState) => {
         request({
-            url: loadEndpoint('POST_EVENT'),
             method: 'post',
-            data: event,
-            headers: {
-                'Content-Type': 'application/json'
-            }
+            url: loadEndpoint(POST_EVENT),
+            data: event
         })
             .then(result => {
                 dispatch({ type: ADD_EVENT_RESOLVED, payload: result });
                 console.log(result)
             })
             .catch(err => dispatch({ type: ADD_EVENT_REJECTED, error: err }));
-    }
-};
-
-export const getEvents = () => {
-    return (dispatch, getState) => {
-        request({
-            url: loadEndpoint('GET_EVENTS')
-        })
-            .then(result => {
-                dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
-            })
-            .catch(err => dispatch({ type: GET_EVENTS_REJECTED, error: err }));
     }
 };
 

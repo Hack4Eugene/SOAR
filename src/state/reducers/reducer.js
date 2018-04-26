@@ -1,15 +1,11 @@
 import _ from 'lodash';
-import moment from 'moment';
 
 import {
     SET_EVENTS_FINISHED,
     INCREMENT_EVENT_FINISH,
     ADD_EVENT_RESOLVED,
-    ADD_EVENT_REJECTED,
     GET_EVENTS_RESOLVED,
-    GET_EVENTS_REJECTED,
     ADD_ORG_RESOLVED,
-    ADD_ORG_REJECTED,
     LOGIN_USER_RESOLVED,
     LOGIN_USER_REJECTED
 } from '../types';
