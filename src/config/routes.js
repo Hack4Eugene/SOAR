@@ -1,5 +1,5 @@
 module.exports = {
-    serviceHost: 'ec2-34-216-120-61.us-west-2.compute.amazonaws.com:3000',
+    serviceHost: 'http://ec2-34-216-120-61.us-west-2.compute.amazonaws.com:3000',
     serviceRoutes: {
         GET_ORGANIZATION_BY_ID: '/organization/:organization_id',
 

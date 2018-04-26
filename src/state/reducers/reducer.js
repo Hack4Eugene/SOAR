@@ -29,7 +29,6 @@ const reducer = (state = initialState, action) => {
         }
 
         case ADD_EVENT_RESOLVED: {
-            console.log('reducer', payload.data)
             return _.assign(...state, { events: [ ...state.events, payload ] })
         }
 
@@ -46,7 +45,7 @@ const reducer = (state = initialState, action) => {
         }
 
         case LOGIN_USER_REJECTED: {
-            return _.assign(...state, { events: [ ...state.events, payload ] })
+            return _.assign(...state, { user: [ ...state.user, payload ] })
         }
 
         default: return state;

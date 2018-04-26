@@ -1,12 +1,10 @@
 import axios from 'axios';
 import _ from 'lodash';
-import serviceConfig from '../config/routes';
+import { serviceHost, serviceRoutes }from '../config/routes';
 
 export const request = opts => axios({
     ...opts,
-    headers: {
-        'Content-Type': 'application/json'
-    }
+    headers: { 'Content-Type': 'Application/JSON' }
 });
 
-export const loadEndpoint = path => _.get(serviceConfig.serviceRoutes, path, null);
+export const loadEndpoint = route => `${serviceHost}${route}`;

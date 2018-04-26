@@ -39,7 +39,7 @@ import {
     LOGIN_USER_RESOLVED,
     LOGIN_USER_REJECTED,
     GET_PROJECTS_BY_ORG_REJECTED,
-    GET_PROJECTS_BY_ORG_RESOLVED
+    GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING
 } from '../types';
 
 import {
@@ -56,18 +56,20 @@ import {
  User Actions
  */
 
-export const loginUser = (username, password) => {
+export const loginUser = credentials => {
     return (dispatch, getState) => {
+        dispatch({ type: LOGIN_USER_PENDING, payload: credentials });
+
+        const url = loadEndpoint(LOGIN)
+        console.log(url);
+
         request({
             method: 'post',
-            url: loadEndpoint(LOGIN),
-            data: {
-                username,
-                password
-            }
+            url,
+            data: JSON.stringify(credentials)
         })
-            .then(result => dispatch({ type: LOGIN_USER_RESOLVED, payload: result.data }))
-            .catch(err => dispatch({ type: LOGIN_USER_REJECTED, error: err }));
+            .then(result => dispatch({ type: LOGIN_USER_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: LOGIN_USER_REJECTED, payload: err }));
     }
 };
 

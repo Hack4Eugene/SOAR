@@ -8,18 +8,18 @@ class Navbar extends Component {
     render() {
         return (
 
-            <nav class="navbar navbar-expand-lg navbar-white border-bottom mb-4">
-                  <div class="navbar-brand"><img src={logo} alt="ECAN Logo" width="150" height="150" className="d-inline-block float-left"/></div>
-                  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                        <div class="navbar-nav">
-                            <button type="button" class="btn btn-light mx-2 mt-5"><Link class="text-success" to="/">Projects</Link></button>
-                            <button type="button" class="btn btn-light mx-2 mt-5"><Link class="text-success" to="/events">Events</Link></button>
-                            <button type="button" class="btn btn-light mx-2 mt-5"><Link class="text-success" to="/explore">Explore</Link></button>
-                            <button type="button" class="btn btn-light mx-2 mt-5"><Link class="text-success" to="/profile">Profile</Link></button>
+            <nav className="navbar navbar-expand-lg navbar-white border-bottom mb-4">
+                  <div className="navbar-brand"><img src={logo} alt="ECAN Logo" width="150" height="150" className="d-inline-block float-left"/></div>
+                  <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div className="navbar-nav">
+                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/">Projects</Link></button>
+                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/events">Events</Link></button>
+                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/explore">Explore</Link></button>
+                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/profile">Profile</Link></button>
                         </div>
                   </div>
-                  <Link class="text-success" to="/adduser"><button type="button" class="btn btn-outline-success btn-lg float-right mt-5 mr-0">New User</button></Link>
-                  <Link class="text-primary" to="/login"><button type="button" class="btn btn-outline-primary btn-lg float-right mt-5 mr-5">Login</button></Link>
+                  <Link className="text-success" to="/adduser"><button type="button" className="btn btn-outline-success btn-lg float-right mt-5 mr-0">New User</button></Link>
+                  <Link className="text-primary" to="/login"><button type="button" className="btn btn-outline-primary btn-lg float-right mt-5 mr-5">Login</button></Link>
            </nav>
 
         )
