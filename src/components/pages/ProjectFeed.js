@@ -45,7 +45,7 @@ class ProjectFeed extends Component {
                 <ProjectCard
                     title="Meal Prep Kitchen Team Building"
                     startDate="2 Days Ago"
-                    link={<Link className="btn btn-primary" to="/feed">More Details</Link>}
+                    link={<Link className="btn btn-primary float-left" to="/feed">More Details</Link>}
                 >
                     <div className="row justify-content-end align-items-center">
                         <div className="col-3">
@@ -59,15 +59,15 @@ class ProjectFeed extends Component {
                             </div>
                         )}
                     </div>
-                    <p>This project was created to address the long-standing issues around homelessness in Eugene and to build a community around our neighbors without addresses.</p>
+                    <p className="text-left">This project was created to address the long-standing issues around homelessness in Eugene and to build a community around our neighbors without addresses.</p>
                 </ProjectCard>
 
                 <ProjectCard
                     title="Friends of Trees Summer Soilworks"
                     startDate="4 Days Ago"
-                    link={<Link className="btn btn-primary" to="/feed">More Details</Link>}
+                    link={<Link className="btn btn-primary float-left" to="/feed">More Details</Link>}
                 >
-                    <p>We will spend the summer building up the flora around Eugene and Springfield, aiming for a beautiful bloom by this time next year!</p>
+                    <p className = "text-left">We will spend the summer building up the flora around Eugene and Springfield, aiming for a beautiful bloom by this time next year!</p>
                 </ProjectCard>
             </div>
         )
