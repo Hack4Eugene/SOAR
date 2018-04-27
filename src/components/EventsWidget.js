@@ -16,7 +16,7 @@ const EventItem = ({ event, key }) => {
             <div className="card-header">{date}</div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
-                <span class="badge badge-secondary">{event.project.title}</span>
+                <span class="badge badge-secondary">{event.project.name}</span>
                 <h4 className="card-title mb-0">{event.name}</h4>
                 <p className="font-italic font-weight-light">{event.location}</p>
                 <p className="card-text">
@@ -35,10 +35,10 @@ const NoEvents = () => {
 }
 
 const EventsWidget = ({ events }) => {
-  console.log('events in widget', events);
-  const orderedEvents = orderBy(events, 'eventDate', 'asc')
-    
-  const EventList = orderedEvents.length
+  const orderedEvents = orderBy(events[0], 'eventDate', 'asc')
+    console.log('orderedEvents', orderedEvents)
+  
+    const EventList = orderedEvents.length
       ? map(orderedEvents, event => 
           <EventItem event={event} key={event._id} />) 
       : <NoEvents />;
