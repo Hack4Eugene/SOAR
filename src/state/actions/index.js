@@ -28,16 +28,20 @@ const {
 } = serviceRoutes;
 
 import {
+    GET_ORGANIZATIONS_RESOLVED,
+    GET_ORGANIZATIONS_REJECTED,
+    ADD_ORG_RESOLVED,
+    ADD_ORG_REJECTED,
     SET_EVENTS_FINISHED,
     INCREMENT_EVENT_FINISH,
     ADD_EVENT_RESOLVED,
     ADD_EVENT_REJECTED,
     GET_EVENTS_RESOLVED,
     GET_EVENTS_REJECTED,
-    ADD_ORG_RESOLVED,
-    ADD_ORG_REJECTED,
     LOGIN_USER_RESOLVED,
     LOGIN_USER_REJECTED,
+    GET_PROJECTS_RESOLVED,
+    GET_PROJECTS_REJECTED,
     GET_PROJECTS_BY_ORG_REJECTED,
     GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING
 } from '../types';
@@ -77,6 +81,17 @@ export const loginUser = credentials => {
     Organization Actions
  */
 
+export const getOrganizations = () => {
+    return (dispatch, getState) => {
+        request({
+            method: 'get',
+            url: loadEndpoint(GET_ORGANIZATIONS)
+        })
+            .then(result => dispatch({ type: GET_ORGANIZATIONS_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: GET_ORGANIZATIONS_REJECTED, payload: err }))
+    }
+};
+
 export const addOrganization = (org) => {
     return (dispatch, getState) => {
         request({
@@ -104,6 +119,17 @@ export const getProjectsByOrganization = () => {
         })
             .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }))
+    }
+};
+
+export const getProjects = () => {
+    return (dispatch, getState) => {
+        request(({
+            method: 'get',
+            url: loadEndpoint(GET_PROJECTS)
+        }))
+            .then(result => dispatch({ type: GET_PROJECTS_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: GET_PROJECTS_REJECTED, payload: err }))
     }
 };
 

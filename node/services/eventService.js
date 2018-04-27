@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const Schema = mongoose.Schema;
 const EventModel = mongoose.model('EventModel');
 const ProjectModel = mongoose.model('ProjectModel');

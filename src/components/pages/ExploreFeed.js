@@ -1,47 +1,55 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 import _ from 'lodash'
 
 import Project from '../Project';
 import EventsWidget from '../EventsWidget';
 
 import {
-    getEvents
+    getEvents,
+    getProjects,
+    getOrganizations
 } from '../../state/actions/index';
 
-mapStateToProps = state => {
-    _.get(state, 'events', {})
-};
+const mapStateToProps = state => ({
+    events: _.get(state, 'events', {}),
+    projects: _.get(state, 'projects', {}),
+    organizations: _.get(state, 'organizations', {})
+});
 
 class ExploreFeed extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            data: dummyAPIData.projects,
-            displaying: 'projects'
+            data: [],
+            displaying: 'events'
         }
     }
 
     componentWillMount() {
         this.props.getEvents();
+        this.props.getProjects();
+        this.props.getOrganizations();
     }
 
-    toggleTabs = (e, type) => {
+    toggleTabs = (type) => {
         if (this.state.displaying === type) {
             return;
         }
-        this.setState({ data: dummyAPIData[type], displaying: type })
+        this.setState({ data: this.props[type].data, displaying: type })
     };
 
     getFeed = () => {
         if (this.state.displaying === 'projects') return this.getProjectsFeed();
         if (this.state.displaying === 'events') return this.getEventsFeed();
+        if (this.state.displaying === 'organizations') return null;
     };
 
     getProjectsFeed = () => {
-        return _.map(this.state.data, (project, i) => {
+        return _.map(this.props.projects.data, (project, i) => {
             return (
                 <Project
                     key={`explore-feed-project-${i}`}
@@ -56,32 +64,54 @@ class ExploreFeed extends Component {
         })
     };
 
-    getEventsFeed = () => <EventsWidget events={this.state.data} />;
+    getEventsFeed = () => <EventsWidget events={this.props.events.data} />;
 
     render() {
-        console.log(this.state);
+        console.log(this.state, this.props);
         return (
             <div className="container">
                 <nav>
                     <div className="nav nav-tabs" id="nav-tab" role="tablist">
-                        <Link
-                            className="nav-item nav-link active"
-                            id="nav-home-tab"
-                            data-toggle="tab"
-                            to="#"
-                            role="tab"
-                            aria-controls="nav-home"
-                            aria-selected="true"
-                            onClick={e => this.toggleTabs(e, 'projects')}>Projects</Link>
-                        <Link
-                            className="nav-item nav-link"
-                            id="nav-profile-tab"
-                            data-toggle="tab"
-                            to="#"
-                            role="tab"
-                            aria-controls="nav-profile"
-                            aria-selected="false"
-                            onClick={e => this.toggleTabs(e, 'events')}>Events</Link>
+                        <div className="p-3" id="tabs-background" style={{ borderTop: '1px solid #ddd', marginTop: '15px' }}>
+                            <ul className="nav nav-pills justify-content-start" id="practice-areas-tabs">
+                                <li className="nav-item">
+                                    {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+                                    <a
+                                        onClick={e => this.toggleTabs('events')}
+                                        className={classnames('nav-link', {
+                                            'active': this.state.displaying === 'events'
+                                        })}
+                                        href="#"
+                                    >
+                                        Events
+                                    </a>
+                                </li>
+                                <li className="nav-item">
+                                    {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+                                    <a
+                                        onClick={e => this.toggleTabs('projects')}
+                                        className={classnames('nav-link', {
+                                            'active': this.state.displaying === 'projects'
+                                        })}
+                                        href="#"
+                                    >
+                                        Projects
+                                    </a>
+                                </li>
+                                <li className="nav-item">
+                                    {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+                                    <a
+                                        onClick={e => this.toggleTabs('organizations')}
+                                        className={classnames('nav-link', {
+                                            'active': this.state.displaying === 'organizations'
+                                        })}
+                                        href="#"
+                                    >
+                                        Organizations
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </nav>
                 {this.getFeed()}
@@ -90,4 +120,4 @@ class ExploreFeed extends Component {
     }
 }
 
-export default connect(mapStateToProps, { getEvents })(ExploreFeed);
+export default connect(mapStateToProps, { getEvents, getProjects, getOrganizations })(ExploreFeed);

@@ -8,11 +8,10 @@ import eventImg1 from '../static/imgs/stock-event-1.jpg';
 
 import Card from './Card';
 
-const EventItem = ({ event, key }) => {
-  const date = moment(event.eventDate).format('MMMM D, YYYY - h:mm a');
+const EventItem = ({ event }) => {
+    const date = moment(event.eventDate).format('MMMM D, YYYY - h:mm a');
     return (
-      <div className="mb-4">
-        <Card key={key}>
+        <Card>
             <div className="card-header">{date}</div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
@@ -24,30 +23,30 @@ const EventItem = ({ event, key }) => {
                 </p>
             </div>
         </Card>
-        </div>
     )
-}
+};
 
 const NoEvents = () => {
     return (
         <p className="font-italic m-3">No events yet!</p>
     )
-}
+};
 
 const EventsWidget = ({ events }) => {
-  const orderedEvents = orderBy(events[0], 'eventDate', 'asc')
-    console.log('orderedEvents', orderedEvents)
-  
+    const orderedEvents = orderBy(events, 'eventDate', 'asc');
+
     const EventList = orderedEvents.length
-      ? map(orderedEvents, event => 
-          <EventItem event={event} key={event._id} />) 
-      : <NoEvents />;
-    
-  return (
-    <div>
-      {EventList}
-    </div>
-  );
-}
+        ? map(orderedEvents, event =>
+            <div className="mb-4" key={event._id}>
+                <EventItem event={event}/>
+            </div>)
+        : <NoEvents/>;
+
+    return (
+        <div>
+            {EventList}
+        </div>
+    );
+};
 
 export default EventsWidget;

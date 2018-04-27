@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "classnames": "^2.2.5",
     "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
     "history": "^4.7.2",

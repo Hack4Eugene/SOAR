@@ -7,7 +7,8 @@ import {
     GET_EVENTS_RESOLVED,
     ADD_ORG_RESOLVED,
     LOGIN_USER_RESOLVED,
-    LOGIN_USER_REJECTED
+    LOGIN_USER_REJECTED, GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, GET_ORGANIZATIONS_RESOLVED,
+    GET_ORGANIZATIONS_REJECTED
 } from '../types';
 import { ERROR, SUCCESS } from '../statusTypes';
 
@@ -38,7 +39,7 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_EVENTS_RESOLVED: {
-            return _.assign({}, state, { events: [ ...state.events, payload.data ] })
+            return _.assign({}, state, { events: { ...state.events, data: [...payload.data], Status: SUCCESS } })
         }
 
         case LOGIN_USER_RESOLVED: {
@@ -47,6 +48,22 @@ const reducer = (state = initialState, action) => {
 
         case LOGIN_USER_REJECTED: {
             return _.assign({}, state, { user: { ...state.user, ...payload, Status: ERROR } })
+        }
+
+        case GET_PROJECTS_RESOLVED: {
+            return _.assign({}, state, { projects: { ...state.projects, data: [...payload.data], Status: SUCCESS }})
+        }
+
+        case GET_PROJECTS_REJECTED: {
+            return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, Status: ERROR }})
+        }
+
+        case GET_ORGANIZATIONS_RESOLVED: {
+            return _.assign({}, state, { organizations: { ...state.organizations, data: [...payload.data], Status: SUCCESS }})
+        }
+
+        case GET_ORGANIZATIONS_REJECTED: {
+            return _.assign({}, state, { organizations: { ...state.organizations, error: { ...payload }, Status: ERROR }})
         }
 
         default: return state;
