@@ -15,6 +15,8 @@ import AddUser from './components/pages/AddUser';
 import Project from './components/Project';
 import LoginPage from './components/pages/LoginPage';
 import ProfilePage from './components/pages/ProfilePage';
+import ProjectPage from './components/pages/ProjectPage';
+import UserProfilePage from './components/pages/UserProfilePage';
 
 class App extends Component {
     render() {
@@ -31,6 +33,8 @@ class App extends Component {
                         <Route path="/projects/:id" component={Project} />
                         <Route path="/login" component={LoginPage} />
                         <Route path="/profile" component={ProfilePage} />
+                        <Route path="/project" component={ProjectPage} />
+                        <Route path="/userprofile" component={UserProfilePage} />
                     </Switch>
                 </div>
             </div>

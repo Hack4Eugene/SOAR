@@ -10,6 +10,8 @@ import Calendar from 'react-calendar';
 
 import { loginUser } from '../../state/actions/index.js'
 
+import './UserProfilePage.css';
+
 const mapStateToProps = (state) => ({
   events: get(state, 'events', {}),
   posts: get(state, 'posts', {}),
