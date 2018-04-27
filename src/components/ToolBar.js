@@ -7,6 +7,8 @@ import {
     deleteProject
 } from '../state/actions/index';
 
+import './toolbar.scss';
+
 class ToolBar extends Component {
     onDeleteClick = () => {
         const {
@@ -35,7 +37,7 @@ class ToolBar extends Component {
             <div>
                 <div className="d-inline-flex justify-content-between w-100">
                     {this.props.children}
-                    <div className="d-inline-flex justify-self-end">
+                    <div className="d-inline-flex justify-self-end icon-container">
                         <i className="fas fa-pencil-alt mr-2" /><i className=" ml-2 fas fa-times" onClick={this.onDeleteClick} />
                     </div>
                 </div>
