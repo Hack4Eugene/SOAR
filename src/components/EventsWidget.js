@@ -9,13 +9,14 @@ import eventImg1 from '../static/imgs/stock-event-1.jpg';
 import Card from './Card';
 
 const EventItem = ({ event }) => {
+    console.log('make event item');
     const date = moment(event.eventDate).format('MMMM D, YYYY - h:mm a');
     return (
         <Card>
             <div className="card-header">{date}</div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
-                <span className="badge badge-secondary">{event.project.name}</span>
+                <span className="badge badge-secondary">{event.project.name || 'Unknown'}</span>
                 <h4 className="card-title mb-0">{event.name}</h4>
                 <p className="font-italic font-weight-light">{event.location}</p>
                 <p className="card-text">
@@ -33,10 +34,9 @@ const NoEvents = () => {
 };
 
 const EventsWidget = ({ events }) => {
-    const orderedEvents = orderBy(events, 'eventDate', 'asc');
-
-    const EventList = orderedEvents.length
-        ? map(orderedEvents, event =>
+    console.log({ events });
+    const EventList = events.length
+        ? map(events, event =>
             <div className="mb-4" key={event._id}>
                 <EventItem event={event}/>
             </div>)

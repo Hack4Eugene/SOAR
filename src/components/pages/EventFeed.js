@@ -20,9 +20,10 @@ const mapStateToProps = (state) => ({
 
 class EventFeed extends Component {
     constructor (props) {
-        super(props)
+        super(props);
+
         this.state = {
-            filteredEvents: props.events
+            filteredEvents: get(props, 'events.data', [])
         }
     }
 
@@ -33,9 +34,11 @@ class EventFeed extends Component {
     onDateChange(date) {
         let tempFilteredEvents = filter(this.props.events, event => {
             const eventDate = moment(moment.unix(event.date));
-            const selectedDate = moment(date)
+            const selectedDate = moment(date);
+
+            console.log(eventDate, selectedDate);
             return eventDate.isSame(selectedDate, 'day');
-        })
+        });
 
         // console.log('this.state.filteredEvents', this.state.filteredEvents)
         // console.log('tempFilteredEvents', tempFilteredEvents)
@@ -57,6 +60,7 @@ class EventFeed extends Component {
         // if (this.props.events.status === 200) {
         console.log('this.props.events', this.props.events)
         console.log('this.state.filteredEvents', this.state.filteredEvents)
+        console.log(this.state);
         // }
         // const calendar = document.getElementsByClassName('react-calendar')
         // console.log('calendar', calendar)
@@ -79,7 +83,7 @@ class EventFeed extends Component {
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-8">
-                    {isArray(this.props.events) && <EventsWidget events={this.props.events} />}                     
+                    {isArray(this.props.events.data) && <EventsWidget events={this.props.events.data} />}
                     </div>                  
                     <div className="pull-right">
                         <Card>
