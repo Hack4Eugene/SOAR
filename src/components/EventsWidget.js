@@ -6,6 +6,7 @@ import moment from 'moment';
 
 import eventImg1 from '../static/imgs/stock-event-1.jpg';
 
+import ToolBar from './ToolBar';
 import Card from './Card';
 
 const EventItem = ({ event }) => {
@@ -17,7 +18,9 @@ const EventItem = ({ event }) => {
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
                 <span className="badge badge-secondary">{event.project.name || 'Unknown'}</span>
-                <h4 className="card-title mb-0">{event.name}</h4>
+                <ToolBar data={event} type="event">
+                    <h4 className="card-title mb-0">{event.name}</h4>
+                </ToolBar>
                 <p className="font-italic font-weight-light">{event.location}</p>
                 <p className="card-text">
                     {event.description}

@@ -1,14 +1,12 @@
 import _ from 'lodash';
 
 import {
-    SET_EVENTS_FINISHED,
-    INCREMENT_EVENT_FINISH,
-    ADD_EVENT_RESOLVED,
-    GET_EVENTS_RESOLVED,
+    LOGIN_USER_RESOLVED, LOGIN_USER_REJECTED,
+    GET_ORGANIZATIONS_RESOLVED, GET_ORGANIZATIONS_REJECTED,
     ADD_ORG_RESOLVED,
-    LOGIN_USER_RESOLVED,
-    LOGIN_USER_REJECTED, GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, GET_ORGANIZATIONS_RESOLVED,
-    GET_ORGANIZATIONS_REJECTED
+    GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
+    SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
+    GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED,
 } from '../types';
 import { ERROR, SUCCESS } from '../statusTypes';
 
@@ -34,6 +32,14 @@ const reducer = (state = initialState, action) => {
             return _.assign({}, state, { events: [ ...state.events, payload ] })
         }
 
+        case DELETE_EVENT_RESOLVED: {
+            return _.assign({}, state, { events: { ...state.events, Status: SUCCESS }})
+        }
+
+        case DELETE_EVENT_REJECTED: {
+            return _.assign({}, state, { events: { ...state.events, error: { ...payload }, Status: ERROR }})
+        }
+
         case ADD_ORG_RESOLVED: {
             return _.assign({}, state, { organizations: [ ...state.organizations, payload ] })
         }
@@ -55,6 +61,14 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_PROJECTS_REJECTED: {
+            return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, Status: ERROR }})
+        }
+
+        case DELETE_PROJECT_RESOLVED: {
+            return _.assign({}, state, { projects: { ...state.projects, Status: SUCCESS }})
+        }
+
+        case DELETE_PROJECT_REJECTED: {
             return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, Status: ERROR }})
         }
 

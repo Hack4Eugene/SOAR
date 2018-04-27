@@ -43,8 +43,9 @@ class ExploreFeed extends Component {
     };
 
     getFeed = () => {
-        if (this.state.displaying === 'projects') return this.getProjectsFeed();
-        if (this.state.displaying === 'events') return this.getEventsFeed();
+        const { getProjectsFeed, getEventsFeed } = this;
+        if (this.state.displaying === 'projects') return getProjectsFeed();
+        if (this.state.displaying === 'events') return getEventsFeed();
         if (this.state.displaying === 'organizations') return null;
     };
 
@@ -64,9 +65,14 @@ class ExploreFeed extends Component {
         })
     };
 
-    getEventsFeed = () => <EventsWidget events={this.props.events.data} />;
+    getEventsFeed = () => {
+        const { events } = this.props;
+        console.log(events);
+        return <EventsWidget events={events.data} />;
+    };
 
     render() {
+        if (!this.props[this.state.displaying].data || this.props[this.state.displaying].data.length <= 0 ) return <div />;
         console.log(this.state, this.props);
         return (
             <div className="container">

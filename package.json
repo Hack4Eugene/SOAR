@@ -10,7 +10,8 @@
   "scripts": {
     "start:webpack": "NODE_ENV=local webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
     "start": "npm run clean && npm run start:webpack",
-    "clean": "rm -rf ./dist"
+    "clean": "rm -rf ./dist",
+    "postinstall": "npm rebuild node-sass --force"
   },
   "dependencies": {
     "axios": "^0.18.0",

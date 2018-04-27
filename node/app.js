@@ -23,15 +23,15 @@ mongoose.connect('mongodb://ec2-18-236-73-118.us-west-2.compute.amazonaws.com/EC
         console.error(`Unable to connect to ECANdb. Check if MongoDB instance is running
 					   Run mongodb instance in another terminal using: mongod
                        ${err.stack}`);
-    })
+    });
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Headers", "Content-Type");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
     if (req.method === 'OPTIONS') {
         res.sendStatus(200)
     } else {

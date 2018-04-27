@@ -38,12 +38,14 @@ import {
     ADD_EVENT_REJECTED,
     GET_EVENTS_RESOLVED,
     GET_EVENTS_REJECTED,
+    DELETE_EVENT_RESOLVED,
+    DELETE_EVENT_REJECTED,
     LOGIN_USER_RESOLVED,
     LOGIN_USER_REJECTED,
     GET_PROJECTS_RESOLVED,
     GET_PROJECTS_REJECTED,
     GET_PROJECTS_BY_ORG_REJECTED,
-    GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING
+    GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING, DELETE_PROJECT_REJECTED, DELETE_PROJECT_RESOLVED
 } from '../types';
 
 import {
@@ -133,6 +135,18 @@ export const getProjects = () => {
     }
 };
 
+export const deleteProject = projectID => {
+    return (dispatch, getState) => {
+        request(({
+            method: 'delete',
+            url: `${loadEndpoint(DELETE_PROJECT)}/${projectID}`
+        }))
+            .then(result => dispatch({ type: DELETE_PROJECT_RESOLVED }))
+            .then(() => dispatch(getProjects()))
+            .catch(err => dispatch({ type: DELETE_PROJECT_REJECTED, payload: err }))
+    }
+};
+
 /*
     Event Actions
  */
@@ -162,6 +176,18 @@ export const createEvent = (event) => {
                 console.log(result)
             })
             .catch(err => dispatch({ type: ADD_EVENT_REJECTED, error: err }));
+    }
+};
+
+export const deleteEvent = eventID => {
+    return (dispatch, getState) => {
+        request(({
+            method: 'delete',
+            url: `${loadEndpoint(DELETE_EVENT)}/${eventID}`
+        }))
+            .then(result => dispatch({ type: DELETE_EVENT_RESOLVED }))
+            .then(() => dispatch(getEvents()))
+            .catch(err => dispatch({ type: DELETE_EVENT_REJECTED, payload: err }))
     }
 };
 
