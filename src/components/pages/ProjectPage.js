@@ -130,6 +130,17 @@ class ProjectPage extends Component {
           </li>
         </ul>
       </section>
+      <div className="card" style={{'marginTop': '50px'}}>
+        <div className="card-header"><h2>Our Accomplishments</h2></div>
+        <div className="card-body">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">✓ 300 Canned food items</li>
+          <li class="list-group-item">✓ 50 Rain jackets</li>
+          <li class="list-group-item">✓ 80 Volunteer hours</li>
+          <li class="list-group-item">✓ 300 Meals distributed</li>
+        </ul>
+        </div>
+      </div>
       </div>
     )
   }

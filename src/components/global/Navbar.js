@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../static/imgs/ecan_logo.png';
+import avatar from '../../static/imgs/user-image.png';
 
 import './styles.scss';
 
@@ -18,8 +19,9 @@ class Navbar extends Component {
                             <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/profile">Profile</Link></button>
                         </div>
                   </div>
-                  <Link className="text-success" to="/adduser"><button type="button" className="btn btn-outline-success btn-lg float-right mt-5 mr-0">New User</button></Link>
-                  <Link className="text-primary" to="/login"><button type="button" className="btn btn-outline-primary btn-lg float-right mt-5 mr-5">Login</button></Link>
+                  <Link className="text-success" to="/adduser"><button type="button" className="btn btn-outline-success btn-lg float-right mr-2">New User</button></Link>
+                  <Link className="text-primary" to="/login"><button type="button" className="btn btn-outline-primary btn-lg float-right ml-2">Login</button></Link>
+                    <Link to="./userprofile" style={{'flex': 0.5}}><img src={avatar} style={{'width': '50%'}}/></Link>
            </nav>
 
         )
