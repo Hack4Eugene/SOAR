@@ -28,18 +28,24 @@ const {
 } = serviceRoutes;
 
 import {
+    GET_ORGANIZATIONS_RESOLVED,
+    GET_ORGANIZATIONS_REJECTED,
+    ADD_ORG_RESOLVED,
+    ADD_ORG_REJECTED,
     SET_EVENTS_FINISHED,
     INCREMENT_EVENT_FINISH,
     ADD_EVENT_RESOLVED,
     ADD_EVENT_REJECTED,
     GET_EVENTS_RESOLVED,
     GET_EVENTS_REJECTED,
-    ADD_ORG_RESOLVED,
-    ADD_ORG_REJECTED,
+    DELETE_EVENT_RESOLVED,
+    DELETE_EVENT_REJECTED,
     LOGIN_USER_RESOLVED,
     LOGIN_USER_REJECTED,
+    GET_PROJECTS_RESOLVED,
+    GET_PROJECTS_REJECTED,
     GET_PROJECTS_BY_ORG_REJECTED,
-    GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING
+    GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING, DELETE_PROJECT_REJECTED, DELETE_PROJECT_RESOLVED
 } from '../types';
 
 import {
@@ -77,6 +83,17 @@ export const loginUser = credentials => {
     Organization Actions
  */
 
+export const getOrganizations = () => {
+    return (dispatch, getState) => {
+        request({
+            method: 'get',
+            url: loadEndpoint(GET_ORGANIZATIONS)
+        })
+            .then(result => dispatch({ type: GET_ORGANIZATIONS_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: GET_ORGANIZATIONS_REJECTED, payload: err }))
+    }
+};
+
 export const addOrganization = (org) => {
     return (dispatch, getState) => {
         request({
@@ -104,6 +121,29 @@ export const getProjectsByOrganization = () => {
         })
             .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }))
+    }
+};
+
+export const getProjects = () => {
+    return (dispatch, getState) => {
+        request(({
+            method: 'get',
+            url: loadEndpoint(GET_PROJECTS)
+        }))
+            .then(result => dispatch({ type: GET_PROJECTS_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: GET_PROJECTS_REJECTED, payload: err }))
+    }
+};
+
+export const deleteProject = projectID => {
+    return (dispatch, getState) => {
+        request(({
+            method: 'delete',
+            url: `${loadEndpoint(DELETE_PROJECT)}/${projectID}`
+        }))
+            .then(result => dispatch({ type: DELETE_PROJECT_RESOLVED }))
+            .then(() => dispatch(getProjects()))
+            .catch(err => dispatch({ type: DELETE_PROJECT_REJECTED, payload: err }))
     }
 };
 
@@ -136,6 +176,18 @@ export const createEvent = (event) => {
                 console.log(result)
             })
             .catch(err => dispatch({ type: ADD_EVENT_REJECTED, error: err }));
+    }
+};
+
+export const deleteEvent = eventID => {
+    return (dispatch, getState) => {
+        request(({
+            method: 'delete',
+            url: `${loadEndpoint(DELETE_EVENT)}/${eventID}`
+        }))
+            .then(result => dispatch({ type: DELETE_EVENT_RESOLVED }))
+            .then(() => dispatch(getEvents()))
+            .catch(err => dispatch({ type: DELETE_EVENT_REJECTED, payload: err }))
     }
 };
 

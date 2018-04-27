@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const Schema = mongoose.Schema;
 const EventModel = mongoose.model('EventModel');
 const ProjectModel = mongoose.model('ProjectModel');
@@ -31,7 +32,6 @@ module.exports = {
                         newEventDocument[key] = value;
                     });
 
-                    newEventDocument[key] = value;
                     return EventModel.update({ _id: req.params.event_id }, newEventDocument)
                         .then(updatedEventDocument => res.status(200).send(updatedEventDocument));
                 })

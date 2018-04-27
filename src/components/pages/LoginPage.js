@@ -34,8 +34,6 @@ class LoginPage extends Component {
             password
         } = this.state;
 
-        console.log(`this.props.loginUser(username: ${username}, password: ${password})`);
-
         this.props.loginUser({ username, password })
     };
 

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { connect } from 'react-redux';
-import _ from 'lodash';
 
 import './global.scss';
 
@@ -10,6 +8,7 @@ import Header from './components/global/Header';
 import ProjectFeed from './components/pages/ProjectFeed';
 import EventFeed from './components/pages/EventFeed';
 import AddEvent from './components/pages/AddEvent';
+import ExploreFeed from './components/pages/ExploreFeed';
 import AddOrganization from './components/pages/AddOrganization';
 import AddUser from './components/pages/AddUser';
 import Project from './components/Project';
@@ -27,6 +26,7 @@ class App extends Component {
                     <Switch>
                         <Route path="/" exact component={ProjectFeed} />
                         <Route path="/events" component={EventFeed} />
+                        <Route path="/explore" component={ExploreFeed} />
                         <Route path="/addevent" component={AddEvent} />
                         <Route path="/addorganization" component={AddOrganization} />
                         <Route path="/adduser" component={AddUser} />

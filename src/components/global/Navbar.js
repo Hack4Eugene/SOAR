@@ -12,10 +12,10 @@ class Navbar extends Component {
                   <div className="navbar-brand"><img src={logo} alt="ECAN Logo" width="150" height="150" className="d-inline-block float-left"/></div>
                   <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
                         <div className="navbar-nav">
-                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/">Projects</Link></button>
-                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/events">Events</Link></button>
-                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/explore">Explore</Link></button>
-                            <button type="button" className="btn btn-light mx-2 mt-5"><Link className="text-success" to="/profile">Profile</Link></button>
+                            <button type="button" className="btn btn-light mr-4"><Link className="text-success" to="/">Projects</Link></button>
+                            <button type="button" className="btn btn-light mr-4"><Link className="text-success" to="/events">Events</Link></button>
+                            <button type="button" className="btn btn-light mr-4"><Link className="text-success" to="/explore">Explore</Link></button>
+                            <button type="button" className="btn btn-light mr-4"><Link className="text-success" to="/profile">Profile</Link></button>
                         </div>
                   </div>
                   <Link className="text-success" to="/adduser"><button type="button" className="btn btn-outline-success btn-lg float-right mt-5 mr-0">New User</button></Link>

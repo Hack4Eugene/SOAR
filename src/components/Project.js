@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom'
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -21,7 +22,8 @@ class Project extends Component {
             description,
             totalEvents,
             animationVal,
-        } = this.props.projects[0];
+            eventsFinished = 12
+        } = this.props;
         return (
             <ProjectCard
                 title={title}
