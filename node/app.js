@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
@@ -10,11 +11,10 @@ const UserModel = require('./models/userModel');
 
 // mongoose connection
 mongoose.Promise = global.Promise;
-let ecanDB = null;
-
+const ecanDB = 'mongodb://ec2-18-236-73-118.us-west-2.compute.amazonaws.com/ECANdb';
 
 // mongoose.connect('mongodb://localhost/ECANdb')
-mongoose.connect('mongodb://ec2-18-236-73-118.us-west-2.compute.amazonaws.com/ECANdb')
+mongoose.connect(ecanDB)
     .then(client => {
         // console.log(JSON.stringify(client,null,2))
         console.log(`Connected to ECANdb`)
@@ -24,6 +24,10 @@ mongoose.connect('mongodb://ec2-18-236-73-118.us-west-2.compute.amazonaws.com/EC
 					   Run mongodb instance in another terminal using: mongod
                        ${err.stack}`);
     });
+
+//Initialize and use the passport JWT strategy
+app.use(passport.initialize());
+require('./lib/authentication/ecan-passport-strategy');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

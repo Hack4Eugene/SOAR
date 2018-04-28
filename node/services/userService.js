@@ -1,9 +1,13 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const jwt = require('jsonwebtoken');
+const { jwtOpts } = require('../lib/authentication/ecan-passport-strategy');
 const Promise = require('bluebird');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
+
+const SALT_ROUNDS = 16;
 
 module.exports = {
     getAll: (req, res, next) => {
@@ -38,13 +42,14 @@ module.exports = {
                 } else if (hash === 'INVALID') {
                     throw new RequestError('Your user was found but there was an error with your password. Please reset your password!', 'ACCESS_DENIED');
                 }
-
+                //Check the password against the hash
                 return comparePasswordHash(password, hash)
                     .then(isValidHash => {
-                        console.log(isValidHash);
                         if (isValidHash) {
                             delete userRecord.password;
-                            res.status(200).send(userRecord)
+                            //generate a signed json web token with their ID as the payload
+                            const token = jwt.sign(userRecord._id.toJSON(), jwtOpts.secretOrKey, { expiresIn: 3600 }); //Expires in an hour
+                            return res.status(200).send({ token, userRecord });
                         } else {
                             throw new RequestError(`Password does not match`, 'ACCESS_DENIED');
                         }
@@ -68,7 +73,7 @@ module.exports = {
                 })
                 .catch(err => res.status(err.status || 500).send(err));
             //Get Password Hash
-            getHash(password, 16)
+            getHash(password, SALT_ROUNDS)
                 .then(hash => {
                     return Object.assign({}, req.body, { password: hash });
                 })
@@ -109,7 +114,7 @@ module.exports = {
                             .catch(err => res.status(500).send(err));
                     }
                     //User is updating password
-                    getHash(password, 16)
+                    getHash(password, SALT_ROUNDS)
                         .then(hash => {
                             return Object.assign({}, updatedRecord, { password: hash });
                         })

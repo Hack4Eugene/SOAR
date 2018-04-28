@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const Promise = require('bluebird');
 
 //Hash and Salt Password
 module.exports = {
