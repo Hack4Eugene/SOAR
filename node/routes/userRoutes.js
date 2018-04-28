@@ -1,5 +1,5 @@
 const routes = require('../config/routes.js');
-const {getAll, getByID, createOrUpdate, deleteUser, login} = require('../services/userService');
+const { getAll, getByID, createOrUpdate, deleteUser, login } = require('../services/userService');
 
 module.exports = function (app) {
 

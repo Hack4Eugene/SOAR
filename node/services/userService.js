@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
+const { getHash, comparePasswordHash } = require('./authService');
 
 module.exports = {
     getAll: (req, res, next) => {
@@ -27,16 +28,26 @@ module.exports = {
     },
 
     login: (req, res, next) => {
-        return UserModel.findOne({ username: req.body.username }).lean()
+        const { username, password } = req.body;
+        return UserModel.findOne({ username: username }).lean()
             .then(userRecord => {
+                const { password: hash = 'INVALID' } = userRecord;
                 if (_.isNull(userRecord)) {
-                    throw new RequestError(`User ${req.body.username} not found`, 'NOT_FOUND');
-                } else if (userRecord.password !== req.body.password) {
-                    throw new RequestError('Unauthorized', 'ACCESS_DENIED');
+                    throw new RequestError(`User ${username} not found`, 'NOT_FOUND');
+                } else if (hash === 'INVALID') {
+                    throw new RequestError('Your user was found but there was an error with your password. Please reset your password!', 'ACCESS_DENIED');
                 }
 
-                delete userRecord.password;
-                res.status(200).send(userRecord);
+                return comparePasswordHash(password, hash)
+                    .then(isValidHash => {
+                        console.log(isValidHash);
+                        if (isValidHash) {
+                            delete userRecord.password;
+                            res.status(200).send(userRecord)
+                        } else {
+                            throw new RequestError(`Password does not match`, 'ACCESS_DENIED');
+                        }
+                    })
             })
             .catch(error => {
                 console.log(error);
@@ -46,14 +57,20 @@ module.exports = {
 
     createOrUpdate: (req, res, next) => {
         if(!req.params.user_id){
-            return UserModel.create(req.body)
-                .then(newUserDocument => res.status(200).send(newUserDocument))
-                .catch(error => {
-                    console.log(error);
-                    res.status(error.status || 500).send(error);
-                });
+            const { password } = req.body;
+            getHash(password, 16).then(hash => {
+                _.assign(req.body, { password: hash });
+                console.log(req.body);
+                return UserModel.create(req.body)
+                    .then(newUserDocument => res.status(200).send(newUserDocument))
+                    .catch(error => {
+                        console.log(error);
+                        res.status(error.status || 500).send(error);
+                    });
+            });
         }
         else {
+            //Todo: Check if update includes updating the password
             console.log(`Updating user: ${req.params.user_id}`);
 
             return UserModel.findOne({ _id: req.params.user_id })
