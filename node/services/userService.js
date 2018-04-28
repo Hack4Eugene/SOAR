@@ -91,6 +91,16 @@ module.exports = {
                         throw new RequestError(`User ${req.params.user_id} not found`, 'NOT_FOUND');
                     }
 
+                    const { username } = req.body;
+                    //Lookup the username for someone with a different id so you could still pass in your current username and have it not freak out
+                    UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
+                        .then(res => {
+                            if (!_.isUndefined(res) && _.isInteger(res) && res > 0) {
+                                throw new RequestError('Username hs been taken', 'BAD_REQUEST')
+                            }
+                        })
+                        .catch(err => res.status(err.status || 500).send(err));
+
                     let updatedRecord = req.body;
 
                     if (!updatedRecord.password) {
