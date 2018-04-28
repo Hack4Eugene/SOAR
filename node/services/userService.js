@@ -57,8 +57,8 @@ module.exports = {
     },
 
     createOrUpdate: (req, res, next) => {
+        const { username, password } = req.body;
         if(!req.params.user_id){
-            const { username, password } = req.body;
             //Lookup the username
             UserModel.find({ username }).count()
                 .then(res => {
@@ -67,36 +67,54 @@ module.exports = {
                     }
                 })
                 .catch(err => res.status(err.status || 500).send(err));
-            getHash(password, 16).then(hash => {
-                const user = Object.assign({}, req.body, { password: hash });
-                UserModel.create(user)
-                    .then(newUserDocument => res.status(200).send(newUserDocument))
-                    .catch(error => res.status(error.status || 500).send(error));
-            })
+            //Get Password Hash
+            getHash(password, 16)
+                .then(hash => {
+                    return Object.assign({}, req.body, { password: hash });
+                })
+                .then(newUser => {
+                    UserModel.create(newUser)
+                        .then(newUserDocument => res.status(200).send(newUserDocument))
+                        .catch(error => res.status(error.status || 500).send(error))
+                    }
+                )
                 .catch(err => {
                     res.status(500).send(err);
                 });
         }
         else {
-            //Todo: Check if update includes updating the password
             console.log(`Updating user: ${req.params.user_id}`);
 
-            return UserModel.findOne({ _id: req.params.user_id })
+            UserModel.findOne({ _id: req.params.user_id })
                 .then(userRecord => {
                     if (_.isEmpty(userRecord)) {
                         throw new RequestError(`User ${req.params.user_id} not found`, 'NOT_FOUND');
                     }
 
-                    const updatedRecord = userRecord;
-                    _.forEach(req.body, function (value, key) {
-                        updatedRecord[key] = value;
-                    });
+                    let updatedRecord = req.body;
 
-                    return UserModel.update({ _id:req.params.user_id}, updatedRecord)
-                        .then(result => res.status(200).send(result));
+                    if (!updatedRecord.password) {
+                        UserModel.update({ _id: req.params.user_id }, updatedRecord)
+                            .then(result => res.status(200).send(result))
+                            .catch(err => res.status(500).send(err));
+                    }
+                    //User is updating password
+                    getHash(password, 16)
+                        .then(hash => {
+                            return Object.assign({}, updatedRecord, { password: hash });
+                        })
+                        .then(updatedRecordWithHashedPassword => {
+                            UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
+                                .then(result => res.status(200).send(result))
+                                .catch(err => {
+                                    throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                                });
+                        })
+                        .catch(err => {
+                            throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                        });
                 })
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         }
@@ -106,7 +124,6 @@ module.exports = {
         UserModel.remove({ _id:req.params.user_id})
             .then(res.status(204).send({'msg': 'deleted'}))
             .catch(error => {
-                console.log(error);
                 return res.status(error.status || 500).send(error);
             });
     }
