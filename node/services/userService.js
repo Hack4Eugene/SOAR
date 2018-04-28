@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const Promise = require('bluebird');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
@@ -57,17 +58,24 @@ module.exports = {
 
     createOrUpdate: (req, res, next) => {
         if(!req.params.user_id){
-            const { password } = req.body;
+            const { username, password } = req.body;
+            //Lookup the username
+            UserModel.find({ username }).count()
+                .then(res => {
+                    if (!_.isUndefined(res) && _.isInteger(res) && res > 0) {
+                        throw new RequestError('Username hs been taken', 'BAD_REQUEST')
+                    }
+                })
+                .catch(err => res.status(err.status || 500).send(err));
             getHash(password, 16).then(hash => {
-                _.assign(req.body, { password: hash });
-                console.log(req.body);
-                return UserModel.create(req.body)
+                const user = Object.assign({}, req.body, { password: hash });
+                UserModel.create(user)
                     .then(newUserDocument => res.status(200).send(newUserDocument))
-                    .catch(error => {
-                        console.log(error);
-                        res.status(error.status || 500).send(error);
-                    });
-            });
+                    .catch(error => res.status(error.status || 500).send(error));
+            })
+                .catch(err => {
+                    res.status(500).send(err);
+                });
         }
         else {
             //Todo: Check if update includes updating the password

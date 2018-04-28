@@ -1,27 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
+import LoginPage from '../pages/LoginPage';
 import { ERROR, SUCCESS } from '../../state/statusTypes';
 
-export default function (ComposedComponent, FailedComponent) {
-    const mapStateToProps = state => ({
-        isLoggedIn: _.get(state, 'user.Status', ERROR) === SUCCESS
-    });
+const mapStateToProps = state => ({
+    isLoggedIn: _.get(state, 'user.Status', ERROR) === SUCCESS
+});
 
-    class Authentication extends Component {
-        renderFailedAuth() {
-            return <FailedComponent {...this.props} />;
-        }
-
-        render() {
-            if (!this.props.isLoggedIn) {
-                console.log('nope');
-                return this.renderFailedAuth();
-            }
-            console.log('yup');
-            return <ComposedComponent {...this.props} />;
-        }
+class PrivateRoute extends Component {
+    renderFailedAuth() {
+        return <LoginPage returnURL={this.props.path} />;
     }
 
-    return connect(mapStateToProps)(Authentication);
+    render() {
+        const { component: Component } = this.props;
+        if (!this.props.isLoggedIn) {
+            return this.renderFailedAuth();
+        }
+        return <Component {...this.props} />;
+    }
 }
+
+export default connect(mapStateToProps)(withRouter(PrivateRoute));

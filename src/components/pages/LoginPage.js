@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { get, filter } from 'lodash';
-import moment from 'moment';
-import { withRouter } from 'react-router-dom'
 
 import { SUCCESS } from '../../state/statusTypes';
 
 import Card from '../Card';
-import Calendar from 'react-calendar';
 
 import { loginUser } from '../../state/actions/index.js'
 
@@ -37,19 +34,18 @@ class LoginPage extends Component {
         this.props.loginUser({ username, password })
     };
 
-    handleUsernameChange = (e) => {
+    handleUsernameChange = e => {
         this.setState({ username: this.refs.username.value });
     };
 
-    handlePasswordChange = (e) => {
+    handlePasswordChange = e => {
+        console.log(this.refs.password.value);
         this.setState({ password: this.refs.password.value });
     };
 
     renderForm() {
         return (
             <Card>
-                {/* <div className="card-header">{date}</div> */}
-                {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
                 <div className="card-body">
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
@@ -78,9 +74,7 @@ class LoginPage extends Component {
     }
 
     render() {
-        console.log(this.state);
-
-        if (this.props.isLoggedIn) return <Redirect to="/" />;
+        if (this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
         return (
             <div className="container">
                 <div className="row justify-content-center">
