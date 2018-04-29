@@ -24,6 +24,7 @@ const jwtOpts = {
     if it finds the user, executes node-style call back with null err and the userObj
  */
 const strategy = new JWTStrategy(jwtOpts, function (jwtPayload, cb) {
+    console.log(jwtPayload);
     //find the userID
     return UserModel.findOne(ObjectId(jwtPayload.id))
         .then(user => cb(null, user))
@@ -32,6 +33,9 @@ const strategy = new JWTStrategy(jwtOpts, function (jwtPayload, cb) {
 
 passport.use(strategy);
 
-const authenticate = () => passport.authenticate('jwt', { session: false });
+const authenticate = next => {
+    passport.authenticate('jwt', { session: false });
+    console.log(next);
+};
 
 module.exports = { jwtOpts, authenticate };

@@ -6,11 +6,13 @@ const Promise = require('bluebird');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
+const { authenticate } = require('../middleware/authentication/ecan-passport-strategy');
 
 const SALT_ROUNDS = 16;
 
 module.exports = {
     getAll: (req, res, next) => {
+        authenticate(next); //Applies the passport JWT strategy middleware to the endpoint.
         UserModel.find()
         .then(userRecords => {
             res.status(200).send(userRecords);
