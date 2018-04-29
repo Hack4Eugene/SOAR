@@ -44,7 +44,6 @@ module.exports = {
     },
 
     getAll: (req, res, next) => {
-        authenticate(next);
         EventModel.find()
             .then(eventDocuments => res.status(200).send(eventDocuments))
             .catch(error => {

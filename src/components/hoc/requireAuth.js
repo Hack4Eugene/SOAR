@@ -6,7 +6,7 @@ import LoginPage from '../pages/LoginPage';
 import { ERROR, SUCCESS } from '../../state/statusTypes';
 
 const mapStateToProps = state => ({
-    isLoggedIn: _.get(state, 'user.Status', ERROR) === SUCCESS
+    isLoggedIn: _.get(state, 'user.data.auth.token') && !_.get(state, 'user.data.auth.expired', false) === true
 });
 
 class PrivateRoute extends Component {
@@ -15,6 +15,7 @@ class PrivateRoute extends Component {
     }
 
     render() {
+        console.log(this.props);
         const { component: Component } = this.props;
         if (!this.props.isLoggedIn) {
             return this.renderFailedAuth();

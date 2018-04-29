@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const { jwtOpts } = require('../middleware/authentication/ecan-passport-strategy');
@@ -50,7 +51,7 @@ module.exports = {
                             delete userRecord.password;
                             //generate a signed json web token with their ID as the payload
                             const token = jwt.sign({ id: userRecord._id }, jwtOpts.secretOrKey, { expiresIn: TOKEN_LIFETIME }); //Expires in an hour
-                            return res.status(200).send(_.assign({}, { auth: { token } }, userRecord));
+                            return res.status(200).send(_.assign({}, { auth: { token, expiresAt: moment.utc().add(1, 'hours') } }, userRecord));
                         } else {
                             throw new RequestError(`Password does not match`, 'ACCESS_DENIED');
                         }

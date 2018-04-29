@@ -19,29 +19,25 @@ import UserProfilePage from './components/pages/UserProfilePage';
 import PrivateRoute from './components/hoc/requireAuth';
 
 class App extends Component {
-    // restricted = (restrictedComponent, stuff) => {
-    //     return requireAuth(restrictedComponent, () => <Redirect to="/login" />);
-    // };
-
     render() {
-        const { restricted } = this;
         return (
             <div>
                 <Header />
                 <div className="mr-3 ml-3">
                     <Switch>
+                        <Route path="/login" component={LoginPage} />
                         <Route path="/" exact component={ProjectFeed} />
                         <PrivateRoute path="/events" component={EventFeed} />
-                        <Route path="/events" component={EventFeed} />
-                        <Route path="/events" component={EventFeed} />
-                        <Route path="/explore" component={ExploreFeed} />
-                        <Route path="/addevent" component={AddEvent} />
-                        <Route path="/addorganization" component={AddOrganization} />
-                        <Route path="/adduser" component={AddUser} />
-                        <Route path="/projects/:id" component={Project} />
-                        <Route path="/profile" component={ProfilePage} />
-                        <Route path="/project" component={ProjectPage} />
-                        <Route path="/userprofile" component={UserProfilePage} />
+                        <PrivateRoute path="/events" component={EventFeed} />
+                        <PrivateRoute path="/events" component={EventFeed} />
+                        <PrivateRoute path="/explore" component={ExploreFeed} />
+                        <PrivateRoute path="/addevent" component={AddEvent} />
+                        <PrivateRoute path="/addorganization" component={AddOrganization} />
+                        <PrivateRoute path="/adduser" component={AddUser} />
+                        <PrivateRoute path="/projects/:id" component={Project} />
+                        <PrivateRoute path="/profile" component={ProfilePage} />
+                        <PrivateRoute path="/project" component={ProjectPage} />
+                        <PrivateRoute path="/userprofile" component={UserProfilePage} />
                     </Switch>
                 </div>
             </div>

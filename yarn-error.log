@@ -1,8 +1,8 @@
 Arguments: 
-  /Users/hnavarro/.nvm/versions/node/v6.10.3/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js
+  /Users/hnavarro/.nvm/versions/node/v6.10.3/bin/node /usr/local/Cellar/yarn/1.5.1_1/libexec/bin/yarn.js add moment
 
 PATH: 
-  /Users/hnavarro/.pyenv/bin:/Users/hnavarro/.nvm/versions/node/v6.10.3/bin:/Users/hnavarro/.pyenv/bin:/Users/hnavarro/.pyenv/bin:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/sbin:~/.nvm:/mongo/bin:~/scripts
+  /Users/hnavarro/.pyenv/bin:/Users/hnavarro/.nvm/versions/node/v6.10.3/bin:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/sbin:~/.nvm:/mongo/bin:~/scripts
 
 Yarn version: 
   1.5.1
@@ -24,7 +24,9 @@ npm manifest:
     "license": "MIT",
     "private": false,
     "scripts": {
-      "start:webpack": "NODE_ENV=local webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
+      "build:webpack": "CONFIG_ENV=production webpack --colors --progress --config webpack.config.js --mode production",
+      "build": "npm run clean && build:webpack",
+      "start:webpack": "CONFIG_ENV=local webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
       "start": "npm run clean && npm run start:webpack",
       "clean": "rm -rf ./dist",
       "postinstall": "npm rebuild node-sass --force"

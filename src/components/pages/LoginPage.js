@@ -74,7 +74,8 @@ class LoginPage extends Component {
     }
 
     render() {
-        if (this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
+        if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
+        if (this.props.isLoggedIn) return <Redirect to="/" />;
         return (
             <div className="container">
                 <div className="row justify-content-center">

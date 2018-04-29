@@ -11,5 +11,5 @@ module.exports = function (app) {
 
     app.post(routes.POST_USER, createOrUpdate);
 
-    app.delete(routes.DELETE_USER, deleteUser);
+    app.delete(routes.DELETE_USER, (req, res, next) => authenticate(req, res, next, deleteUser));
 };
