@@ -6,6 +6,7 @@ import {
     HttpClient,
 } from '../../lib/common';
 
+import { STORAGE_KEY } from '../middleware/authentication';
 
 const {
     LOGIN,
@@ -91,7 +92,10 @@ export const loginUser = credentials => {
 };
 
 export const logoutUser = initializer => {
-    return (dispatch) => dispatch({ type: LOGOUT_USER, payload: initializer })
+    return (dispatch) => {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({}));
+        dispatch({ type: LOGOUT_USER, payload: initializer })
+    }
 };
 
 export const createUser = profile => {
@@ -185,10 +189,6 @@ export const getEvents = () => {
         HttpClient(getState(), dispatch)
             .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), GET_EVENTS)))
             .then(result => dispatch({ type: GET_EVENTS_RESOLVED, payload: result }))
-            .catch(result => {
-                console.log(result);
-                return result;
-            })
             .catch(err => dispatch({ type: GET_EVENTS_REJECTED, payload: err  }))
 
     }

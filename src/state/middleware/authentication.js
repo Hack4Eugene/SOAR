@@ -37,26 +37,36 @@ export default function myReducerMiddleware(config) {
                     return;
                 }
 
-                let isLoggedIn = _.get(state, 'authentication.isLoggedIn', false);
-                const isTokenExpired = moment.utc().isAfter(moment.utc(_.get(state, 'authentication.expiresAt', true)));
+                const isLoggedIn = _.get(state, 'authentication.isLoggedIn', false);
+                const isTokenExpired = _.get(state, 'authentication.isTokenExpired', true);
 
-                if (isTokenExpired) {
-                    isLoggedIn = false;
-                    delete state.isLoggedIn;
-                    delete state.isTokenExpired;
-                }
+                console.log({ isLoggedIn, isTokenExpired });
+
+                const storage = _.reduce({ ...user, ...auth }, (storageObj, value, key) => {
+                    if (!isLoggedIn) {
+                        console.log('logged out');
+                        if (key === 'isLoggedIn' || key === 'isTokenExpired') {
+                            storageObj.authentication[key] = value
+                            return storageObj;
+                        }
+                    } else {
+                        console.log('logged in');
+                        storageObj = {
+                            user: {
+                                ...user
+                            },
+                            authentication: {
+                                ...auth,
+                                isTokenExpired,
+                                isLoggedIn
+                            }
+                        };
+                    }
+                    return storageObj;
+                }, { user: {}, authentication: {} });
 
                 try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                        user: {
-                            ...user
-                        },
-                        authentication: {
-                            ...auth,
-                            isTokenExpired,
-                            isLoggedIn
-                        }
-                    }));
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
                 } catch (e) {
                     console.warn('Unable to persist state to localStorage:', e);
                 }

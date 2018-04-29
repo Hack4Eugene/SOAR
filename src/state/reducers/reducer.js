@@ -70,11 +70,11 @@ const reducer = (state = initialState, action) => {
         case LOGIN_USER_REJECTED: {
             return _.assign({}, state, {
                 user: {
-                    ...payload.user,
+                    ...state.user,
                     Status: ERROR
                 },
                 authentication: {
-                    ...payload.authentication,
+                    ...state.authentication,
                     Status: ERROR
                 }
             })
@@ -82,10 +82,7 @@ const reducer = (state = initialState, action) => {
 
         case LOGOUT_USER: {
             return _.assign({}, state, {
-                authentication: {
-                    ...state.authentication,
-                    ...payload
-                }
+                authentication: payload
             })
         }
 
