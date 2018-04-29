@@ -10,6 +10,9 @@ function RequestError (message, code, uri, status) {
             case 'ACCESS_DENIED':
                 status = 401;
                 break;
+            case 'UNPROCESSABLE':
+                status = 422;
+                break;
             default:
                 status = 500;
         }
@@ -17,10 +20,10 @@ function RequestError (message, code, uri, status) {
 
     Error.call(this);
     Error.captureStackTrace(this, this.constructor);
-    //super(message);
     this.name = this.constructor.name;
     this.code = code || 'SERVER_ERROR';
     this.uri = uri;
+    this.message = message;
     this.status = status || 500;
 }
 

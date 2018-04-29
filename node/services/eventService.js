@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const EventModel = mongoose.model('EventModel');
 const ProjectModel = mongoose.model('ProjectModel');
 const RequestError = require('../lib/Errors');
+const { authenticate } = require('../middleware/authentication/ecan-passport-strategy');
 
 module.exports = {
     createOrUpdate: (req, res) => {
@@ -42,8 +43,9 @@ module.exports = {
         }
     },
 
-    getAll: (req, res) => {
-        return EventModel.find()
+    getAll: (req, res, next) => {
+        authenticate(next);
+        EventModel.find()
             .then(eventDocuments => res.status(200).send(eventDocuments))
             .catch(error => {
                 console.log(error);

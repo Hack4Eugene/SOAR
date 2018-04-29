@@ -24,18 +24,31 @@ const jwtOpts = {
     if it finds the user, executes node-style call back with null err and the userObj
  */
 const strategy = new JWTStrategy(jwtOpts, function (jwtPayload, cb) {
-    console.log(jwtPayload);
     //find the userID
     return UserModel.findOne(ObjectId(jwtPayload.id))
         .then(user => cb(null, user))
         .catch(err => cb(err));
 });
 
+//Tell Passport what middleware to apply to passport authenticate method
 passport.use(strategy);
 
-const authenticate = next => {
-    passport.authenticate('jwt', { session: false });
-    console.log(next);
+//Custom middleware to process the request as I see fit. Keep authentication similar throughout;
+const authenticate = (req, res, next, routeMethod) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+        //If reason is empty, probably nothing to do with validation. Typically lack of something to validate AKA missing access token
+        if (_.isEmpty(info)) {
+            throw new RequestError(info, 'BAD_REQUEST')
+        }
+        //If reason is defined its likely to be an expired token.
+        if (!user && info) {
+            return res.status(401).send(info)
+        }
+        //User authenticated! Call next function in execution.
+        next()
+    })(req, res, next);
+    routeMethod(req, res, next)
 };
+
 
 module.exports = { jwtOpts, authenticate };

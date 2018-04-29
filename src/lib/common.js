@@ -7,4 +7,4 @@ export const request = opts => axios({
     headers: { 'Content-Type': 'Application/JSON' }
 });
 
-export const loadEndpoint = route => `${serviceHost}${route}`;
+export const loadEndpoint = (env, route) => `${serviceHost[env]}${route}`;

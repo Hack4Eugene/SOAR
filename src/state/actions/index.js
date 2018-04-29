@@ -66,7 +66,7 @@ export const loginUser = credentials => {
     return (dispatch, getState) => {
         dispatch({ type: LOGIN_USER_PENDING, payload: credentials });
 
-        const url = loadEndpoint(LOGIN)
+        const url = loadEndpoint( _.get(getState(), 'env'), LOGIN);
         console.log(url);
 
         request({
@@ -87,7 +87,7 @@ export const getOrganizations = () => {
     return (dispatch, getState) => {
         request({
             method: 'get',
-            url: loadEndpoint(GET_ORGANIZATIONS)
+            url: loadEndpoint( _.get(getState(), 'env'), GET_ORGANIZATIONS)
         })
             .then(result => dispatch({ type: GET_ORGANIZATIONS_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_ORGANIZATIONS_REJECTED, payload: err }))
@@ -98,7 +98,7 @@ export const addOrganization = (org) => {
     return (dispatch, getState) => {
         request({
             method: 'post',
-            url: loadEndpoint(POST_ORGANIZATION),
+            url: loadEndpoint( _.get(getState(), 'env'), POST_ORGANIZATION),
             data: org
         })
             .then(result => {
@@ -117,7 +117,7 @@ export const getProjectsByOrganization = () => {
     return (dispatch, getState) => {
         request({
             method: 'get',
-            url: loadEndpoint(GET_PROJECTS_BY_ORGANIZATION) + '/5ac9877976448030b88ac636', //Todo is about this
+            url: loadEndpoint( _.get(getState(), 'env'), GET_PROJECTS_BY_ORGANIZATION) + '/5ac9877976448030b88ac636', //Todo is about this
         })
             .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }))
@@ -128,7 +128,7 @@ export const getProjects = () => {
     return (dispatch, getState) => {
         request(({
             method: 'get',
-            url: loadEndpoint(GET_PROJECTS)
+            url: loadEndpoint( _.get(getState(), 'env'), GET_PROJECTS)
         }))
             .then(result => dispatch({ type: GET_PROJECTS_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_PROJECTS_REJECTED, payload: err }))
@@ -139,7 +139,7 @@ export const deleteProject = projectID => {
     return (dispatch, getState) => {
         request(({
             method: 'delete',
-            url: `${loadEndpoint(DELETE_PROJECT)}/${projectID}`
+            url: `${loadEndpoint( _.get(getState(), 'env'), DELETE_PROJECT)}/${projectID}`
         }))
             .then(result => dispatch({ type: DELETE_PROJECT_RESOLVED }))
             .then(() => dispatch(getProjects()))
@@ -155,7 +155,7 @@ export const getEvents = () => {
     return (dispatch, getState) => {
         request({
             method: 'get',
-            url: loadEndpoint(GET_EVENTS),
+            url: loadEndpoint( _.get(getState(), 'env'), GET_EVENTS),
         })
             .then(result => {
                 dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
@@ -168,7 +168,7 @@ export const createEvent = (event) => {
     return (dispatch, getState) => {
         request({
             method: 'post',
-            url: loadEndpoint(POST_EVENT),
+            url: loadEndpoint( _.get(getState(), 'env'), POST_EVENT),
             data: event
         })
             .then(result => {
@@ -183,7 +183,7 @@ export const deleteEvent = eventID => {
     return (dispatch, getState) => {
         request(({
             method: 'delete',
-            url: `${loadEndpoint(DELETE_EVENT)}/${eventID}`
+            url: `${loadEndpoint( _.get(getState(), 'env'), DELETE_EVENT)}/${eventID}`
         }))
             .then(result => dispatch({ type: DELETE_EVENT_RESOLVED }))
             .then(() => dispatch(getEvents()))

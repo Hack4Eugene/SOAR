@@ -13,11 +13,16 @@ import App from './app';
 
 const history = createBrowserHistory();
 
+const initialState = { env: ENVIRONMENT || 'local' };
+
+console.log(initialState);
+
 const middleware = applyMiddleware(thunk);
 const enhancer = compose(middleware);
 
 const store = createStore(
     reducer,
+    initialState,
     process.env.NODE_ENV === 'production'
         ? enhancer
         : composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)

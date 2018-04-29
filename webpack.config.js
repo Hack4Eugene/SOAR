@@ -30,7 +30,8 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: 'index.html'
+            template: 'index.html',
+            envConfig: process.env.CONFIG_ENV
         })
     ],
     resolve: {

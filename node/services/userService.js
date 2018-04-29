@@ -2,17 +2,16 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const { jwtOpts } = require('../middleware/authentication/ecan-passport-strategy');
-const Promise = require('bluebird');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
-const { authenticate } = require('../middleware/authentication/ecan-passport-strategy');
 
-const SALT_ROUNDS = 16;
+const SALT_ROUNDS = 10;
+const TOKEN_LIFETIME = 3600;
 
 module.exports = {
-    getAll: (req, res, next) => {
-        authenticate(next); //Applies the passport JWT strategy middleware to the endpoint.
+    getAll: (req, res, next, user) => {
+        console.log(user)
         UserModel.find()
         .then(userRecords => {
             res.status(200).send(userRecords);
@@ -36,7 +35,7 @@ module.exports = {
 
     login: (req, res, next) => {
         const { username, password } = req.body;
-        return UserModel.findOne({ username: username }).lean()
+        return UserModel.findOne({ username }).lean()
             .then(userRecord => {
                 const { password: hash = 'INVALID' } = userRecord;
                 if (_.isNull(userRecord)) {
@@ -50,8 +49,8 @@ module.exports = {
                         if (isValidHash) {
                             delete userRecord.password;
                             //generate a signed json web token with their ID as the payload
-                            const token = jwt.sign({ id: userRecord._id }, jwtOpts.secretOrKey, { expiresIn: '3600' }); //Expires in an hour
-                            return res.status(200).send({ token, userRecord });
+                            const token = jwt.sign({ id: userRecord._id }, jwtOpts.secretOrKey, { expiresIn: TOKEN_LIFETIME }); //Expires in an hour
+                            return res.status(200).send(_.assign({}, { auth: { token } }, userRecord));
                         } else {
                             throw new RequestError(`Password does not match`, 'ACCESS_DENIED');
                         }
