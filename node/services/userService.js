@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
-const { jwtOpts } = require('../lib/authentication/ecan-passport-strategy');
+const { jwtOpts } = require('../middleware/authentication/ecan-passport-strategy');
 const Promise = require('bluebird');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
@@ -48,7 +48,7 @@ module.exports = {
                         if (isValidHash) {
                             delete userRecord.password;
                             //generate a signed json web token with their ID as the payload
-                            const token = jwt.sign(userRecord._id.toJSON(), jwtOpts.secretOrKey, { expiresIn: 3600 }); //Expires in an hour
+                            const token = jwt.sign({ id: userRecord._id }, jwtOpts.secretOrKey, { expiresIn: '3600' }); //Expires in an hour
                             return res.status(200).send({ token, userRecord });
                         } else {
                             throw new RequestError(`Password does not match`, 'ACCESS_DENIED');

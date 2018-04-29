@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
     name : {
         type: String,
-        required: 'Kindly enter your name'
+        required: 'User\'s require names, kindly enter your name.'
     },
     username: {
         type: String
@@ -21,10 +21,10 @@ const UserSchema = new Schema({
         },
         role:{
             type: String,
-            enum : ['admin', 'not_admin'],
-            default : 'not_admin'
+            enum : ['super_user', 'organization_owner', 'project_owner', 'event_owner', 'user', 'read_only'],
+            default : 'read_only'
         }
     }
 });
 
-module.exports = mongoose.model('UserModel', UserSchema)
+module.exports = mongoose.model('UserModel', UserSchema);

@@ -4,10 +4,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const OrganizationModel = require('./models/organizationModel');
-const ProjectModel = require('./models/projectModel');
-const EventModel = require('./models/eventModel');
-const UserModel = require('./models/userModel');
+
+/*
+    Import DB Collection Models
+ */
+require('./models/organizationModel');
+require('./models/projectModel');
+require('./models/eventModel');
+require('./models/userModel');
 
 // mongoose connection
 mongoose.Promise = global.Promise;
@@ -22,12 +26,12 @@ mongoose.connect(ecanDB)
     .catch(err => {
         console.error(`Unable to connect to ECANdb. Check if MongoDB instance is running
 					   Run mongodb instance in another terminal using: mongod
-                       ${err.stack}`);
+                       ${err.stack || err }`);
     });
 
 //Initialize and use the passport JWT strategy
 app.use(passport.initialize());
-require('./lib/authentication/ecan-passport-strategy');
+require('./middleware/authentication/ecan-passport-strategy');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -43,22 +47,16 @@ app.all('*', function (req, res, next) {
     }
 });
 
+/*
+    Import API Routes
+ */
+require('./routes/organizationRoutes')(app);
+require('./routes/projectRoutes')(app);
+require('./routes/eventRoutes')(app);
+require('./routes/userRoutes')(app);
 
-const organizationRoutes = require('./routes/organizationRoutes');
-const projectRoutes = require('./routes/projectRoutes');
-const eventRoutes = require('./routes/eventRoutes');
-const userRoutes = require('./routes/userRoutes');
-organizationRoutes(app);
-projectRoutes(app);
-eventRoutes(app);
-userRoutes(app);
+app.listen(port, () => console.log(`ECAN server started on: ` + port));
 
-app.listen(port);
-console.log(`ECAN server started on: ` + port)
-
-
-app.use(function (req, res, next) {
-    res.status(404).send({ url: req.originalUrl + ' not found' })
-});
+app.use((req, res, next) => res.status(404).send({ url: req.originalUrl + ' not found' }));
 
 module.exports = app; //for testing
