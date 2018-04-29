@@ -21,7 +21,7 @@ export default function myReducerMiddleware(config) {
 
         try {
             persistedState = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            finalInitialState = mergeState(initialState, { authentication: persistedState });
+            finalInitialState = mergeState(initialState, persistedState );
         } catch (e) {
             console.warn('Failed to retrieve initialize state from localStorage:', e);
         }
@@ -79,22 +79,17 @@ export default function myReducerMiddleware(config) {
 
 export const persistedState = initialState => {
     const persistedState = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-    if (persistedState) {
-        const expirationDate = _.get(persistedState, 'authentication.expiresAt', null);
-
-        const isTokenExpired = moment.utc().isAfter(moment.utc(expirationDate));
-
-        if (isTokenExpired) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({ })) // null out local storage
-        }
-
-        if (!isTokenExpired) {
-            return _.assign(initialState, {
-                authentication: persistedState.auth,
-                user: persistedState.user
-            });
-        }
+    console.log({persistedState});
+    const user = _.get(persistedState, 'user', {});
+    const authentication = _.get(persistedState, 'authentication', {});
+    const isLoggedIn = _.get(authentication, 'isLoggedIn', false);
+    if (isLoggedIn) {
+        console.log('logged in');
+        return _.assign({}, {
+            ...initialState,
+            user,
+            authentication
+        });
     }
 
     return initialState

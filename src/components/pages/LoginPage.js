@@ -7,7 +7,7 @@ import { SUCCESS } from '../../state/statusTypes';
 
 import Card from '../Card';
 
-import { loginUser } from '../../state/actions/index.js'
+import { loginUser, logoutUser } from '../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
     isLoggedIn: !_.get(state, 'authentication.isTokenExpired', false) && _.get(state, 'authentication.isLoggedIn', false),
@@ -31,6 +31,12 @@ class LoginPage extends Component {
 
         this.props.loginUser({ username, password })
     };
+
+    componentWillMount() {
+        if (this.props.expireSession) {
+            this.props.logoutUser();
+        }
+    }
 
     handleUsernameChange = e => {
         this.setState({ username: this.refs.username.value });
@@ -78,7 +84,6 @@ class LoginPage extends Component {
     }
 
     render() {
-
         if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
         if (this.props.isLoggedIn) return <Redirect to="/" />;
         return (
@@ -100,4 +105,4 @@ class LoginPage extends Component {
     }
 }
 
-export default connect(mapStateToProps, { loginUser })(LoginPage);
+export default connect(mapStateToProps, { loginUser, logoutUser })(LoginPage);
