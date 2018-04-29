@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { get, filter } from 'lodash';
+import _ from 'lodash';
 
 import { SUCCESS } from '../../state/statusTypes';
 
@@ -10,8 +10,7 @@ import Card from '../Card';
 import { loginUser } from '../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
-    user: get(state, 'user', {}),
-    isLoggedIn: _.get(state, 'user.data.auth.token') && !_.get(state, 'user.data.auth.expired', false) === true,
+    isLoggedIn: !_.get(state, 'authentication.isTokenExpired', false) && _.get(state, 'authentication.isLoggedIn', false),
 });
 
 class LoginPage extends Component {
@@ -25,7 +24,6 @@ class LoginPage extends Component {
     }
 
     login = () => {
-        console.log(this.state);
         const {
             username,
             password
@@ -43,10 +41,16 @@ class LoginPage extends Component {
         this.setState({ password: this.refs.password.value });
     };
 
+    onKeyPress = e => {
+        if (e.key === 'Enter') {
+            this.login();
+        }
+    };
+
     renderForm() {
         return (
             <Card>
-                <div className="card-body">
+                <div className="card-body" onKeyPress={this.onKeyPress}>
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
                         <input
@@ -75,8 +79,8 @@ class LoginPage extends Component {
 
     render() {
 
-        // if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
-        // if (this.props.isLoggedIn) return <Redirect to="/" />;
+        if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
+        if (this.props.isLoggedIn) return <Redirect to="/" />;
         return (
             <div className="container">
                 <div className="row justify-content-center">

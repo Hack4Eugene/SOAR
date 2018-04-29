@@ -11,7 +11,6 @@ const mapStateToProps = (state) => ({
 
 class Project extends Component {
     componentWillMount() {
-        console.log(this.match)
     }
 
     render() {

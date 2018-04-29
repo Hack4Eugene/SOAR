@@ -36,7 +36,6 @@ class EventFeed extends Component {
             const eventDate = moment(moment.unix(event.date));
             const selectedDate = moment(date);
 
-            console.log(eventDate, selectedDate);
             return eventDate.isSame(selectedDate, 'day');
         });
 
@@ -58,9 +57,6 @@ class EventFeed extends Component {
 
     render() {
         // if (this.props.events.status === 200) {
-        console.log('this.props.events', this.props.events)
-        console.log('this.state.filteredEvents', this.state.filteredEvents)
-        console.log(this.state);
         // }
         // const calendar = document.getElementsByClassName('react-calendar')
         // console.log('calendar', calendar)

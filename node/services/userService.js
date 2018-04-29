@@ -8,7 +8,7 @@ const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
 
 const SALT_ROUNDS = 10;
-const TOKEN_LIFETIME = 3600;
+const TOKEN_LIFETIME = 5;
 
 module.exports = {
     getAll: (req, res, next, user) => {
@@ -50,7 +50,7 @@ module.exports = {
                             delete userRecord.password;
                             //generate a signed json web token with their ID as the payload
                             const token = jwt.sign({ id: userRecord._id }, jwtOpts.secretOrKey, { expiresIn: TOKEN_LIFETIME }); //Expires in an hour
-                            return res.status(200).send(_.assign({}, { auth: { token, expiresAt: moment.utc().add(TOKEN_LIFETIME, 'seconds') } }, userRecord));
+                            return res.status(200).send(_.assign({}, { authentication: { token, expiresAt: moment.utc().add(TOKEN_LIFETIME, 'seconds') } }, { user: userRecord }));
                         } else {
                             throw new RequestError(`Password does not match`, 'ACCESS_DENIED');
                         }
@@ -58,7 +58,7 @@ module.exports = {
             })
             .catch(error => {
                 console.log(error);
-                res.status(error.status || 500).send(error);
+                res.status(error.status || 500).send(error, { msg: 'No user for this usename was found in the Database' });
             });
     },
 

@@ -1,9 +1,11 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 import {
-    request,
     loadEndpoint,
+    HttpClient,
 } from '../../lib/common';
+
 
 const {
     LOGIN,
@@ -28,6 +30,10 @@ const {
 } = serviceRoutes;
 
 import {
+    LOGOUT_USER,
+    POST_USER_PENDING,
+    POST_USER_RESOLVED,
+    POST_USER_REJECTED,
     GET_ORGANIZATIONS_RESOLVED,
     GET_ORGANIZATIONS_REJECTED,
     ADD_ORG_RESOLVED,
@@ -45,7 +51,7 @@ import {
     GET_PROJECTS_RESOLVED,
     GET_PROJECTS_REJECTED,
     GET_PROJECTS_BY_ORG_REJECTED,
-    GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING, DELETE_PROJECT_REJECTED, DELETE_PROJECT_RESOLVED
+    GET_PROJECTS_BY_ORG_RESOLVED, LOGIN_USER_PENDING, DELETE_PROJECT_REJECTED, DELETE_PROJECT_RESOLVED, API_ERROR
 } from '../types';
 
 import {
@@ -58,7 +64,8 @@ import {
     Todo: ideally both can be find in the user object in redux state.
  */
 
-const getToken = getState => _.get(getState(), 'user.data.auth.token', 'token');
+const getToken = getState => _.get(getState(), 'authentication.token', 'token');
+const serialize = obj => JSON.stringify(obj);
 
 /*
  User Actions
@@ -66,26 +73,49 @@ const getToken = getState => _.get(getState(), 'user.data.auth.token', 'token');
 
 export const loginUser = credentials => {
     return (dispatch, getState) => {
-        dispatch({ type: LOGIN_USER_PENDING, payload: credentials });
-        const env =  _.get(getState(), 'env');
+        dispatch({ type: LOGIN_USER_PENDING });
+        const state = getState();
+        const env =  _.get(state, 'env');
         const url = loadEndpoint(env, LOGIN);
-        console.log(url);
+            HttpClient(state, getState).then(client => client.post(url, serialize(credentials)))
+                .then(result => {
+                    const newState = {
+                        authentication: { ...result.data.authentication, isLoggedIn: true, isTokenExpired: false },
+                        user: result.data.user
+                    };
+                    storeToken(newState, getState);
+                    return dispatch({ type: LOGIN_USER_RESOLVED, payload: newState })
+                })
+                .catch(err => dispatch({ type: LOGIN_USER_REJECTED, payload: err }))
+    }
+};
 
-        request({
-            method: 'post',
-            url,
-            data: JSON.stringify(credentials)
-        }, getState)
-            .then(result => storeToken(result, getState))
-            .then(result => dispatch({ type: LOGIN_USER_RESOLVED, payload: result }))
-            .catch(err => dispatch({ type: LOGIN_USER_REJECTED, payload: err }));
+export const logoutUser = initializer => {
+    return (dispatch) => dispatch({ type: LOGOUT_USER, payload: initializer })
+};
+
+export const createUser = profile => {
+    return (dispatch, getState) => {
+        dispatch({ type: POST_USER_PENDING });
+        const state = getState();
+        const env =  _.get(state, 'env');
+        const url = loadEndpoint(env, LOGIN);
+        HttpClient(state).then(client => client.post(url, serialize(profile)))
+            .then(result => {
+                const newState = {
+                    authentication: { ...result.data.authentication, isLoggedIn: true, isTokenExpired: false },
+                    user: result.data.user
+                };
+                return dispatch({ type: POST_USER_RESOLVED, payload: newState })
+            })
+            .catch(err => dispatch({ type: POST_USER_REJECTED, payload: err }))
     }
 };
 
 const storeToken = (payload, getState) => {
     const env = _.get(getState, 'env', 'local');
-    const user = JSON.stringify({ user: payload.data });
-    localStorage.setItem(`ecan_${env}`, user);
+    const record = JSON.stringify(payload);
+    localStorage.setItem(`ecan_${env}`, record);
     return payload;
 };
 
@@ -95,10 +125,7 @@ const storeToken = (payload, getState) => {
 
 export const getOrganizations = () => {
     return (dispatch, getState) => {
-        request({
-            method: 'get',
-            url: loadEndpoint( _.get(getState(), 'env'), GET_ORGANIZATIONS)
-        })
+        HttpClient(getState()).then(client => client.get(loadEndpoint( _.get(getState(), 'env'), GET_ORGANIZATIONS)))
             .then(result => dispatch({ type: GET_ORGANIZATIONS_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_ORGANIZATIONS_REJECTED, payload: err }))
     }
@@ -106,16 +133,12 @@ export const getOrganizations = () => {
 
 export const addOrganization = (org) => {
     return (dispatch, getState) => {
-        request({
-            method: 'post',
-            url: loadEndpoint( _.get(getState(), 'env'), POST_ORGANIZATION),
-            data: org
-        })
-            .then(result => {
-                dispatch({ type: ADD_ORG_RESOLVED, payload: result })
-                console.log(result)
-            })
-            .catch(err => dispatch({ type: ADD_ORG_REJECTED, error: err }));
+        HttpClient(getState()).then(client => client.post(
+            loadEndpoint(
+                _.get(getState(), 'env'), POST_ORGANIZATION), serialize(org)
+            ))
+                .then(result => dispatch({ type: ADD_ORG_RESOLVED, payload: result }))
+                .catch(err => dispatch({ type: ADD_ORG_REJECTED, error: err }));
     }
 };
 
@@ -125,21 +148,18 @@ export const addOrganization = (org) => {
 
 export const getProjectsByOrganization = () => {
     return (dispatch, getState) => {
-        request({
-            method: 'get',
-            url: loadEndpoint( _.get(getState(), 'env'), GET_PROJECTS_BY_ORGANIZATION) + '/5ac9877976448030b88ac636', //Todo is about this
-        })
-            .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
-            .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }))
+        HttpClient(getState()).then(client => client.get(
+            loadEndpoint(
+                _.get(getState(), 'env'), GET_PROJECTS_BY_ORGANIZATION) + '/5ac9877976448030b88ac636'
+            ))
+                .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
+                .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }))
     }
 };
 
 export const getProjects = () => {
     return (dispatch, getState) => {
-        request(({
-            method: 'get',
-            url: loadEndpoint( _.get(getState(), 'env'), GET_PROJECTS)
-        }))
+        HttpClient(getState()).then(client => client.get(loadEndpoint( _.get(getState(), 'env'), GET_PROJECTS)))
             .then(result => dispatch({ type: GET_PROJECTS_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_PROJECTS_REJECTED, payload: err }))
     }
@@ -147,10 +167,9 @@ export const getProjects = () => {
 
 export const deleteProject = projectID => {
     return (dispatch, getState) => {
-        request(({
-            method: 'delete',
-            url: `${loadEndpoint( _.get(getState(), 'env'), DELETE_PROJECT)}/${projectID}`
-        }))
+        HttpClient(getState()).then(client => client.delete(
+            `${loadEndpoint( _.get(getState(), 'env'), DELETE_PROJECT)}/${projectID}`
+        ))
             .then(result => dispatch({ type: DELETE_PROJECT_RESOLVED }))
             .then(() => dispatch(getProjects()))
             .catch(err => dispatch({ type: DELETE_PROJECT_REJECTED, payload: err }))
@@ -163,28 +182,25 @@ export const deleteProject = projectID => {
 
 export const getEvents = () => {
     return (dispatch, getState) => {
-        request({
-            method: 'get',
-            headers: { 'Authorization': `Bearer ${getToken(getState)}` },
-            url: loadEndpoint( _.get(getState(), 'env'), GET_EVENTS),
-        }, dispatch)
-            .then(result => {
-                dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
+        HttpClient(getState(), dispatch)
+            .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), GET_EVENTS)))
+            .then(result => dispatch({ type: GET_EVENTS_RESOLVED, payload: result }))
+            .catch(result => {
+                console.log(result);
+                return result;
             })
-            .catch(err => dispatch({ type: GET_EVENTS_REJECTED, error: err }));
+            .catch(err => dispatch({ type: GET_EVENTS_REJECTED, payload: err  }))
+
     }
 };
 
 export const createEvent = (event) => {
     return (dispatch, getState) => {
-        request({
-            method: 'post',
-            url: loadEndpoint( _.get(getState(), 'env'), POST_EVENT),
-            data: event
-        })
+        HttpClient(getState()).then(client => client.post(
+            loadEndpoint(_.get(getState(), 'env'), POST_EVENT), event
+        ))
             .then(result => {
                 dispatch({ type: ADD_EVENT_RESOLVED, payload: result });
-                console.log(result)
             })
             .catch(err => dispatch({ type: ADD_EVENT_REJECTED, error: err }));
     }
@@ -192,10 +208,7 @@ export const createEvent = (event) => {
 
 export const deleteEvent = eventID => {
     return (dispatch, getState) => {
-        request(({
-            method: 'delete',
-            url: `${loadEndpoint( _.get(getState(), 'env'), DELETE_EVENT)}/${eventID}`
-        }))
+        HttpClient(getState()).then(client => client.delete(`${loadEndpoint( _.get(getState(), 'env'), DELETE_EVENT)}/${eventID}`))
             .then(result => dispatch({ type: DELETE_EVENT_RESOLVED }))
             .then(() => dispatch(getEvents()))
             .catch(err => dispatch({ type: DELETE_EVENT_REJECTED, payload: err }))
