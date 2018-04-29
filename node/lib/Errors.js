@@ -28,5 +28,6 @@ function RequestError (message, code, uri, status) {
 }
 
 RequestError.prototype = Object.create(Error.prototype);
+RequestError.prototype.source = Error.prototype.toSource;
 
 module.exports = RequestError;

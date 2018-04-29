@@ -12,7 +12,6 @@ const TOKEN_LIFETIME = 3600;
 
 module.exports = {
     getAll: (req, res, next, user) => {
-        console.log(user)
         UserModel.find()
         .then(userRecords => {
             res.status(200).send(userRecords);
@@ -51,7 +50,7 @@ module.exports = {
                             delete userRecord.password;
                             //generate a signed json web token with their ID as the payload
                             const token = jwt.sign({ id: userRecord._id }, jwtOpts.secretOrKey, { expiresIn: TOKEN_LIFETIME }); //Expires in an hour
-                            return res.status(200).send(_.assign({}, { auth: { token, expiresAt: moment.utc().add(1, 'hours') } }, userRecord));
+                            return res.status(200).send(_.assign({}, { auth: { token, expiresAt: moment.utc().add(TOKEN_LIFETIME, 'seconds') } }, userRecord));
                         } else {
                             throw new RequestError(`Password does not match`, 'ACCESS_DENIED');
                         }

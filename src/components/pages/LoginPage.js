@@ -11,7 +11,7 @@ import { loginUser } from '../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
     user: get(state, 'user', {}),
-    isLoggedIn: get(state, 'user.Status') === SUCCESS
+    isLoggedIn: _.get(state, 'user.data.auth.token') && !_.get(state, 'user.data.auth.expired', false) === true,
 });
 
 class LoginPage extends Component {
@@ -74,8 +74,9 @@ class LoginPage extends Component {
     }
 
     render() {
-        if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
-        if (this.props.isLoggedIn) return <Redirect to="/" />;
+
+        // if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
+        // if (this.props.isLoggedIn) return <Redirect to="/" />;
         return (
             <div className="container">
                 <div className="row justify-content-center">

@@ -2,25 +2,39 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
+import moment from 'moment';
 import LoginPage from '../pages/LoginPage';
 import { ERROR, SUCCESS } from '../../state/statusTypes';
 
 const mapStateToProps = state => ({
-    isLoggedIn: _.get(state, 'user.data.auth.token') && !_.get(state, 'user.data.auth.expired', false) === true
+    isLoggedIn: _.get(state, 'user.data.auth.token'),
+    isTokenExpired: moment.utc().isAfter(moment.utc(_.get(state, 'user.data.auth.expiresAt'))),
+    expirationDate: _.get(state, 'user.data.auth.expiresAt'),
+    auth: _.get(state, 'user.data.auth')
 });
 
 class PrivateRoute extends Component {
-    renderFailedAuth() {
-        return <LoginPage returnURL={this.props.path} />;
-    }
+    isTokenExpired = () => {
+        const expirationDate = moment.utc(this.props.expirationDate);
+        const now = moment.utc();
+        return now.isAfter(expirationDate);
+    };
 
     render() {
-        console.log(this.props);
-        const { component: Component } = this.props;
-        if (!this.props.isLoggedIn) {
-            return this.renderFailedAuth();
-        }
-        return <Component {...this.props} />;
+        const { component: Component, auth, isLoggedIn,isTokenExpired } = this.props;
+
+        console.log({ condition: isTokenExpired });
+
+        return(
+            <div>
+                {!isLoggedIn || isTokenExpired
+                    ? <LoginPage returnURL={this.props.path} />
+                    : (
+                        <Component {...this.props}/>
+                    )
+                }
+            </div>
+        );
     }
 }
 

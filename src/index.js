@@ -9,6 +9,10 @@ import createBrowserHistory from 'history/createBrowserHistory';
 import _ from 'lodash';
 import moment from 'moment';
 
+import myReducerMiddleware from './state/middleware/authentication';
+
+const authReducer = () => myReducerMiddleware();
+
 import reducer from './state/reducers/index';
 
 import App from './app';
@@ -17,30 +21,30 @@ const history = createBrowserHistory();
 
 const initialState = { env: ENVIRONMENT || 'local' };
 
-const getFinalInitialState = initialState => {
-    console.log(`get ecan`);
-    const persistedState = JSON.parse(localStorage.getItem(`ecan_${ENVIRONMENT}`));
-    const expirationDate = persistedState.user.data.auth.expiresAt;
-    console.log(expirationDate);
-    const isExpired = moment(expirationDate).isBefore(moment.utc())
-    if (isExpired) {
-        console.log('expired');
-        localStorage.setItem(`ecan_${ENVIRONMENT}.user.data.auth.expired`, true)
-    }
-    if (persistedState && !isExpired) {
-        const newState = _.assign(initialState, persistedState);
-        console.log({ newState });
-        return newState;
-    }
-    return initialState
-};
+// const getFinalInitialState = initialState => {
+//     const persistedState = JSON.parse(localStorage.getItem(STORAGE_KEY));
+//     const expirationDate = _.get(persistedState, 'user.data.auth.expiresAt', null);
+//     console.log(expirationDate);
+//     const isExpired = moment(expirationDate).utc().isAfter(moment.utc());
+//     console.log(isExpired);
+//     if (isExpired) {
+//         console.log('expired');
+//         localStorage.setItem(STORAGE_KEY, JSON.stringify({}))
+//     }
+//
+//     if (persistedState && !isExpired) {
+//         return _.assign(initialState, persistedState);
+//     }
+//     return initialState
+// };
+
 
 const middleware = applyMiddleware(thunk);
-const enhancer = compose(middleware);
+const enhancer = compose(middleware, authReducer());
 
 const store = createStore(
     reducer,
-    getFinalInitialState(initialState),
+    initialState,
     process.env.NODE_ENV === 'production'
         ? enhancer
         : composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)

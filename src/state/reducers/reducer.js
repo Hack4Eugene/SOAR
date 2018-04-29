@@ -6,7 +6,8 @@ import {
     ADD_ORG_RESOLVED,
     GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
-    GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED,
+    GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED, API_ERROR,
+    GET_EVENTS_REJECTED
 } from '../types';
 import { ERROR, SUCCESS } from '../statusTypes';
 
@@ -20,6 +21,9 @@ const reducer = (state = initialState, action) => {
     const { type, payload = { message: '' } } = action;
 
     switch(type) {
+        case API_ERROR: {
+            return _.assign({}, state, { user: { auth: { error: payload } } })
+        }
         case SET_EVENTS_FINISHED: {
             return _.assign({}, state, { events: { ...state.events, numFinishedEvents: payload } })
         }
@@ -48,6 +52,10 @@ const reducer = (state = initialState, action) => {
             return _.assign({}, state, { events: { ...state.events, data: [...payload.data], Status: SUCCESS } })
         }
 
+        case GET_EVENTS_REJECTED: {
+            return _.assign({}, state, { events: { error: { ...payload }, Status: ERROR }})
+        }
+
         case LOGIN_USER_RESOLVED: {
             return _.assign({}, state, { user: { ...state.user, ...payload, Status: SUCCESS } })
         }
@@ -61,7 +69,7 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_PROJECTS_REJECTED: {
-            return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, Status: ERROR }})
+            return _.assign({}, state, { projects: { error: { ...payload }, Status: ERROR }})
         }
 
         case DELETE_PROJECT_RESOLVED: {

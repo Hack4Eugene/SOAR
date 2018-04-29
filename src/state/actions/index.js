@@ -67,15 +67,15 @@ const getToken = getState => _.get(getState(), 'user.data.auth.token', 'token');
 export const loginUser = credentials => {
     return (dispatch, getState) => {
         dispatch({ type: LOGIN_USER_PENDING, payload: credentials });
-
-        const url = loadEndpoint( _.get(getState(), 'env'), LOGIN);
+        const env =  _.get(getState(), 'env');
+        const url = loadEndpoint(env, LOGIN);
         console.log(url);
 
         request({
             method: 'post',
             url,
             data: JSON.stringify(credentials)
-        })
+        }, getState)
             .then(result => storeToken(result, getState))
             .then(result => dispatch({ type: LOGIN_USER_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: LOGIN_USER_REJECTED, payload: err }));
@@ -84,7 +84,7 @@ export const loginUser = credentials => {
 
 const storeToken = (payload, getState) => {
     const env = _.get(getState, 'env', 'local');
-    const user = JSON.stringify({ user: payload });
+    const user = JSON.stringify({ user: payload.data });
     localStorage.setItem(`ecan_${env}`, user);
     return payload;
 };
@@ -167,7 +167,7 @@ export const getEvents = () => {
             method: 'get',
             headers: { 'Authorization': `Bearer ${getToken(getState)}` },
             url: loadEndpoint( _.get(getState(), 'env'), GET_EVENTS),
-        })
+        }, dispatch)
             .then(result => {
                 dispatch({ type: GET_EVENTS_RESOLVED, payload: result })
             })

@@ -26,9 +26,7 @@ class App extends Component {
                 <div className="mr-3 ml-3">
                     <Switch>
                         <Route path="/login" component={LoginPage} />
-                        <Route path="/" exact component={ProjectFeed} />
-                        <PrivateRoute path="/events" component={EventFeed} />
-                        <PrivateRoute path="/events" component={EventFeed} />
+                        <PrivateRoute path="/" exact component={ProjectFeed} />
                         <PrivateRoute path="/events" component={EventFeed} />
                         <PrivateRoute path="/explore" component={ExploreFeed} />
                         <PrivateRoute path="/addevent" component={AddEvent} />

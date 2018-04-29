@@ -45,7 +45,8 @@ module.exports = {
 
     getAll: (req, res, next) => {
         EventModel.find()
-            .then(eventDocuments => res.status(200).send(eventDocuments))
+            .then(eventDocuments =>
+                res.status(200).send(eventDocuments))
             .catch(error => {
                 console.log(error);
                 res.status(error.status || 500).send(error);

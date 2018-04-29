@@ -37,17 +37,30 @@ passport.use(strategy);
 const authenticate = (req, res, next, routeMethod) => {
     passport.authenticate('jwt', { session: false }, (err, user, info) => {
         //If reason is empty, probably nothing to do with validation. Typically lack of something to validate AKA missing access token
-        if (_.isEmpty(info)) {
-            throw new RequestError(info, 'BAD_REQUEST')
+        if (_.isEmpty(info) && !user) {
+            const response = {
+                error: err,
+                user,
+                info,
+                message: 'You may have forgotten an access token'
+            };
+
+            throw new RequestError(JSON.stringify(response), 'BAD_REQUEST');
         }
         //If reason is defined its likely to be an expired token.
         if (!user && info) {
-            return res.status(401).send(info)
+            const response = {
+                error: err,
+                user,
+                info,
+                messsgage: 'Access Token is probably Expired'
+            };
+
+            return res.status(401).send(JSON.stringify(response))
         }
         //User authenticated! Call next function in execution.
-        next()
-    })(req, res, next);
-    routeMethod(req, res, next)
+        routeMethod(req, res, next);
+    })(req, res, next, routeMethod);
 };
 
 
