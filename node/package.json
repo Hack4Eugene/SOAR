@@ -1,7 +1,7 @@
 {
   "name": "ecan",
   "version": "1.0.0",
-  "description": "Service for EGAN Warming Center H4C 2018",
+  "description": "Service for ECAN H4C 2018",
   "main": "index.js",
   "author": "CBT Development",
   "license": "MIT",
