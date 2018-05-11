@@ -18,7 +18,6 @@ class ToolBar extends Component {
             deleteProject
         } = this.props;
 
-        console.log({props: this.props, data});
         switch (type) {
             case 'event': {
                 deleteEvent(data._id);

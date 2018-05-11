@@ -1,9 +1,8 @@
 {
   "name": "ecan",
   "version": "1.0.0",
-  "description": "Front End for EGAN Warming Center H4C 2018",
+  "description": "Service for ECAN H4C 2018",
   "main": "index.js",
-  "repository": "git@github.com:rajansawhney/nerds-of-a-feather.git",
   "author": "CBT Development",
   "license": "MIT",
   "private": false,
@@ -13,7 +12,7 @@
   "dependencies": {
     "express": "^4.16.3",
     "lodash": "^4.17.5",
-    "moment": "^2.22.0",
+    "moment": "^2.22.1",
     "mongoose": "^5.0.13",
     "nodemon": "^1.17.3"
   }

@@ -10,7 +10,6 @@ import ToolBar from './ToolBar';
 import Card from './Card';
 
 const EventItem = ({ event }) => {
-    console.log('make event item');
     const date = moment(event.eventDate).format('MMMM D, YYYY - h:mm a');
     return (
         <Card>
@@ -37,7 +36,6 @@ const NoEvents = () => {
 };
 
 const EventsWidget = ({ events }) => {
-    console.log({ events });
     const EventList = events.length
         ? map(events, event =>
             <div className="mb-4" key={event._id}>

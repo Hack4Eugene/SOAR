@@ -1,20 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import { get, filter } from 'lodash';
-import moment from 'moment';
-import { withRouter } from 'react-router-dom'
+import { Redirect } from 'react-router-dom';
+import _ from 'lodash';
 
 import { SUCCESS } from '../../state/statusTypes';
 
 import Card from '../Card';
-import Calendar from 'react-calendar';
 
-import { loginUser } from '../../state/actions/index.js'
+import { loginUser, logoutUser } from '../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
-    user: get(state, 'user', {}),
-    isLoggedIn: get(state, 'user.Status') === SUCCESS
+    isLoggedIn: !_.get(state, 'authentication.isTokenExpired', false) && _.get(state, 'authentication.isLoggedIn', false),
 });
 
 class LoginPage extends Component {
@@ -28,7 +24,6 @@ class LoginPage extends Component {
     }
 
     login = () => {
-        console.log(this.state);
         const {
             username,
             password
@@ -37,20 +32,31 @@ class LoginPage extends Component {
         this.props.loginUser({ username, password })
     };
 
-    handleUsernameChange = (e) => {
+    componentWillMount() {
+        if (this.props.expireSession) {
+            this.props.logoutUser();
+        }
+    }
+
+    handleUsernameChange = e => {
         this.setState({ username: this.refs.username.value });
     };
 
-    handlePasswordChange = (e) => {
+    handlePasswordChange = e => {
+        console.log(this.refs.password.value);
         this.setState({ password: this.refs.password.value });
+    };
+
+    onKeyPress = e => {
+        if (e.key === 'Enter') {
+            this.login();
+        }
     };
 
     renderForm() {
         return (
             <Card>
-                {/* <div className="card-header">{date}</div> */}
-                {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
-                <div className="card-body">
+                <div className="card-body" onKeyPress={this.onKeyPress}>
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
                         <input
@@ -78,8 +84,7 @@ class LoginPage extends Component {
     }
 
     render() {
-        console.log(this.state);
-
+        if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
         if (this.props.isLoggedIn) return <Redirect to="/" />;
         return (
             <div className="container">
@@ -100,4 +105,4 @@ class LoginPage extends Component {
     }
 }
 
-export default connect(mapStateToProps, { loginUser })(LoginPage);
+export default connect(mapStateToProps, { loginUser, logoutUser })(LoginPage);

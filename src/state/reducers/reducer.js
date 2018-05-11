@@ -6,7 +6,8 @@ import {
     ADD_ORG_RESOLVED,
     GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
-    GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED,
+    GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED, API_ERROR,
+    GET_EVENTS_REJECTED, LOGOUT_USER
 } from '../types';
 import { ERROR, SUCCESS } from '../statusTypes';
 
@@ -48,12 +49,42 @@ const reducer = (state = initialState, action) => {
             return _.assign({}, state, { events: { ...state.events, data: [...payload.data], Status: SUCCESS } })
         }
 
+        case GET_EVENTS_REJECTED: {
+            return _.assign({}, state, { events: { error: { ...payload }, Status: ERROR }})
+        }
+
         case LOGIN_USER_RESOLVED: {
-            return _.assign({}, state, { user: { ...state.user, ...payload, Status: SUCCESS } })
+            const { user, authentication } = payload;
+            return _.assign({}, state, {
+                user: {
+                    ...user,
+                    Status: SUCCESS
+                },
+                authentication: {
+                    ...authentication,
+                    Status: SUCCESS
+                }
+            })
         }
 
         case LOGIN_USER_REJECTED: {
-            return _.assign({}, state, { user: { ...state.user, ...payload, Status: ERROR } })
+            console.log(payload);
+            return _.assign({}, state, {
+                user: {
+                    ...state.user,
+                    Status: ERROR
+                },
+                authentication: {
+                    ...state.authentication,
+                    Status: ERROR
+                }
+            })
+        }
+
+        case LOGOUT_USER: {
+            return _.assign({}, state, {
+                authentication: payload
+            })
         }
 
         case GET_PROJECTS_RESOLVED: {
@@ -61,7 +92,7 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_PROJECTS_REJECTED: {
-            return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, Status: ERROR }})
+            return _.assign({}, state, { projects: { error: { ...payload }, Status: ERROR }})
         }
 
         case DELETE_PROJECT_RESOLVED: {

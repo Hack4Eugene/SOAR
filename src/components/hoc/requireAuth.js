@@ -1,27 +1,29 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
-import { ERROR, SUCCESS } from '../../state/statusTypes';
+import moment from 'moment';
+import LoginPage from '../pages/LoginPage';
 
-export default function (ComposedComponent, FailedComponent) {
-    const mapStateToProps = state => ({
-        isLoggedIn: _.get(state, 'user.Status', ERROR) === SUCCESS
-    });
+const mapStateToProps = state => ({
+    isLoggedIn: _.get(state, 'authentication.isLoggedIn'),
+    isTokenExpired: moment.utc().isAfter(moment.utc(_.get(state, 'authentication.isTokenExpired')))
+});
 
-    class Authentication extends Component {
-        renderFailedAuth() {
-            return <FailedComponent {...this.props} />;
-        }
-
-        render() {
-            if (!this.props.isLoggedIn) {
-                console.log('nope');
-                return this.renderFailedAuth();
-            }
-            console.log('yup');
-            return <ComposedComponent {...this.props} />;
-        }
+class PrivateRoute extends Component {
+    render() {
+        const { component: Component, isLoggedIn, isTokenExpired } = this.props;
+        return(
+            <div>
+                {!isLoggedIn || isTokenExpired
+                    ? <LoginPage returnURL={this.props.path} />
+                    : (
+                        <Component {...this.props}/>
+                    )
+                }
+            </div>
+        );
     }
-
-    return connect(mapStateToProps)(Authentication);
 }
+
+export default connect(mapStateToProps)(withRouter(PrivateRoute));
