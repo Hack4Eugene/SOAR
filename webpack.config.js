@@ -1,26 +1,7 @@
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const colors = require('colors');
 const Router = require('./src/config/routes');
-
-// console.log(colors.red(JSON.stringify({ ENVIRONMENT: { baseRoute: Router.serviceHost[process.env.CONFIG_ENV] } })));
-console.log(colors.blue(
-    `{
-        ENVIRONMENT: {
-            base: ${Router.serviceHost[process.env.CONFIG_ENV]},
-            env: ${process.env.CONFIG_ENV}
-        }
-    }`
-));
-
-if (!process.env.CONFIG_ENV) {
-    console.log(
-        colors.red(
-`WARNING: You did not specify a CONFIG_ENV in your start command, 
-default is local you will need to run the service locally from the '/node' directory`)
-        )
-}
 
 module.exports = {
     entry: [
@@ -66,3 +47,20 @@ module.exports = {
         historyApiFallback: true,
     }
 };
+
+console.log(colors.blue(
+`{
+    ENVIRONMENT: {
+        base: ${Router.serviceHost[process.env.CONFIG_ENV]},
+        env: ${process.env.CONFIG_ENV}
+    }
+}`
+));
+if (!process.env.CONFIG_ENV) {
+    console.log(
+        colors.red(
+            `       WARNING: You did not specify a CONFIG_ENV in your start command, 
+                             default is local you will need to run the service locally from the '/node' directory
+        `)
+    )
+}
