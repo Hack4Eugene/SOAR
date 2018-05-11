@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const EventModel = mongoose.model('EventModel');
 const ProjectModel = mongoose.model('ProjectModel');
 const RequestError = require('../lib/Errors');
-const { authenticate } = require('../middleware/authentication/ecan-passport-strategy');
+const { authenticate } = require('../middleware/ecan-passport-strategy');
 
 module.exports = {
     createOrUpdate: (req, res) => {

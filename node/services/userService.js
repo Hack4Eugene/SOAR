@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
-const { jwtOpts } = require('../middleware/authentication/ecan-passport-strategy');
+const { jwtOpts } = require('../middleware/ecan-passport-strategy');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
@@ -23,6 +23,10 @@ module.exports = {
     },
 
     getByID: (req, res, next) => {
+        /*
+            Route needs middleware that would parse the access token for the stored ID,
+            Could potentially append to req body in middleware
+         */
         UserModel.findOne({ _id: req.params.user_id })
         .then(userRecord => {
             res.status(200).send(userRecord);
@@ -37,10 +41,10 @@ module.exports = {
         const { username, password } = req.body;
         return UserModel.findOne({ username }).lean()
             .then(userRecord => {
-                const { password: hash = 'INVALID' } = userRecord;
+                const { password: hash = null } = userRecord;
                 if (_.isNull(userRecord)) {
                     throw new RequestError(`User ${username} not found`, 'NOT_FOUND');
-                } else if (hash === 'INVALID') {
+                } else if (hash === null) {
                     throw new RequestError('Your user was found but there was an error with your password. Please reset your password!', 'ACCESS_DENIED');
                 }
                 //Check the password against the hash

@@ -3,11 +3,11 @@ const ObjectId = require('mongodb').ObjectId;
 const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 const _ = require('lodash');
-const UserModel = require('../../models/userModel');
-const RequestError = require('../../lib/Errors');
+const UserModel = require('../models/userModel');
+const RequestError = require('../lib/Errors');
 
 //Config load jwt secret from keys file
-const keys = require('../../config/keys');
+const keys = require('../config/keys');
 //Check config file for jwt secret, throw error if not found
 if (!_.get(keys, 'jwt.secretOrKey', false)) {
     throw new RequestError(`Keys file with jwt secret is required`, 'NOT_FOUND');

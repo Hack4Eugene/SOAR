@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { authenticate } = require('./middleware/authentication/ecan-passport-strategy');
+const { authenticate } = require('./middleware/ecan-passport-strategy');
 
 /*
     Import DB Collection Models
@@ -32,7 +32,7 @@ mongoose.connect(ecanDB)
 
 //Initialize and use the passport JWT strategy
 app.use(passport.initialize());
-require('./middleware/authentication/ecan-passport-strategy');
+require('./middleware/ecan-passport-strategy');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

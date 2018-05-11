@@ -1,6 +1,6 @@
 const routes = require('../config/routes.js');
 const { getAll, getByID, createOrUpdate, deleteUser, login } = require('../services/userService');
-const { authenticate } = require('../middleware/authentication/ecan-passport-strategy');
+const { authenticate } = require('../middleware/ecan-passport-strategy');
 
 module.exports = function (app) {
     app.get(routes.GET_USERS, (req, res, next) => authenticate(req, res, next, getAll));

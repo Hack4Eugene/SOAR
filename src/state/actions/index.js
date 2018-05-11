@@ -1,10 +1,14 @@
 import _ from 'lodash';
-import moment from 'moment';
 
 import {
     loadEndpoint,
     HttpClient,
+    serialize
 } from '../../lib/common';
+
+import {
+    storeUserSession
+} from '../../lib/util';
 
 import { STORAGE_KEY } from '../middleware/authentication';
 
@@ -35,6 +39,9 @@ import {
     POST_USER_PENDING,
     POST_USER_RESOLVED,
     POST_USER_REJECTED,
+    GET_USER_BY_ID_RESOLVED,
+    GET_USER_BY_ID_PENDING,
+    GET_USER_BY_ID_REJECTED,
     GET_ORGANIZATIONS_RESOLVED,
     GET_ORGANIZATIONS_REJECTED,
     ADD_ORG_RESOLVED,
@@ -65,9 +72,6 @@ import {
     Todo: ideally both can be find in the user object in redux state.
  */
 
-const getToken = getState => _.get(getState(), 'authentication.token', 'token');
-const serialize = obj => JSON.stringify(obj);
-
 /*
  User Actions
  */
@@ -76,15 +80,14 @@ export const loginUser = credentials => {
     return (dispatch, getState) => {
         dispatch({ type: LOGIN_USER_PENDING });
         const state = getState();
-        const env =  _.get(state, 'env');
-        const url = loadEndpoint(env, LOGIN);
-            HttpClient(state, getState).then(client => client.post(url, serialize(credentials)))
+        const url = loadEndpoint(state, LOGIN);
+            HttpClient(state, getState).then(client => client.post(url, credentials))
                 .then(result => {
                     const newState = {
                         authentication: { ...result.data.authentication, isLoggedIn: true, isTokenExpired: false },
                         user: result.data.user
                     };
-                    storeToken(newState, getState);
+                    storeUserSession(newState, getState);
                     return dispatch({ type: LOGIN_USER_RESOLVED, payload: newState })
                 })
                 .catch(err => dispatch({ type: LOGIN_USER_REJECTED, payload: err }))
@@ -102,8 +105,7 @@ export const createUser = profile => {
     return (dispatch, getState) => {
         dispatch({ type: POST_USER_PENDING });
         const state = getState();
-        const env =  _.get(state, 'env');
-        const url = loadEndpoint(env, LOGIN);
+        const url = loadEndpoint(state, LOGIN);
         HttpClient(state).then(client => client.post(url, serialize(profile)))
             .then(result => {
                 const newState = {
@@ -116,11 +118,10 @@ export const createUser = profile => {
     }
 };
 
-const storeToken = (payload, getState) => {
-    const env = _.get(getState, 'env', 'local');
-    const record = JSON.stringify(payload);
-    localStorage.setItem(`ecan_${env}`, record);
-    return payload;
+export const getUserByID = () => (dispatch, getState) => {
+    dispatch({ type: GET_USER_BY_ID_PENDING });
+    const state = getState();
+    HttpClient(state).then(client => dispatch(client.get(loadEndpoint(state, GET_USER_BY_ID))))
 };
 
 /*

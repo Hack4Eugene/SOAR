@@ -13,7 +13,7 @@ import AddOrganization from './components/pages/AddOrganization';
 import AddUser from './components/pages/AddUser';
 import Project from './components/Project';
 import LoginPage from './components/pages/LoginPage';
-import ProfilePage from './components/pages/ProfilePage';
+// import ProfilePage from './components/pages/ProfilePage';
 import ProjectPage from './components/pages/ProjectPage';
 import UserProfilePage from './components/pages/UserProfilePage';
 import PrivateRoute from './components/hoc/requireAuth';
@@ -34,7 +34,7 @@ class App extends Component {
                         <PrivateRoute path="/addorganization" component={AddOrganization} />
                         <PrivateRoute path="/adduser" component={AddUser} />
                         <PrivateRoute path="/projects/:id" component={Project} />
-                        <PrivateRoute path="/profile" component={ProfilePage} />
+                        {/*<PrivateRoute path="/profile" component={ProfilePage} />*/}
                         <PrivateRoute path="/project" component={ProjectPage} />
                         <PrivateRoute path="/userprofile" component={UserProfilePage} />
                     </Switch>

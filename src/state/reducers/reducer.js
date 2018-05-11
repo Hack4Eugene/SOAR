@@ -68,6 +68,7 @@ const reducer = (state = initialState, action) => {
         }
 
         case LOGIN_USER_REJECTED: {
+            console.log(payload);
             return _.assign({}, state, {
                 user: {
                     ...state.user,

@@ -1,7 +1,32 @@
 import _ from 'lodash';
-import moment from 'moment';
+import { isValidToken } from '../../lib/common';
 
 export const STORAGE_KEY = `ecan_${ENVIRONMENT}`;
+export const NULL_USER = { };
+export const NULL_SESSION = { isTokenExpired: true, isLoggedIn: false };
+
+export const validation = state => {
+    if (!state) {
+        return{
+            user: {},
+            authentication: { isTokenExpired: true }
+        }
+    }
+
+    const user = _.get(state, 'user', NULL_USER);
+    const authentication = _.get(state, 'authentication', {});
+    const isLoggedIn = _.get(authentication, 'isLoggedIn', false);
+    const isTokenExpired = _.get(authentication, 'isTokenExpired', true);
+
+    return {
+        user,
+        authentication: {
+            ...authentication,
+            isLoggedIn,
+            isTokenExpired
+        }
+    }
+};
 
 export default function myReducerMiddleware(config) {
     const mergeState = (initialState, persistedState) => (
@@ -18,60 +43,39 @@ export default function myReducerMiddleware(config) {
 
         let persistedState;
         let finalInitialState;
+        let persistedValidation;
 
         try {
             persistedState = JSON.parse(localStorage.getItem(STORAGE_KEY));
-            finalInitialState = mergeState(initialState, persistedState );
+            persistedValidation = validation(persistedState);
+            finalInitialState = mergeState(initialState, { ...persistedState, ...persistedValidation });
         } catch (e) {
-            console.warn('Failed to retrieve initialize state from localStorage:', e);
+            console.warn('Failed to retrieve persisted state from localStorage:', e);
         }
 
         const store = next(reducer, finalInitialState, enhancer);
 
         store.subscribe(_.throttle(() => {
-                const state = store.getState();
-                const user = _.get(state, 'user', {});
-                const auth = _.get(state, 'authentication', {});
+            const state = store.getState();
+            const user = _.get(state, 'user', NULL_USER);
+            const authentication = _.get(state, 'authentication', NULL_SESSION);
 
-                if (_.isEmpty(user)) {
-                    return;
-                }
+            if (_.isEmpty(user)) {
+                return;
+            }
 
-                const isLoggedIn = _.get(state, 'authentication.isLoggedIn', false);
-                const isTokenExpired = _.get(state, 'authentication.isTokenExpired', true);
+            const isLoggedIn = authentication.isLoggedIn && isValidToken(state);
 
-                console.log({ isLoggedIn, isTokenExpired });
+            const storage = isLoggedIn
+                ? { user, authentication }
+                : { user: NULL_USER, authentication: NULL_SESSION };
 
-                const storage = _.reduce({ ...user, ...auth }, (storageObj, value, key) => {
-                    if (!isLoggedIn) {
-                        console.log('logged out');
-                        if (key === 'isLoggedIn' || key === 'isTokenExpired') {
-                            storageObj.authentication[key] = value
-                            return storageObj;
-                        }
-                    } else {
-                        console.log('logged in');
-                        storageObj = {
-                            user: {
-                                ...user
-                            },
-                            authentication: {
-                                ...auth,
-                                isTokenExpired,
-                                isLoggedIn
-                            }
-                        };
-                    }
-                    return storageObj;
-                }, { user: {}, authentication: {} });
-
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
-                } catch (e) {
-                    console.warn('Unable to persist state to localStorage:', e);
-                }
-            })
-        );
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+            } catch (e) {
+                console.warn('Unable to persist state to localStorage:', e);
+            }
+        }));
 
         return store;
     };
@@ -79,18 +83,14 @@ export default function myReducerMiddleware(config) {
 
 export const persistedState = initialState => {
     const persistedState = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    console.log({persistedState});
     const user = _.get(persistedState, 'user', {});
-    const authentication = _.get(persistedState, 'authentication', {});
-    const isLoggedIn = _.get(authentication, 'isLoggedIn', false);
-    if (isLoggedIn) {
-        console.log('logged in');
-        return _.assign({}, {
-            ...initialState,
-            user,
-            authentication
-        });
-    }
+    const authentication = _.get(persistedState, 'authentication', NULL_SESSION);
+    const persistedValidation = validation(initialState);
 
-    return initialState
+    return _.assign({}, {
+        ...initialState,
+        user,
+        authentication,
+        ...persistedValidation
+    });
 };

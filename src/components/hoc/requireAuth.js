@@ -13,7 +13,6 @@ const mapStateToProps = state => ({
 class PrivateRoute extends Component {
     render() {
         const { component: Component, isLoggedIn, isTokenExpired } = this.props;
-
         return(
             <div>
                 {!isLoggedIn || isTokenExpired
