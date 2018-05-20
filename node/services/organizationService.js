@@ -19,7 +19,7 @@ module.exports = {
     },
 
     getByID: (req, res, next) => {
-        OrganizationModel.findOne({ _id: req.params.organization_id })
+        OrganizationModel.find({ _id: { $in: req.params.organization_ids.split("&") } })
             .then(organizationRecord => {
                 res.status(200).send(organizationRecord);
             })

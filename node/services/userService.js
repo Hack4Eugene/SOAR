@@ -82,6 +82,7 @@ module.exports = {
                 .then(hash => {
                     return Object.assign({}, req.body, { password: hash });
                 })
+                .then(userDefinedFields => Object.assign({}, userDefinedFields, { createdAt: moment() }))
                 .then(newUser => {
                     UserModel.create(newUser)
                         .then(newUserDocument => res.status(200).send(newUserDocument))

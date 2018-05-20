@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get, filter, cloneDeep } from 'lodash';
+import _, { get, filter, cloneDeep } from 'lodash';
 
 import Card from '../Card';
 
-import { createUser } from '../../state/actions/index.js'
+import { createUser, getOrganizations } from '../../state/actions/index.js'
+
+import './AddUser.scss';
+import { SUCCESS } from '../../state/statusTypes';
 
 const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
-    posts: get(state, 'posts', {})
+    posts: get(state, 'posts', {}),
+    organizations: get(state, 'organizations', {})
 });
 
 class AddUser extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             newUser: {
                 name: '',
@@ -29,62 +33,132 @@ class AddUser extends Component {
                     email: ''
                 },
                 website: '',
-                description: ''
+                description: '',
+                organizations: []
             }
         }
+    }
+
+    componentWillMount() {
+        this.props.getOrganizations()
     }
 
     submitUser() {
         this.props.createUser(this.state.newUser);
     }
 
+    removeAssociatedOrganization = i => {
+        const tempUser = cloneDeep(this.state.newUser);
+        tempUser.organizations = _.reduce(tempUser.organizations, (orgs, value, key) => {
+            console.log({ i, value, key });
+            if (key === i) {
+                return orgs;
+            }
+            orgs.push(value);
+            return orgs;
+        }, []);
+        console.log(tempUser);
+        this.setState({ newUser: tempUser })
+    };
+
     handleFormInput(e) {
         const tempUser = cloneDeep(this.state.newUser);
         switch (e.target.id) {
             case 'fullName':
-                tempUser.fullName = e.target.value;
+                tempUser.name = e.target.value;
                 this.setState({ newUser: tempUser });
                 break;
             case 'userName':
-                tempUser.userName = e.target.value;
+                tempUser.username = e.target.value;
                 this.setState({ newUser: tempUser });
                 break;
             case 'password':
                 tempUser.password = e.target.value;
                 this.setState({ newUser: tempUser });
-                break
+                break;
+            case 'organizations':
+                if (_.includes(_.map(this.state.newUser.organizations, 'name'), e.target.value)) {
+                    return;
+                }
+
+                const org = _.find(this.props.organizations.data, org => org.name === e.target.value);
+
+                const orgObj = {
+                    id: org._id,
+                    name: e.target.value
+                };
+
+                tempUser.organizations.push(orgObj);
+                this.setState({ newUser: tempUser });
+                break;
         }
     }
 
-    renderForm() {
+    getOrganizationBox = () => {
+        if (this.props.organizations.Status !== SUCCESS) {
+            return;
+        }
+
+        return (
+            <div className="form-group">
+                <label htmlFor="organizations">Associated Organizations</label>
+            <select
+                multiple
+                name="organizations"
+                className="form-control" id="organizations"
+                onChange={(e) => this.handleFormInput(e)}
+            >
+                {
+                    this.props.organizations.Status === SUCCESS && _.map(this.props.organizations.data, (org, i) => (
+                        <option value={org.name} key={i}>{org.name}</option>
+                    ))
+                }
+            </select>
+            <div>
+                {_.map(this.state.newUser.organizations, (org, i) => {
+                    return (
+                        <div className="organization select-confirmation d-flex justify-content-between align-items-center pl-4 pr-4 pt-2 pb-2" key={i}>
+                            <p className="m-0">{org.name}</p>
+                            <i
+                                className="fas fa-times-circle"
+                                onClick={() => this.removeAssociatedOrganization(i)}
+                            />
+                        </div>
+                    )
+                })}
+            </div>
+            </div>
+        )
+    };
+
+    renderForm = () => {
         return (
             <Card>
                 {/* <div className="card-header">{date}</div> */}
                 {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
                 <div className="card-body">
-                    {/* <form> */}
                     <div className="form-group">
-                        <label for="fullName">Full Name</label>
+                        <label htmlFor="name">Full Name</label>
                         <input type="text" className="form-control" id="fullName"
                                onChange={(e) => this.handleFormInput(e)}/>
                     </div>
                     <div className="form-group">
-                        <label for="userName">Username</label>
+                        <label htmlFor="username">Username</label>
                         <input type="text" className="form-control" id="userName"
                                onChange={(e) => this.handleFormInput(e)}/>
                     </div>
                     <div className="form-group">
-                        <label for="password">Password</label>
+                        <label htmlFor="password">Password</label>
                         <input type="text" className="form-control" id="password"
                                onChange={(e) => this.handleFormInput(e)}/>
                     </div>
+                    {this.getOrganizationBox()}
 
                     <button className="btn btn-primary" onClick={this.submitUser.bind(this)}>Submit</button>
-                    {/* </form> */}
                 </div>
             </Card>
         )
-    }
+    };
 
     render() {
         return (
@@ -106,4 +180,4 @@ class AddUser extends Component {
     }
 }
 
-export default connect(mapStateToProps, { createUser })(AddUser);
+export default connect(mapStateToProps, { createUser, getOrganizations })(AddUser);
