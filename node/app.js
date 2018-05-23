@@ -16,7 +16,7 @@ require('./models/userModel');
 
 // mongoose connection
 mongoose.Promise = global.Promise;
-const ecanDB = 'mongodb://ec2-54-202-199-22.us-west-2.compute.amazonaws.com/ECANdb';
+const ecanDB = 'mongodb://www.ecan-db.hnavarro-api.com/ECANdb';
 
 // mongoose.connect('mongodb://localhost/ECANdb')
 mongoose.connect(ecanDB)
