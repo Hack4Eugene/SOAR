@@ -8,7 +8,7 @@ const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
 
 const SALT_ROUNDS = 10;
-const TOKEN_LIFETIME = 3600;
+const TOKEN_LIFETIME = 5;
 
 module.exports = {
     getAll: (req, res, next, user) => {
