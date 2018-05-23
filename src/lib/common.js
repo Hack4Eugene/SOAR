@@ -26,5 +26,5 @@ export const loadEndpoint = (state, route) => `${serviceHost[_.get(state, 'env',
 
 export const isValidToken = state => {
     const expirationDate = moment(_.get(state, 'authentication.expiresAt', moment()));
-    return moment().isBefore(expirationDate);
+    return moment(expirationDate).isAfter(moment());
 };

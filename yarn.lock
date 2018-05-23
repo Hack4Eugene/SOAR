@@ -4836,6 +4836,10 @@ pinkie@^2.0.0:
   version "2.0.5"
   resolved "http://npm.aws.cbtnuggets.com/pinkie/-/pinkie-2.0.5.tgz#cfde580832d90abfc5face639fbd2698503d5b87"
 
+pjs@*:
+  version "5.1.1"
+  resolved "https://registry.npmjs.org/pjs/-/pjs-5.1.1.tgz#9dfc4673bb01deffd6915fb1dec75827aba42abf"
+
 pkg-dir@^2.0.0:
   version "2.0.0"
   resolved "http://npm.aws.cbtnuggets.com/pkg-dir/-/pkg-dir-2.0.0.tgz#f6d5d1109e19d63edf428e0bd57e12777615334b"
@@ -6415,6 +6419,12 @@ through2@^2.0.0:
 through@^2.3.6:
   version "2.3.8"
   resolved "http://npm.aws.cbtnuggets.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
+
+thunk@^0.0.1:
+  version "0.0.1"
+  resolved "https://registry.npmjs.org/thunk/-/thunk-0.0.1.tgz#6575b00ba36ff4c6c5edf84f923212239a0a7c37"
+  dependencies:
+    pjs "*"
 
 thunky@^1.0.2:
   version "1.0.2"

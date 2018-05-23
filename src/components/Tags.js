@@ -19,12 +19,13 @@ class Tags extends Component {
 
         const numColors = colorClassess.length;
 
-        let index = 0;
         return _.map(this.props.tags, (tag, i) => {
-            const color = colorClassess[index % numColors]; // index MOD array length is the perfect pattern for repeating array.
-            const badge = <span className={`badge badge-pill badge-${color} mr-2`} key={i}>{_.toUpper(tag)}</span>;
-            index++;
-            return badge;
+            /*
+                Index MOD array length is the perfect pattern for repeating array
+                i % numColors = 0, 1, 2, 3, 0, 1, 2, 3...
+            */
+            const color = colorClassess[i % numColors];
+            return <span className={`badge badge-pill badge-${color} mr-2`} key={i}>{_.toUpper(tag)}</span>;
         })
     };
 

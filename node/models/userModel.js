@@ -12,19 +12,24 @@ const UserSchema = new Schema({
     password:{
         type: String
     },
-    organization: {
-        id:{
-            type: Schema.Types.ObjectId,
-        },
-        name:{
-            type: String
-        },
-        role:{
-            type: String,
-            enum : ['super_user', 'organization_owner', 'project_owner', 'event_owner', 'user', 'read_only'],
-            default : 'read_only'
+    createdAt: {
+        type: Date
+    },
+    organizations: [
+        {
+            id:{
+                type: Schema.Types.ObjectId,
+            },
+            name:{
+                type: String
+            },
+            role:{
+                type: String,
+                enum : ['super_user', 'organization_owner', 'project_owner', 'event_owner', 'user', 'read_only'],
+                default : 'read_only'
+            }
         }
-    }
+    ]
 });
 
 module.exports = mongoose.model('UserModel', UserSchema);

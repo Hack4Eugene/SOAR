@@ -7,14 +7,15 @@ import {
     GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
     GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED, API_ERROR,
-    GET_EVENTS_REJECTED, LOGOUT_USER
+    GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORG_ID_RESOLVED, GET_ORG_ID_REJECTED
 } from '../types';
 import { ERROR, SUCCESS } from '../statusTypes';
 
 const initialState = {
     user: {},
     events: [],
-    projects: []
+    projects: [],
+    profile: {}
 };
 
 const reducer = (state = initialState, action) => {
@@ -45,6 +46,14 @@ const reducer = (state = initialState, action) => {
             return _.assign({}, state, { organizations: [ ...state.organizations, payload ] })
         }
 
+        case GET_ORG_ID_RESOLVED: {
+            return _.assign({}, state, { profile: { ...state.profile, ...payload, status: SUCCESS } })
+        }
+
+        case GET_ORG_ID_REJECTED: {
+            return _.assign({}, state, { profile: { ...state.profile, error: { ...payload }, status: ERROR } })
+        }
+
         case GET_EVENTS_RESOLVED: {
             return _.assign({}, state, { events: { ...state.events, data: [...payload.data], Status: SUCCESS } })
         }
@@ -58,11 +67,11 @@ const reducer = (state = initialState, action) => {
             return _.assign({}, state, {
                 user: {
                     ...user,
-                    Status: SUCCESS
+                    status: SUCCESS
                 },
                 authentication: {
                     ...authentication,
-                    Status: SUCCESS
+                    status: SUCCESS
                 }
             })
         }
@@ -72,11 +81,11 @@ const reducer = (state = initialState, action) => {
             return _.assign({}, state, {
                 user: {
                     ...state.user,
-                    Status: ERROR
+                    status: ERROR
                 },
                 authentication: {
                     ...state.authentication,
-                    Status: ERROR
+                    status: ERROR
                 }
             })
         }

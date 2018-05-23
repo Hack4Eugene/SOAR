@@ -10,7 +10,7 @@
   "scripts": {
     "build:webpack": "CONFIG_ENV=production webpack --colors --progress --config webpack.config.js --mode production",
     "build": "npm run clean && build:webpack",
-    "start:webpack": "CONFIG_ENV=local webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
+    "start:webpack": "webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
     "start": "npm run clean && npm run start:webpack",
     "clean": "rm -rf ./dist",
     "postinstall": "npm rebuild node-sass --force"
@@ -37,6 +37,7 @@
     "redux-thunk": "^2.2.0",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",
+    "thunk": "^0.0.1",
     "url-loader": "^1.0.1"
   },
   "devDependencies": {
