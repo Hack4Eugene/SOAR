@@ -1,0 +1,101 @@
+[
+    {
+        "_id": "5ae12bfd0d894102c483e886",
+        "organization": {
+            "id": "5ae129ed0d894102c483e883"
+        },
+        "status": "in_progress",
+        "private": false,
+        "tags": [
+            "food",
+            "homeles",
+            "fall"
+        ],
+        "events": [],
+        "name": "Fall Food Initiative",
+        "description": "Spread the love (and food) around town!",
+        "startDate": "1970-01-18T15:18:52.368Z",
+        "endDate": "1970-01-18T15:22:23.000Z",
+        "__v": 0,
+        "totalEvents": 0,
+        "numFinishedEvents": 2
+    },
+    {
+        "_id": "5ae14f89c3c375051b1068ab",
+        "organization": {
+            "id": "5ae14e49c3c375051b1068aa"
+        },
+        "status": "not_started",
+        "private": false,
+        "tags": [
+            "winter",
+            "clothing",
+            "shelter",
+            "food",
+            "hygeine"
+        ],
+        "events": [],
+        "name": "Resource Gathering for Winter of 2018",
+        "description": "We need to gather supplies for the upcoming winter. Supplies should encompass food, shelter hosts, hygeine supplies and clothing",
+        "__v": 0,
+        "totalEvents": 0,
+        "numFinishedEvents": 1
+    },
+    {
+        "_id": "5b0ca8b94091c6396099f279",
+        "organization": {
+            "id": "5b0ca55d4091c6396099f274"
+        },
+        "status": "in_progress",
+        "private": false,
+        "tags": [
+            "professional development",
+            "conflict",
+            "de-escalation"
+        ],
+        "events": [],
+        "name": "Annual Spring Training: Toolz for Tough Conversations With Mary Dumas",
+        "description": "Toolz for Tough Conversations is a rare professional development experience.This 8-hour conflict de-escalation and constructive confrontation program prepares individuals, organizations and communities for difficult conversations.",
+        "startDate": "2018-06-19T08:30:00.000Z",
+        "endDate": "2018-06-19T17:00:00.000Z",
+        "__v": 0,
+        "totalEvents": 0,
+        "numFinishedEvents": 0
+    },
+    {
+        "organization": {
+            "id": "5b0ca5b64091c6396099f275"
+        },
+        "status": "in_progress",
+        "private": false,
+        "tags": [
+            "temporary",
+            "housing",
+            "emergency"
+        ],
+        "events": [],
+        "_id": "5b0ca9da4091c6396099f27a",
+        "name": "Short-Term Housing",
+        "description": "ShelterCare provides temporary and emergency housing for people in crisis.",
+        "startDate": "2018-01-19T08:30:00.000Z",
+        "endDate": "2020-06-19T17:00:00.000Z",
+        "__v": 0
+    },
+    {
+        "organization": {
+            "id": "5b0ca69e4091c6396099f278"
+        },
+        "status": "in_progress",
+        "private": false,
+        "tags": [
+            "food"
+        ],
+        "events": [],
+        "_id": "5b0caac84091c6396099f27b",
+        "name": "Food for Lane County Project with SLP (Sheldon Key Club)",
+        "description": "Collaborative food project between Eugene Kiwanis, Sheldon Key Club, and Food for Lane County.",
+        "startDate": "2015-04-16T08:30:00.000Z",
+        "endDate": "2015-04-16T17:00:00.000Z",
+        "__v": 0
+    }
+]

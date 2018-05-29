@@ -13,7 +13,7 @@ const ProjectSchema = new Schema({
         type : Date
     },
     endDate: {
-        type : Date
+        type: Schema.Types.Mixed
     },
     organization: {
         id:{

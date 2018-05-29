@@ -29,7 +29,30 @@ const UserSchema = new Schema({
                 default : 'read_only'
             }
         }
-    ]
+    ],
+    projects: [
+        {
+            id: {
+                type: Schema.Types.ObjectId,
+            },
+            name: {
+                type: String
+            }
+        }
+    ],
+    events: [
+        {
+            id: {
+                type: Schema.Types.ObjectId,
+            },
+            name: {
+                type: String
+            }
+        }
+    ],
+    tags: {
+        type: [String]
+    }
 });
 
 module.exports = mongoose.model('UserModel', UserSchema);

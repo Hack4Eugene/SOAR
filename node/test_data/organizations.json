@@ -1,0 +1,218 @@
+[
+    {
+        "address": {
+            "street": "123 Garfeild St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97401",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "012-345-6789",
+            "email": "john@smith.com"
+        },
+        "_id": "5ae129ed0d894102c483e883",
+        "name": "ECAN",
+        "website": "ecan.org",
+        "description": "ECAN is a non-profit organization dedicated to helping the lives of the folk right here in our communit by providing resources for those in need",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "4563 Lincoln Dr",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97402",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "012-345-6789",
+            "email": "jane@doe.com"
+        },
+        "_id": "5ae14e49c3c375051b1068aa",
+        "name": "EGAN",
+        "website": "egan.com",
+        "description": "The Egan Warming Center is a coalition of community members representing service providers, religious congregations, nonprofit support agencies, social activist communities and local government who have come together to ensure that homeless people in Lane County have a warm and safe place to sleep when temperatures drop below 30 degrees between November 15th and March 31st.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "908 Thomas St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97402",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "123-456-7890",
+            "email": "sam@baker.com"
+        },
+        "_id": "5b0c71954091c6396099f26f",
+        "name": "Meals on Wheels",
+        "website": "mealsonwheels.org",
+        "description": "Meals on Wheels is a non-profit organization dedicated to helping the lives of the folk right here in our communit by providing meals for those that have mobility issues straight to their home.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "1040 10th St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97405",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "234-567-8901",
+            "email": "linden@smith.com"
+        },
+        "_id": "5b0c73c64091c6396099f270",
+        "name": "Salvation Army",
+        "website": "eugene.salvationarmy.org/",
+        "description": "The Salvation Army, an international movement, is an evangelical part of the universal Christian Church. Its message is based on the Bible. Its ministry is motivated by the love of God. Its mission is to preach the gospel of Jesus Christ and to meet human needs in His name without discrimination.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "2178 Alder St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97401",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "345-678-9012",
+            "email": "joe@brick.com"
+        },
+        "_id": "5b0c74db4091c6396099f271",
+        "name": "Eugene Delta Rotary",
+        "website": "deltarotary.org",
+        "description": "Rotary is 1.2 million passionate individuals in 35,000+ clubs worldwide. We are both an international organization and a local community leader. Together we lead change in our own backyards and across the world.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "3000 Kincaid St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97402",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "456-789-0123",
+            "email": "tim@smith.com"
+        },
+        "_id": "5b0c76a84091c6396099f272",
+        "name": "Eastside Faith Center",
+        "website": "eastsidefaithcenter.net",
+        "description": "God created you with gifts and skills that you can use to change lives in your community and the world.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "3210 Jefferson St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97402",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "567-890-1234",
+            "email": "jon@lorris.com"
+        },
+        "_id": "5b0c76f64091c6396099f273",
+        "name": "Catholic Community Services ",
+        "website": "ccslc.org",
+        "description": "God created you with gifts and skills that you can use to change lives in your community and the world.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "369 Davis St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97401",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "678-901-2345",
+            "email": "sally@square.com"
+        },
+        "_id": "5b0ca55d4091c6396099f274",
+        "name": "Center for Dialogue and Resolution",
+        "website": "lanecdr.org",
+        "description": "Resolution services that address disputes, crimes and community conflicts through mediation and group facilitation, using the best communication skills and dialogue models available & education services that build communication and resolution resources in the community through trainings, workshops and presentations.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "231 Lane St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97401",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "789-012-3456",
+            "email": "joe@circle.com"
+        },
+        "_id": "5b0ca5b64091c6396099f275",
+        "name": "ShelterCare",
+        "website": "sheltercare.org",
+        "description": "Emergency Services for individuals and homeless families with children, Mental Health Services for individuals with severe psychiatric disabilities, Brain Injury Services that supports skills training focused on recovery and independent living. In 2013-14 shelter and support provided to 1,354 individuals and families, on $9.5 million budget.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "600 Thompson St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97401",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "890-123-4567",
+            "email": "ethan@social.com"
+        },
+        "_id": "5b0ca6054091c6396099f276",
+        "name": "The Dining Room",
+        "website": "foodforlanecounty.org/get-help/foodboxes-meals/fflcs-dining-room",
+        "description": "Free sit-down restaurant-style meals for individuals over 18 and families.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "7800 Salmon St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97401",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "901-234-5678",
+            "email": "ocf@base.com"
+        },
+        "_id": "5b0ca6504091c6396099f277",
+        "name": "Oregon Community Foundation",
+        "website": "www.oregoncf.org/explore-ocf/locations/eugene",
+        "description": "We work with individuals, families, businesses and organizations to create charitable funds — more than 1,900 of them — that support the community causes they care about. These funds support the critical work that nonprofits are doing across Oregon. Through these funds, OCF awarded more than $80 million in grants and scholarships in 2014.",
+        "__v": 0
+    },
+    {
+        "address": {
+            "street": "902 Hilyard St",
+            "city": "Eugene",
+            "state": "OR",
+            "zipcode": "97401",
+            "country": "United States of America"
+        },
+        "contactInformation": {
+            "phoneNumber": "012-345-6789",
+            "email": "kiwanis@base.com"
+        },
+        "_id": "5b0ca69e4091c6396099f278",
+        "name": "Eugene Kiwanis Club",
+        "website": "eugenekiwanis.org",
+        "description": "Our club is involved in a variety of projects that involve fundraising, community service, and assisting children locally and worldwide.",
+        "__v": 0
+    }
+]
