@@ -123,7 +123,7 @@ export const createUser = profile => {
 export const getUserByID = () => (dispatch, getState) => {
     dispatch({ type: GET_USER_BY_ID_PENDING });
     const state = getState();
-    HttpClient(state).then(client => dispatch(client.get(loadEndpoint(state, GET_USER_BY_ID))))
+    HttpClient(state).then(client => dispatch(client.get(loadEndpoint(state.env, GET_USER_BY_ID))))
 };
 
 /*

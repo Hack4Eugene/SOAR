@@ -19,7 +19,8 @@ class LoginPage extends Component {
 
         this.state = {
             username: '',
-            password: ''
+            password: '',
+            logout: null
         }
     }
 
@@ -32,8 +33,8 @@ class LoginPage extends Component {
         this.props.loginUser({ username, password })
     };
 
-    componentWillMount() {
-        if (this.props.expireSession) {
+    componentDidMount() {
+        if (this.props.expireSession && !this.state.logout) {
             this.props.logoutUser();
         }
     }
@@ -86,6 +87,7 @@ class LoginPage extends Component {
     render() {
         if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
         if (this.props.isLoggedIn) return <Redirect to="/" />;
+
         return (
             <div className="container">
                 <div className="row justify-content-center">

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import _, { get, filter, cloneDeep } from 'lodash';
 
 import Card from '../Card';
@@ -7,12 +8,13 @@ import Card from '../Card';
 import { createUser, getOrganizations } from '../../state/actions/index.js'
 
 import './AddUser.scss';
-import { SUCCESS } from '../../state/statusTypes';
+import { SUCCESS, NOT_STARTED } from '../../state/statusTypes';
 
 const mapStateToProps = (state) => ({
+    user: get(state, 'user', {}),
     events: get(state, 'events', {}),
     posts: get(state, 'posts', {}),
-    organizations: get(state, 'organizations', {})
+    organizations: get(state, 'profile.organizations', {})
 });
 
 class AddUser extends Component {
@@ -35,7 +37,8 @@ class AddUser extends Component {
                 website: '',
                 description: '',
                 organizations: []
-            }
+            },
+            redirect: null
         }
     }
 
@@ -43,9 +46,7 @@ class AddUser extends Component {
         this.props.getOrganizations()
     }
 
-    submitUser() {
-        this.props.createUser(this.state.newUser);
-    }
+    submitUser = () => { this.props.createUser(this.state.newUser); };
 
     removeAssociatedOrganization = i => {
         const tempUser = cloneDeep(this.state.newUser);
@@ -160,7 +161,14 @@ class AddUser extends Component {
         )
     };
 
+    redirect = path => <Redirect to={'/'+ path} />;
+
     render() {
+        const shouldRedirect = _.isString(this.state.redirect) || _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+        if (shouldRedirect) {
+            return this.redirect(this.state.redirect || '/explore');
+        }
+
         return (
             <div className="container">
                 <div className="row justify-content-center">

@@ -7,9 +7,10 @@ import {
     GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
     GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED, API_ERROR,
-    GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORG_ID_RESOLVED, GET_ORG_ID_REJECTED
+    GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORG_ID_RESOLVED, GET_ORG_ID_REJECTED,
+    POST_USER_RESOLVED, POST_USER_PENDING, POST_USER_REJECTED
 } from '../types';
-import { ERROR, SUCCESS } from '../statusTypes';
+import { ERROR, LOADING, SUCCESS } from '../statusTypes';
 
 const initialState = {
     user: {},
@@ -47,7 +48,11 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_ORG_ID_RESOLVED: {
-            return _.assign({}, state, { profile: { ...state.profile, ...payload, status: SUCCESS } })
+            return _.assign({}, state, { profile: { ...state.profile, organizations: {
+                ..._.get(state.profile, 'organizations', []),
+                data: payload.data,
+                status: SUCCESS
+            } } })
         }
 
         case GET_ORG_ID_REJECTED: {
@@ -64,6 +69,7 @@ const reducer = (state = initialState, action) => {
 
         case LOGIN_USER_RESOLVED: {
             const { user, authentication } = payload;
+            console.log(user);
             return _.assign({}, state, {
                 user: {
                     ...user,
@@ -94,6 +100,16 @@ const reducer = (state = initialState, action) => {
             return _.assign({}, state, {
                 authentication: payload
             })
+        }
+
+        case POST_USER_RESOLVED: {
+            return _.assign({}, state, { ...state.user, user: { ...payload, status: SUCCESS } })
+        }
+        case POST_USER_PENDING: {
+            return _.assign({}, state, { ...state.user, user: { status: LOADING } })
+        }
+        case POST_USER_REJECTED: {
+            return _.assign({}, state, { ...state.user, user: { error: { ...payload }, status: ERROR } })
         }
 
         case GET_PROJECTS_RESOLVED: {

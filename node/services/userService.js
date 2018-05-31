@@ -14,6 +14,7 @@ module.exports = {
     getAll: (req, res, next, user) => {
         UserModel.find()
         .then(userRecords => {
+            delete userRecords.password;
             res.status(200).send(userRecords);
         })
         .catch(error => {
@@ -29,6 +30,7 @@ module.exports = {
          */
         UserModel.findOne({ _id: req.params.user_id })
         .then(userRecord => {
+            delete userRecords.password;
             res.status(200).send(userRecord);
         })
         .catch(error => {
@@ -85,7 +87,10 @@ module.exports = {
                 .then(userDefinedFields => Object.assign({}, userDefinedFields, { createdAt: moment() }))
                 .then(newUser => {
                     UserModel.create(newUser)
-                        .then(newUserDocument => res.status(200).send(newUserDocument))
+                        .then(newUserDocument => {
+                            delete userRecords.password;
+                            res.status(200).send(newUserDocument)
+                        })
                         .catch(error => res.status(error.status || 500).send(error))
                     }
                 )
@@ -107,7 +112,7 @@ module.exports = {
                     UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
                         .then(res => {
                             if (!_.isUndefined(res) && _.isInteger(res) && res > 0) {
-                                throw new RequestError('Username hs been taken', 'BAD_REQUEST')
+                                throw new RequestError('Username has been taken', 'BAD_REQUEST')
                             }
                         })
                         .catch(err => res.status(err.status || 500).send(err));
@@ -126,7 +131,10 @@ module.exports = {
                         })
                         .then(updatedRecordWithHashedPassword => {
                             UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
-                                .then(result => res.status(200).send(result))
+                                .then(result => {
+                                    delete result.password;
+                                    res.status(200).send(result)
+                                })
                                 .catch(err => {
                                     throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
                                 });
