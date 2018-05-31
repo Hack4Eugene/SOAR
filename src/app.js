@@ -33,7 +33,7 @@ class App extends Component {
                         <PrivateRoute path="/explore" component={ExploreFeed} />
                         <PrivateRoute path="/addevent" component={AddEvent} />
                         <PrivateRoute path="/addorganization" component={AddOrganization} />
-                        <PrivateRoute path="/adduser" component={AddUser} />
+                        <Route path="/adduser" component={AddUser} />
                         <PrivateRoute path="/projects/:id" component={Project} />
                         <PrivateRoute path="/profile" component={ProfilePage} />
                         <PrivateRoute path="/profile" component={OrganizationPage} />

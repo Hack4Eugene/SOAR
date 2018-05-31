@@ -25,8 +25,9 @@ const mapStateToProps = (state) => ({
 class UserProfilePage extends Component {
     componentWillMount() {
         if (this.props.isLoaded) {
-            console.log(this.props.profile.organization);
-            this.props.getOrganizationsById([this.props.profile.organization.id]);
+			console.log(this.props.profile.organization);
+			const org = get(this.props.profile, 'organization.id')
+            this.props.getOrganizationsById([org]);
         }
     }
     render() {

@@ -82,7 +82,7 @@ export const loginUser = credentials => {
     return (dispatch, getState) => {
         dispatch({ type: LOGIN_USER_PENDING });
         const state = getState();
-        const url = loadEndpoint(state, LOGIN);
+        const url = loadEndpoint(state.env, LOGIN);
             HttpClient(state, getState).then(client => client.post(url, credentials))
                 .then(result => {
                     const newState = {
@@ -107,7 +107,7 @@ export const createUser = profile => {
     return (dispatch, getState) => {
         dispatch({ type: POST_USER_PENDING });
         const state = getState();
-        const url = loadEndpoint(state, POST_USER);
+        const url = loadEndpoint(state.env, POST_USER);
         HttpClient(state).then(client => client.post(url, serialize(profile)))
             .then(result => {
                 const newState = {
