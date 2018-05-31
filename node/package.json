@@ -11,10 +11,13 @@
   },
   "dependencies": {
     "avatars.io": "^0.1.6",
+    "bcrypt": "^2.0.1",
     "express": "^4.16.3",
     "lodash": "^4.17.5",
     "moment": "^2.22.1",
     "mongoose": "^5.0.13",
-    "nodemon": "^1.17.3"
+    "nodemon": "^1.17.3",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0"
   }
 }
