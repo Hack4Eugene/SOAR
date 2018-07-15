@@ -6,6 +6,7 @@ import _ from 'lodash'
 
 import Project from '../Project';
 import EventsWidget from '../EventsWidget';
+import OrganizationsWidget from '../OrganizationsWidget';
 
 import {
     getEvents,
@@ -43,10 +44,10 @@ class ExploreFeed extends Component {
     };
 
     getFeed = () => {
-        const { getProjectsFeed, getEventsFeed } = this;
+        const { getProjectsFeed, getEventsFeed, getOrganizationsFeed } = this;
         if (this.state.displaying === 'projects') return getProjectsFeed();
         if (this.state.displaying === 'events') return getEventsFeed();
-        if (this.state.displaying === 'organizations') return null;
+        if (this.state.displaying === 'organizations') return getOrganizationsFeed();
     };
 
     getProjectsFeed = () => {
@@ -68,6 +69,11 @@ class ExploreFeed extends Component {
     getEventsFeed = () => {
         const { events } = this.props;
         return <EventsWidget events={events.data} />;
+    };
+
+    getOrganizationsFeed = () => {
+        const { organizations } = this.props;
+        return <OrganizationsWidget organizations={organizations.data} />;
     };
 
     render() {

@@ -35,6 +35,8 @@ module.exports = {
                 return key === 'userId';
             });
 
+            newOrganization.created_at = new Date();
+
             return OrganizationModel.create(newOrganization)
                 .then(savedRecord => {
                     return UserModel.findOneAndUpdate({ _id: req.body.userId }, { $set: { 'organization.id': savedRecord._id, 'organization.name': savedRecord.name, 'organization.role': 'admin' }})
