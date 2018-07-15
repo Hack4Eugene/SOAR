@@ -1,7 +1,7 @@
 module.exports = {
     serviceHost: {
         local: 'http://localhost:3000',
-        production: 'http://www.ecan-service.hnavarro-api.com:3000'
+        production: 'https://www.ecan-service.hnavarro-api.com'
     },
     serviceRoutes: {
         GET_ORGANIZATION_BY_ID: '/organization',

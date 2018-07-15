@@ -35,6 +35,10 @@ class ProjectPage extends Component {
     }
   }
 
+  componentDidMount() {
+    console.log(this.props.computedMatch.params.id)
+  }
+
   componentWillMount() {
     this.props.getEvents()
   }
@@ -44,43 +48,43 @@ class ProjectPage extends Component {
       <div className="container">
         <div className="row">
           <div className="col">
-            <div class="jumbotron p-4 project-jumbo">
-              <h1 class="display-4">Harvest to Home Project</h1>                
-              <p class="lead">This spring, various groups in our network will collaborate in the entire process of growing, harvesting, and distributing food to local underserved youth. Join us for the whole series, or pick a single event from our timeline below!</p>
-              <hr class="my-4" />
+            <div className="jumbotron p-4 project-jumbo">
+              <h1 className="display-4">Harvest to Home Project</h1>                
+              <p className="lead">This spring, various groups in our network will collaborate in the entire process of growing, harvesting, and distributing food to local underserved youth. Join us for the whole series, or pick a single event from our timeline below!</p>
+              <hr className="my-4" />
               <img src={parkImg} className="project-header-img"/>
-              <hr class="my-4" />
+              <hr className="my-4" />
               <p>We accomplish this by soliciting, collecting, rescuing, growing, preparing and packaging food for distribution through a network of more than 150 partner agencies and distribution sites; through public awareness, education and community advocacy; and through programs designed to improve the ability of low-income individuals to maintain an adequate supply of wholesome, nutritious food.</p>
-              <h1 class="display-4 alliance-header">- Our Alliance -</h1>
+              <h1 className="display-4 alliance-header">- Our Alliance -</h1>
                 
                 <div className="row">
-                  <div class="card col p-0 ml-3 mb-3" style={{width: '10rem'}}>    
-                  <div class="card-header">
-                  <h5 class="card-title mb-0">FOOD for Lane County</h5>
+                  <div className="card col p-0 ml-3 mb-3" style={{width: '10rem'}}>    
+                  <div className="card-header">
+                  <h5 className="card-title mb-0">FOOD for Lane County</h5>
                   </div>              
                                       
                     <img className="card-image card-org-image" src={foodLaneImg} />  
-                    <div class="card-body org-card-body">
+                    <div className="card-body org-card-body">
                     <Link className="btn btn-outline-success org-card-button" to="/profile">Go to organization</Link>          
                   </div>
                 </div>
-                <div class="card col p-0 ml-3 mb-3" style={{width: '10rem'}}>    
-                  <div class="card-header">
-                  <h5 class="card-title mb-0">Habitat for Humanity</h5>
+                <div className="card col p-0 ml-3 mb-3" style={{width: '10rem'}}>    
+                  <div className="card-header">
+                  <h5 className="card-title mb-0">Habitat for Humanity</h5>
                   </div>              
                                       
                     <img className="card-image card-org-image" src={habitatImg} />  
-                    <div class="card-body org-card-body">
+                    <div className="card-body org-card-body">
                     <Link className="btn btn-outline-success org-card-button" to="/profile">Go to organization</Link>          
                   </div>
                 </div>
-                <div class="card col p-0 ml-3 mb-3" style={{width: '10rem'}}>    
-                  <div class="card-header">
-                  <h5 class="card-title mb-0">Peace Corps</h5>
+                <div className="card col p-0 ml-3 mb-3" style={{width: '10rem'}}>    
+                  <div className="card-header">
+                  <h5 className="card-title mb-0">Peace Corps</h5>
                   </div>              
                                       
                     <img className="card-image card-org-image" src={peaceImg} />  
-                    <div class="card-body org-card-body">
+                    <div className="card-body org-card-body">
                     <Link className="btn btn-outline-success org-card-button" to="/profile">Go to organization</Link>          
                   </div>
                 </div>
@@ -133,11 +137,11 @@ class ProjectPage extends Component {
       <div className="card" style={{'marginTop': '50px'}}>
         <div className="card-header"><h2>Our Accomplishments</h2></div>
         <div className="card-body">
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">✓ 300 Canned food items</li>
-          <li class="list-group-item">✓ 50 Rain jackets</li>
-          <li class="list-group-item">✓ 80 Volunteer hours</li>
-          <li class="list-group-item">✓ 300 Meals distributed</li>
+        <ul className="list-group list-group-flush">
+          <li className="list-group-item">✓ 300 Canned food items</li>
+          <li className="list-group-item">✓ 50 Rain jackets</li>
+          <li className="list-group-item">✓ 80 Volunteer hours</li>
+          <li className="list-group-item">✓ 300 Meals distributed</li>
         </ul>
         </div>
       </div>

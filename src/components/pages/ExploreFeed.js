@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import _ from 'lodash'
 
-import Project from '../Project';
+import ProjectFeed from './ProjectFeed';
 import EventsWidget from '../EventsWidget';
+import OrganizationsWidget from '../OrganizationsWidget';
 
 import {
     getEvents,
@@ -43,31 +43,24 @@ class ExploreFeed extends Component {
     };
 
     getFeed = () => {
-        const { getProjectsFeed, getEventsFeed } = this;
+        const { getProjectsFeed, getEventsFeed, getOrganizationsFeed } = this;
         if (this.state.displaying === 'projects') return getProjectsFeed();
         if (this.state.displaying === 'events') return getEventsFeed();
-        if (this.state.displaying === 'organizations') return null;
+        if (this.state.displaying === 'organizations') return getOrganizationsFeed();
     };
 
     getProjectsFeed = () => {
-        return _.map(this.props.projects.data, (project, i) => {
-            return (
-                <Project
-                    key={`explore-feed-project-${i}`}
-                    feedView={true}
-                    id={project.id}
-                    title={project.title}
-                    startDate={project.startDate}
-                    description={project.description}
-                    showProgress={false}
-                />
-            )
-        })
+        return <ProjectFeed />
     };
 
     getEventsFeed = () => {
         const { events } = this.props;
         return <EventsWidget events={events.data} />;
+    };
+
+    getOrganizationsFeed = () => {
+        const { organizations } = this.props;
+        return <OrganizationsWidget organizations={organizations.data} />;
     };
 
     render() {

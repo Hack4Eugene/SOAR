@@ -37,6 +37,13 @@ const OrganizationSchema = new Schema({
     },
     description: {
         type: String
+    },
+    created_at: {
+        type: Date
+    },
+    deleted_at: {
+        type: Date,
+        default: null
     }
 });
 

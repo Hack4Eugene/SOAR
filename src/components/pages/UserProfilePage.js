@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
+import _, { get, filter, isEqual, isArray } from 'lodash';
 import moment from 'moment';
-import { get, filter, isEqual, isArray } from 'lodash';
+import classnames from 'classnames';
+
 
 import { SUCCESS } from '../../state/statusTypes';
 
@@ -23,15 +25,70 @@ const mapStateToProps = (state) => ({
 });
 
 class UserProfilePage extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            tabs: [
+                {
+                    name: 'about'
+                },
+                {
+                    name: 'events',
+                    active: true
+                },
+                {
+                    name: 'projects',
+                    active: false
+                },
+                {
+                    name: 'organizations',
+                    active: false
+                },
+                {
+                    name: 'settings',
+                    active: false
+                }
+            ]
+        }
+    }
     componentWillMount() {
         if (this.props.isLoaded) {
-			console.log(this.props.profile.organization);
-			const org = get(this.props.profile, 'organization.id')
+			const org = get(this.props.profile, 'organization.id');
             this.props.getOrganizationsById([org]);
         }
     }
+
+    getActiveTab = () => _.find(this.state.tabs, 'active');
+    setActiveTab = newTab => {
+        const tabState = _.reduce(this.state.tabs, (tabs, value, key) => {
+            const tabInIndex = this.state.tabs[key];
+            const active = tabInIndex.name === newTab ? true : null;
+
+            tabs[key] = {
+                name: tabInIndex.name,
+                active: _.isBoolean(active) ? active : false
+            };
+            return tabs;
+        }, []);
+        this.setState({ tabs: tabState })
+    };
+
+    isActiveTab = tab => tab === this.getActiveTab().name;
+
+    fetchTabContent = () => {
+        const tabs = {
+            about: null,
+            events: null,
+            projects: null,
+            organizations: null,
+            settings: null
+        };
+
+        return tabs[this.state.activeTab];
+    };
+
     render() {
-        console.log({ profile: this.props.profile });
         const {
             name,
             username,
@@ -55,20 +112,44 @@ class UserProfilePage extends Component {
                 <div className="row">
                     <div className="col-3">
 
-                        {/*TODO: Turn this into a toggling content body component*/}
-                        {/*TODO: Will need to refactor HTML mockup to make it work*/}
                         <div className="card">
                             <div className="card-header">
                                 Menu
                             </div>
                             <ul className="list-group list-group-flush">
-                                <li className="list-group-item">Events</li>
-                                <li className="list-group-item">Projects</li>
-                                <li className="list-group-item active">Organizations</li>
-                                <li className="list-group-item">Settings</li>
+                                <li
+                                    className={classnames('list-group-item', {
+                                        'active': this.isActiveTab('about')
+                                    })}
+                                    onClick={() => this.setActiveTab('about')}
+                                >About</li>
+                                <li
+                                    className={classnames('list-group-item', {
+                                        'active': this.isActiveTab('events')
+                                    })}
+                                    onClick={() => this.setActiveTab('events')}
+                                >Events</li>
+                                <li  className={classnames('list-group-item', {
+                                        'active': this.isActiveTab('projects')
+                                    })}
+                                     onClick={() => this.setActiveTab('projects')}
+                                >Projects</li>
+                                <li
+                                    className={classnames('list-group-item', {
+                                        'active': this.isActiveTab('organizations')
+                                    })}
+                                    onClick={() => this.setActiveTab('organizations')}
+                                >Organizations</li>
+                                <li
+                                    className={classnames('list-group-item', {
+                                        'active': this.isActiveTab('settings')
+                                    })}
+                                    onClick={() => this.setActiveTab('settings')}
+                                >Settings</li>
                             </ul>
                         </div>
                     </div>
+                    {this.fetchTabContent()}
                     <div className="col-9">
                         <Card>
 
