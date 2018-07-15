@@ -9,6 +9,7 @@ import {
 
 import './toolbar.scss';
 
+//Todo role based presence
 class ToolBar extends Component {
     onDeleteClick = () => {
         const {

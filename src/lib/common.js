@@ -22,7 +22,7 @@ export {
     HttpClient
 };
 
-export const loadEndpoint = (state, route) => `${serviceHost[state || local]}${route}`;
+export const loadEndpoint = (state, route) => `${serviceHost[state || 'local']}${route}`;
 
 export const isValidToken = state => {
     const expirationDate = moment(_.get(state, 'authentication.expiresAt', moment()));

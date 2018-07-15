@@ -34,3 +34,9 @@ nav a {
 a:hover {
 	text-decoration: none;
 }
+
+.navbar .navbar-nav {
+  .btn-light {
+    color: #28a745 !important;
+  }
+}

@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import _ from 'lodash'
 
-import Project from '../Project';
+import ProjectFeed from './ProjectFeed';
 import EventsWidget from '../EventsWidget';
 import OrganizationsWidget from '../OrganizationsWidget';
 
@@ -51,19 +50,7 @@ class ExploreFeed extends Component {
     };
 
     getProjectsFeed = () => {
-        return _.map(this.props.projects.data, (project, i) => {
-            return (
-                <Project
-                    key={`explore-feed-project-${i}`}
-                    feedView={true}
-                    id={project.id}
-                    title={project.title}
-                    startDate={project.startDate}
-                    description={project.description}
-                    showProgress={false}
-                />
-            )
-        })
+        return <ProjectFeed />
     };
 
     getEventsFeed = () => {
