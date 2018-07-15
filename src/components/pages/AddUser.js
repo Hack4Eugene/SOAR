@@ -14,7 +14,7 @@ const mapStateToProps = (state) => ({
     user: get(state, 'user', {}),
     events: get(state, 'events', {}),
     posts: get(state, 'posts', {}),
-    organizations: get(state, 'profile.organizations', {})
+    organizations: get(state, 'organizations', {})
 });
 
 class AddUser extends Component {
@@ -23,6 +23,8 @@ class AddUser extends Component {
         this.state = {
             newUser: {
                 name: '',
+                username: '',
+                password: '',
                 address: {
                     street: '',
                     city: '',
@@ -38,7 +40,8 @@ class AddUser extends Component {
                 description: '',
                 organizations: []
             },
-            redirect: null
+            redirect: null,
+            submitted: null
         }
     }
 
@@ -46,7 +49,10 @@ class AddUser extends Component {
         this.props.getOrganizations()
     }
 
-    submitUser = () => { this.props.createUser(this.state.newUser); };
+    submitUser = () => {
+        Promise.resolve(this.props.createUser(this.state.newUser))
+            .then(res => { this.setState({ newUser: res })})
+    };
 
     removeAssociatedOrganization = i => {
         const tempUser = cloneDeep(this.state.newUser);
@@ -66,19 +72,20 @@ class AddUser extends Component {
         const tempUser = cloneDeep(this.state.newUser);
         switch (e.target.id) {
             case 'fullName':
-                tempUser.name = e.target.value;
+                e.target.value = _.get(tempUser, 'name', '');
                 this.setState({ newUser: tempUser });
                 break;
             case 'userName':
-                tempUser.username = e.target.value;
+                e.target.value = _.get(tempUser, 'username');
                 this.setState({ newUser: tempUser });
                 break;
             case 'password':
-                tempUser.password = e.target.value;
+                e.target.value = _.get(tempUser, 'password');
                 this.setState({ newUser: tempUser });
                 break;
             case 'organizations':
-                if (_.includes(_.map(this.state.newUser.organizations, 'name'), e.target.value)) {
+                const orgs = _.get(tempUser, 'organizations');
+                if (_.includes(_.map(orgs, 'name'), e.target.value)) {
                     return;
                 }
 
@@ -100,6 +107,9 @@ class AddUser extends Component {
             return;
         }
 
+        const { newUser } = this.state;
+
+
         return (
             <div className="form-group">
                 <label htmlFor="organizations">Associated Organizations</label>
@@ -116,7 +126,7 @@ class AddUser extends Component {
                 }
             </select>
             <div>
-                {_.map(this.state.newUser.organizations, (org, i) => {
+                {_.map(_.get(newUser, 'organizations'), (org, i) => {
                     return (
                         <div className="organization select-confirmation d-flex justify-content-between align-items-center pl-4 pr-4 pt-2 pb-2" key={i}>
                             <p className="m-0">{org.name}</p>
@@ -155,18 +165,21 @@ class AddUser extends Component {
                     </div>
                     {this.getOrganizationBox()}
 
-                    <button className="btn btn-primary" onClick={this.submitUser.bind(this)}>Submit</button>
+                    <button className="btn btn-primary" onClick={this.submitUser}>Submit</button>
                 </div>
             </Card>
         )
     };
 
-    redirect = path => <Redirect to={'/'+ path} />;
+    redirectToExplore = () => <Redirect to="/explore" />;
 
     render() {
-        const shouldRedirect = _.isString(this.state.redirect) || _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+        console.log(this.props, this.state);
+        const shouldRedirect = (_.isString(this.state.redirect) && this.state.submitted === true) && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
         if (shouldRedirect) {
-            return this.redirect(this.state.redirect || '/explore');
+            return this.state.redirect
+                ? <Redirect to={this.state.redirect} />
+                : this.redirectToExplore()
         }
 
         return (

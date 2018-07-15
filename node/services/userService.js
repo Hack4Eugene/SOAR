@@ -123,6 +123,7 @@ module.exports = {
                         UserModel.update({ _id: req.params.user_id }, updatedRecord)
                             .then(result => res.status(200).send(result))
                             .catch(err => res.status(500).send(err));
+          
                     }
                     //User is updating password
                     getHash(password, SALT_ROUNDS)

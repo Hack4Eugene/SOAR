@@ -31,6 +31,9 @@ class UserProfilePage extends Component {
         this.state = {
             tabs: [
                 {
+                    name: 'about'
+                },
+                {
                     name: 'events',
                     active: true
                 },
@@ -73,6 +76,18 @@ class UserProfilePage extends Component {
 
     isActiveTab = tab => tab === this.getActiveTab().name;
 
+    fetchTabContent = () => {
+        const tabs = {
+            about: null,
+            events: null,
+            projects: null,
+            organizations: null,
+            settings: null
+        };
+
+        return tabs[this.state.activeTab];
+    };
+
     render() {
         const {
             name,
@@ -104,6 +119,12 @@ class UserProfilePage extends Component {
                             <ul className="list-group list-group-flush">
                                 <li
                                     className={classnames('list-group-item', {
+                                        'active': this.isActiveTab('about')
+                                    })}
+                                    onClick={() => this.setActiveTab('about')}
+                                >About</li>
+                                <li
+                                    className={classnames('list-group-item', {
                                         'active': this.isActiveTab('events')
                                     })}
                                     onClick={() => this.setActiveTab('events')}
@@ -128,6 +149,7 @@ class UserProfilePage extends Component {
                             </ul>
                         </div>
                     </div>
+                    {this.fetchTabContent()}
                     <div className="col-9">
                         <Card>
 

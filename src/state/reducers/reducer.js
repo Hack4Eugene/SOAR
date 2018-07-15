@@ -36,11 +36,11 @@ const reducer = (state = initialState, action) => {
         }
 
         case DELETE_EVENT_RESOLVED: {
-            return _.assign({}, state, { events: { ...state.events, Status: SUCCESS }})
+            return _.assign({}, state, { events: { ...state.events, status: SUCCESS }})
         }
 
         case DELETE_EVENT_REJECTED: {
-            return _.assign({}, state, { events: { ...state.events, error: { ...payload }, Status: ERROR }})
+            return _.assign({}, state, { events: { ...state.events, error: { ...payload }, status: ERROR }})
         }
 
         case ADD_ORG_RESOLVED: {
@@ -60,11 +60,11 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_EVENTS_RESOLVED: {
-            return _.assign({}, state, { events: { ...state.events, data: [...payload.data], Status: SUCCESS } })
+            return _.assign({}, state, { events: { ...state.events, data: [...payload.data], status: SUCCESS } })
         }
 
         case GET_EVENTS_REJECTED: {
-            return _.assign({}, state, { events: { error: { ...payload }, Status: ERROR }})
+            return _.assign({}, state, { events: { error: { ...payload }, status: ERROR }})
         }
 
         case LOGIN_USER_RESOLVED: {
@@ -113,27 +113,27 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_PROJECTS_RESOLVED: {
-            return _.assign({}, state, { projects: { ...state.projects, data: [...payload.data], Status: SUCCESS }})
+            return _.assign({}, state, { projects: { ...state.projects, data: [...payload.data], status: SUCCESS }})
         }
 
         case GET_PROJECTS_REJECTED: {
-            return _.assign({}, state, { projects: { error: { ...payload }, Status: ERROR }})
+            return _.assign({}, state, { projects: { error: { ...payload }, status: ERROR }})
         }
 
         case DELETE_PROJECT_RESOLVED: {
-            return _.assign({}, state, { projects: { ...state.projects, Status: SUCCESS }})
+            return _.assign({}, state, { projects: { ...state.projects, status: SUCCESS }})
         }
 
         case DELETE_PROJECT_REJECTED: {
-            return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, Status: ERROR }})
+            return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, status: ERROR }})
         }
 
         case GET_ORGANIZATIONS_RESOLVED: {
-            return _.assign({}, state, { organizations: { ...state.organizations, data: [...payload.data], Status: SUCCESS }})
+            return _.assign({}, state, { organizations: { ...state.organizations, data: [...payload.data], status: SUCCESS }})
         }
 
         case GET_ORGANIZATIONS_REJECTED: {
-            return _.assign({}, state, { organizations: { ...state.organizations, error: { ...payload }, Status: ERROR }})
+            return _.assign({}, state, { organizations: { ...state.organizations, error: { ...payload }, status: ERROR }})
         }
 
         default: return state;
