@@ -9,7 +9,7 @@ module.exports = function (app) {
 
     app.post(routes.LOGIN, login);
 
-    app.post(routes.POST_USER, (req, res, next) => authenticate(req, res, next, createOrUpdate));
+    app.post(routes.POST_USER, createOrUpdate);
 
     app.delete(routes.DELETE_USER, (req, res, next) => authenticate(req, res, next, deleteUser));
     /*

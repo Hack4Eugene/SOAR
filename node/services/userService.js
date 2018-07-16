@@ -6,6 +6,7 @@ const { jwtOpts } = require('../middleware/ecan-passport-strategy');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 const { getHash, comparePasswordHash } = require('./authService');
+const { authenticate } = require('../middleware/ecan-passport-strategy');
 
 const SALT_ROUNDS = 10;
 const TOKEN_LIFETIME = 3600;
@@ -71,6 +72,9 @@ module.exports = {
     createOrUpdate: (req, res, next) => {
         const { username, password } = req.body;
         if(!req.params.user_id){
+            /*
+                Creating a User
+             */
             //Lookup the username
             UserModel.find({ username }).count()
                 .then(res => {
@@ -99,54 +103,59 @@ module.exports = {
                 });
         }
         else {
-            console.log(`Updating user: ${req.params.user_id}`);
+            /*
+                Updating a user
+             */
+            authenticate(req, res, next, () => {
+                console.log(`Updating user: ${req.params.user_id}`);
 
-            UserModel.findOne({ _id: req.params.user_id })
-                .then(userRecord => {
-                    if (_.isEmpty(userRecord)) {
-                        throw new RequestError(`User ${req.params.user_id} not found`, 'NOT_FOUND');
-                    }
+                UserModel.findOne({ _id: req.params.user_id })
+                    .then(userRecord => {
+                        if (_.isEmpty(userRecord)) {
+                            throw new RequestError(`User ${req.params.user_id} not found`, 'NOT_FOUND');
+                        }
 
-                    const { username } = req.body;
-                    //Lookup the username for someone with a different id so you could still pass in your current username and have it not freak out
-                    UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
-                        .then(res => {
-                            if (!_.isUndefined(res) && _.isInteger(res) && res > 0) {
-                                throw new RequestError('Username has been taken', 'BAD_REQUEST')
-                            }
-                        })
-                        .catch(err => res.status(err.status || 500).send(err));
+                        const { username } = req.body;
+                        //Lookup the username for someone with a different id so you could still pass in your current username and have it not freak out
+                        UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
+                            .then(res => {
+                                if (!_.isUndefined(res) && _.isInteger(res) && res > 0) {
+                                    throw new RequestError('Username has been taken', 'BAD_REQUEST')
+                                }
+                            })
+                            .catch(err => res.status(err.status || 500).send(err));
 
-                    let updatedRecord = req.body;
+                        let updatedRecord = req.body;
 
-                    if (!updatedRecord.password) {
-                        UserModel.update({ _id: req.params.user_id }, updatedRecord)
-                            .then(result => res.status(200).send(result))
-                            .catch(err => res.status(500).send(err));
-          
-                    }
-                    //User is updating password
-                    getHash(password, SALT_ROUNDS)
-                        .then(hash => {
-                            return Object.assign({}, updatedRecord, { password: hash });
-                        })
-                        .then(updatedRecordWithHashedPassword => {
-                            UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
-                                .then(result => {
-                                    delete result.password;
-                                    res.status(200).send(result)
-                                })
-                                .catch(err => {
-                                    throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
-                                });
-                        })
-                        .catch(err => {
-                            throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
-                        });
-                })
-                .catch(error => {
-                    res.status(error.status || 500).send(error);
-                });
+                        if (!updatedRecord.password) {
+                            UserModel.update({ _id: req.params.user_id }, updatedRecord)
+                                .then(result => res.status(200).send(result))
+                                .catch(err => res.status(500).send(err));
+
+                        }
+                        //User is updating password
+                        getHash(password, SALT_ROUNDS)
+                            .then(hash => {
+                                return Object.assign({}, updatedRecord, { password: hash });
+                            })
+                            .then(updatedRecordWithHashedPassword => {
+                                UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
+                                    .then(result => {
+                                        delete result.password;
+                                        res.status(200).send(result)
+                                    })
+                                    .catch(err => {
+                                        throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                                    });
+                            })
+                            .catch(err => {
+                                throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                            });
+                    })
+                    .catch(error => {
+                        res.status(error.status || 500).send(error);
+                    });
+            });
         }
     },
 
