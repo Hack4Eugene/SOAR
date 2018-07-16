@@ -35,11 +35,11 @@ while [[ -z $COMMAND ]]; do
 		echo 'You chose:' $opt
 	    case $opt in
 	        "Start Instances")
-				COMMAND='aws ec2 start-instances --instance-ids i-01ef9fe5ca2de86f8 i-0a17afa5e6458757b --output json'
+				COMMAND='aws ec2 start-instances --instance-ids i-01ef9fe5ca2de86f8 i-0a17afa5e6458757b --profile $PROFILE --output json'
 	            break;
 	            ;;
 	        "Stop Instances")
-				COMMAND='aws ec2 stop-instances --instance-ids i-01ef9fe5ca2de86f8 i-0a17afa5e6458757b --output json'
+				COMMAND='aws ec2 stop-instances --instance-ids i-01ef9fe5ca2de86f8 i-0a17afa5e6458757b --profile $PROFILE --output json'
 	            break;
 	            ;;
 	        "Quit - I just wanted instance state")
