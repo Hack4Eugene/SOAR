@@ -56,6 +56,8 @@ require('./routes/projectRoutes')(app);
 require('./routes/eventRoutes')(app);
 require('./routes/userRoutes')(app);
 
+app.get('/health', (req, res) => res.status(200).send({ msg: 'Active' }));
+
 app.listen(port, () => console.log(`ECAN server started on: ` + port));
 
 app.use((req, res, next) => res.status(404).send({ url: req.originalUrl + ' not found' }));
