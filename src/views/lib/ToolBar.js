@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import {
     deleteEvent,
     deleteProject
-} from '../state/actions/index';
+} from '../../state/actions/index';
 
 import './toolbar.scss';
 

@@ -3,20 +3,20 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import './global.scss';
 
-import Header from './components/global/Header';
+import Header from './views/global/Header';
 
-import ProjectFeed from './components/pages/ProjectFeed';
-import EventFeed from './components/pages/EventFeed';
-import AddEvent from './components/pages/AddEvent';
-import ExploreFeed from './components/pages/ExploreFeed';
-import AddOrganization from './components/pages/AddOrganization';
-import AddUser from './components/pages/AddUser';
-import LoginPage from './components/pages/LoginPage';
-import ProfilePage from './components/pages/UserProfilePage';
-import ProjectPage from './components/pages/ProjectPage';
-import UserProfilePage from './components/pages/UserProfilePage';
-import PrivateRoute from './components/hoc/requireAuth';
-import OrganizationPage from './components/pages/OrganizationPage';
+import ProjectFeed from './views/components/Feeds/ProjectFeed';
+import EventFeed from './views/components/Feeds/EventFeed';
+import AddEvent from './views/pages/AddEvent';
+import ExploreFeed from './views/components/Feeds/ExploreFeed';
+import AddOrganization from './views/pages/AddOrganization';
+import AddUser from './views/pages/AddUser';
+import LoginPage from './views/pages/Login';
+import ProfilePage from './views/pages/UserProfile';
+import ProjectPage from './views/pages/Project';
+import UserProfilePage from './views/pages/UserProfile';
+import PrivateRoute from './views/hoc/requireAuth';
+import OrganizationPage from './views/pages/Organization';
 
 class App extends Component {
     render() {

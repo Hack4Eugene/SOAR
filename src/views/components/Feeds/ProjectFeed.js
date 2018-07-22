@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
 
-import { incrementEventsFinished, setEventsFinished, getProjects } from '../../state/actions/index';
+import { incrementEventsFinished, setEventsFinished, getProjects } from '../../../state/actions/index';
 
-import ProjectCard from '../ProjectCard';
-import { SUCCESS } from '../../state/statusTypes';
+import ProjectCard from '../Widgets/Project';
+import { SUCCESS } from '../../../state/statusTypes';
 
 const dummyAPIData = {
     project: [

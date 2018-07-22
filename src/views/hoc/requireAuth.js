@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
-import LoginPage from '../pages/LoginPage';
+import LoginPage from '../pages/Login';
 
 const mapStateToProps = state => ({
     isLoggedIn: _.get(state, 'authentication.isLoggedIn'),

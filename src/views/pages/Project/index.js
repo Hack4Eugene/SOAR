@@ -5,19 +5,19 @@ import moment from 'moment';
 import { withRouter } from 'react-router-dom'
 import { get, filter, isEqual, isArray } from 'lodash';
 
-import { SUCCESS } from '../../state/statusTypes';
+import { SUCCESS } from '../../../state/statusTypes';
 
-import Card from '../Card';
+import Card from '../../lib/Card';
 
-import { loginUser } from '../../state/actions/index.js';
-import EventsWidget from '../EventsWidget';
+import { loginUser } from '../../../state/actions/index.js';
+import EventsWidget from '../../components/Widgets/Event';
 
-import { getEvents } from '../../state/actions/index.js';
+import { getEvents } from '../../../state/actions/index.js';
 
-import parkImg from '../../static/imgs/food.jpg';
-import foodLaneImg from '../../static/imgs/food-lane-county.jpg';
-import peaceImg from '../../static/imgs/peace-corps.jpg';
-import habitatImg from '../../static/imgs/habitat-humanity.png';
+import parkImg from '../../../static/imgs/food.jpg';
+import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
+import peaceImg from '../../../static/imgs/peace-corps.jpg';
+import habitatImg from '../../../static/imgs/habitat-humanity.png';
 
 import './ProjectPage.css';
 
@@ -27,7 +27,7 @@ const mapStateToProps = (state) => ({
     // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
 });
 
-class ProjectPage extends Component {
+class Project extends Component {
   constructor(props) {
       super(props);
       this.state = {
@@ -150,4 +150,4 @@ class ProjectPage extends Component {
   }
 }
 
-export default connect(mapStateToProps, { getEvents })(ProjectPage);
+export default connect(mapStateToProps, { getEvents })(Project);

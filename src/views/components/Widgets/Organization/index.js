@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { map, orderBy, find } from 'lodash';
 import moment from 'moment';
 
-import Card from './Card';
+import Card from '../../../lib/Card';
 
 const OrganizationItem = ({ organization }) => {
     return (
