@@ -4,14 +4,14 @@ import classnames from 'classnames';
 import _ from 'lodash'
 
 import ProjectFeed from './ProjectFeed';
-import EventsWidget from '../EventsWidget';
-import OrganizationsWidget from '../OrganizationsWidget';
+import EventsWidget from '../Widgets/Event';
+import OrganizationsWidget from '../Widgets/Organization';
 
 import {
     getEvents,
     getProjects,
     getOrganizations
-} from '../../state/actions/index';
+} from '../../../state/actions/index';
 
 const mapStateToProps = state => ({
     events: _.get(state, 'events', {}),

@@ -3,11 +3,11 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
 
-import { SUCCESS } from '../../state/statusTypes';
+import { SUCCESS } from '../../../state/statusTypes';
 
-import Card from '../Card';
+import Card from '../../lib/Card';
 
-import { loginUser, logoutUser } from '../../state/actions/index.js'
+import { loginUser, logoutUser } from '../../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
     isLoggedIn: !_.get(state, 'authentication.isTokenExpired', false) && _.get(state, 'authentication.isLoggedIn', false),

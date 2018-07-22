@@ -5,12 +5,12 @@ import { get, filter } from 'lodash';
 import moment from 'moment';
 import { withRouter } from 'react-router-dom'
 
-import Card from '../Card';
+import Card from '../../lib/Card';
 import Calendar from 'react-calendar';
 
-import { loginUser } from '../../state/actions/index.js'
+import { loginUser } from '../../../state/actions/index.js'
 
-import './UserProfilePage.css';
+import '../UserProfile/UserProfilePage.css';
 
 const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
