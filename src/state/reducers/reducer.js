@@ -8,13 +8,15 @@ import {
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
     GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED, API_ERROR,
     GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORG_ID_RESOLVED, GET_ORG_ID_REJECTED,
-    POST_USER_RESOLVED, POST_USER_PENDING, POST_USER_REJECTED
+    POST_USER_RESOLVED, POST_USER_PENDING, POST_USER_REJECTED,
+    GET_EVENT_RESOLVED, GET_EVENT_REJECTED
 } from '../types';
 import { ERROR, LOADING, SUCCESS } from '../statusTypes';
 
 const initialState = {
     user: {},
     events: [],
+    selectedEvent: {},
     projects: [],
     profile: {}
 };
@@ -65,6 +67,10 @@ const reducer = (state = initialState, action) => {
 
         case GET_EVENTS_REJECTED: {
             return _.assign({}, state, { events: { error: { ...payload }, status: ERROR }})
+        }
+
+        case GET_EVENT_RESOLVED: {
+            return _.assign({}, state, { selectedEvent: payload })
         }
 
         case LOGIN_USER_RESOLVED: {

@@ -128,7 +128,7 @@ class EventFeed extends Component {
                         data-toggle="modal" 
                         data-target="#exampleModal"
                     >
-                        Add New Event
+                        Add new event
                     </button>
                 </Link>
             </div>

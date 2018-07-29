@@ -54,6 +54,8 @@ import {
     ADD_EVENT_REJECTED,
     GET_EVENTS_RESOLVED,
     GET_EVENTS_REJECTED,
+    GET_EVENT_RESOLVED,
+    GET_EVENT_REJECTED,
     DELETE_EVENT_RESOLVED,
     DELETE_EVENT_REJECTED,
     LOGIN_USER_RESOLVED,
@@ -204,6 +206,16 @@ export const getEvents = () => {
             .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), GET_EVENTS)))
             .then(result => dispatch({ type: GET_EVENTS_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_EVENTS_REJECTED, payload: err  }))
+
+    }
+};
+
+export const getEventById = (eventId) => {
+    return (dispatch, getState) => {
+        HttpClient(getState(), dispatch)
+            .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)))
+            .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err  }))
 
     }
 };

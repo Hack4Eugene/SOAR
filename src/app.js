@@ -7,6 +7,7 @@ import Header from './views/global/Header';
 
 import ProjectFeed from './views/components/Feeds/ProjectFeed';
 import EventFeed from './views/components/Feeds/EventFeed';
+import Event from './views/pages/Event';
 import AddEvent from './views/pages/AddEvent';
 import ExploreFeed from './views/components/Feeds/ExploreFeed';
 import AddOrganization from './views/pages/AddOrganization';
@@ -30,6 +31,7 @@ class App extends Component {
                         <PrivateRoute path="/logout" component={() => <LoginPage expireSession={true} />} />
                         <PrivateRoute path="/" exact component={ProjectFeed} />
                         <PrivateRoute path="/events" component={EventFeed} />
+                        <PrivateRoute path="/event/:id" component={Event} />
                         <PrivateRoute path="/explore" component={ExploreFeed} />
                         <PrivateRoute path="/addevent" component={AddEvent} />
                         <PrivateRoute path="/addorganization" component={AddOrganization} />
