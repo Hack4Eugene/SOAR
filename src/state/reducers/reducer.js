@@ -70,7 +70,11 @@ const reducer = (state = initialState, action) => {
         }
 
         case GET_EVENT_RESOLVED: {
-            return _.assign({}, state, { selectedEvent: payload })
+            return _.assign({}, state, { selectedEvent: { ...payload, status: SUCCESS } })
+        }
+
+        case GET_EVENT_REJECTED: {
+            return _.assign({}, state, { selectedEvent: { error: { ...payload }, status: ERROR } })
         }
 
         case LOGIN_USER_RESOLVED: {
