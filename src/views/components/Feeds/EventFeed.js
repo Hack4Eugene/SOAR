@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import { get, filter, isEqual, isArray, isEmpty } from 'lodash';
 import moment from 'moment';
 
-import EventsWidget from '../Widgets/Event'
+import EventsWidget from '../Widgets/Event';
 import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
 
 import Card from '../../lib/Card';
 import Calendar from 'react-calendar';
 
-import { getEvents } from '../../../state/actions/index.js'
+import { getEvents } from '../../../state/actions/index.js';
 
 class EventFeed extends Component {
     constructor (props) {
@@ -27,50 +27,41 @@ class EventFeed extends Component {
     }
 
     onDateChange(date) {
+        const selectedDate = moment(date);
+
         let tempFilteredEvents = filter(this.props.events, event => {
             const eventDate = moment(event.eventDate);
-            const selectedDate = moment(date);
-
             return eventDate.isSame(selectedDate, 'day');
         });
 
-        this.setState({ filteredEvents: tempFilteredEvents })
-
-        // console.log('this.state.filteredEvents', this.state.filteredEvents)
-        // console.log('tempFilteredEvents', tempFilteredEvents)
-
-        // let isSame = false
-        // if (isEqual(this.state.filteredEvents, tempFilteredEvents)) {
-        //     // isSame = true
-        //     this.setState({
-        //         filteredEvents: this.props.events
-        //     })
-        // } else {
-        //     !isEmpty(tempFilteredEvents)
-        //     ? this.setState({ filteredEvents: tempFilteredEvents })
-        //     : this.setState({ filteredEvents: [] }) 
-        // }
+        this.setState({ 
+            filteredEvents: tempFilteredEvents,
+            selectedDate: selectedDate
+        })
     }
 
     showFeedHeader() {
         const events = this.state.filteredEvents
+
         if (events === null) {
             return (
                 <div className="col-8">
-                    <h2 className="ml-3">Your Upcoming Events</h2>
+                    <h2>Your Upcoming Events</h2>
                 </div>
             )
         }
 
-        let selectedDate = 'No events on this date'
+        const formattedDate = moment(this.state.selectedDate).format('dddd MMM D, YYYY')
+
+        let dateMsg = `No events on ${formattedDate}`;
 
         if (!isEmpty(events)) {
-            selectedDate = `Events on ${moment(events[0].eventDate).format('dddd MMM M YYYY')}`;
+            dateMsg = `Events on ${formattedDate}`;
         }
 
         return (
             <div className="col-8">
-                <h2 className="ml-3">{selectedDate}</h2>
+                <h2>{dateMsg}</h2>
             </div>
         )
     }
@@ -79,7 +70,14 @@ class EventFeed extends Component {
         if (this.props.eventsStatus === 'SUCCESS') {
             return (
                 <div className="col-8">
-                    <EventsWidget events={ this.state.filteredEvents === null ? this.props.events : this.state.filteredEvents } />
+                    <EventsWidget
+                        filtered={this.state.filteredEvents !== null}
+                        events={ 
+                            this.state.filteredEvents === null 
+                            ? this.props.events 
+                            : this.state.filteredEvents 
+                        } 
+                    />
                 </div> 
             )
         }
@@ -91,9 +89,15 @@ class EventFeed extends Component {
         )
     }
 
+    resetFilter = () => {
+        this.setState({
+            filteredEvents: null
+        })
+    }
+
     showCalendar() {
         return (
-            <div className="pull-right">
+            <div className="col-4">
                 <Card>
                     <Calendar
                         id="calendar" 
@@ -101,6 +105,32 @@ class EventFeed extends Component {
                         onChange={(value) => this.onDateChange(value)}
                     />
                 </Card>
+                {this.state.filteredEvents !== null 
+                    && <button 
+                            className="btn btn-light w-100 mt-3" 
+                            style={{ border: '1px solid rgba(0, 0, 0, 0.125)' }}
+                            onClick={this.resetFilter}
+                        >
+                                Show all events
+                        </button>
+                }
+            </div>
+        )
+    }
+
+    showAddEventButton() {
+        return (
+            <div className="col-4">
+                <Link to="/addevent" >
+                    <button 
+                        type="button" 
+                        className="btn btn-success float-right" 
+                        data-toggle="modal" 
+                        data-target="#exampleModal"
+                    >
+                        Add New Event
+                    </button>
+                </Link>
             </div>
         )
     }
@@ -108,21 +138,12 @@ class EventFeed extends Component {
     render() {
         return (
             <div className="container">                    
-               <div className="row justify-content-center">
+               <div className="row mb-2">
                     {this.showFeedHeader()}
-                    <div className="col-4">
-                        <Link to="/addevent" >
-                            <button type="button" 
-                                    className="btn btn-success float-right" 
-                                    data-toggle="modal" 
-                                    data-target="#exampleModal">
-                                    Add New Event
-                            </button>
-                        </Link>
-                    </div>
+                    {this.showAddEventButton()}
                 </div>
-                <div className="row justify-content-center">
-                    {this.showEvents()}                
+                <div className="row">
+                    {this.showEvents()}           
                     {this.showCalendar()}
                 </div>
             </div>

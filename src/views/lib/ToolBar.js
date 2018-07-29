@@ -34,13 +34,8 @@ class ToolBar extends Component {
 
     render() {
         return (
-            <div>
-                <div className="d-inline-flex justify-content-between w-100">
-                    {this.props.children}
-                    <div className="d-inline-flex justify-self-end icon-container">
-                        <i className="fas fa-pencil-alt mr-2" /><i className=" ml-2 fas fa-times" onClick={this.onDeleteClick} />
-                    </div>
-                </div>
+            <div className="d-inline-flex icon-container">
+                <i className="fas fa-pencil-alt mr-2 dark-gray" /><i className="ml-2 fas fa-times dark-gray" onClick={this.onDeleteClick} />
             </div>
         )
     }
