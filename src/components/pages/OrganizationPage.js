@@ -8,7 +8,7 @@ import { withRouter } from 'react-router-dom'
 import Card from '../Card';
 import Calendar from 'react-calendar';
 
-import { loginUser } from '../../state/actions/index.js'
+import { getOrganizationsById } from '../../state/actions/index.js'
 
 import './UserProfilePage.css';
 
@@ -30,8 +30,10 @@ class ProfilePage extends Component {
         }
     }
 
-    componentWillMount() {
-
+    componentDidMount() {
+        console.log(this.props.computedMatch.params.id);
+        const organizationID = this.props.computedMatch.params.id;
+        this.props.getOrganizationsById([organizationID]);
     }
 
     render() {
@@ -39,7 +41,7 @@ class ProfilePage extends Component {
         return (
             <div className="container">
                 <div class="jumbotron p-4">
-                    <h1 class="display-4">FOOD for Lane County</h1>
+                    <h1 class="display-4">{console.log(this.state)}</h1>
                     <p class="lead">We are a private, 501(c)(3) nonprofit food bank dedicated to alleviating hunger by
                         creating access to food.</p>
                     <hr class="my-4"/>
@@ -149,4 +151,4 @@ class ProfilePage extends Component {
     }
 }
 
-export default connect(mapStateToProps)(ProfilePage);
+export default connect(mapStateToProps, { getOrganizationsById })(ProfilePage);
