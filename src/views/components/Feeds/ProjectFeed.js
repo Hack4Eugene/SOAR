@@ -29,7 +29,7 @@ class ProjectFeed extends Component {
             <ProjectCard
                 title={project.name}
                 startDate={project.startDate}
-                link={<Link className="btn btn-primary float-left" to={`/project/${project._id}`}>More Details</Link>}
+                link={<Link className="btn btn-primary float-left" to={`/project/${project._id}`}>More details</Link>}
                 key={project._id}
             >
                 <p className="text-left">{project.description}</p>

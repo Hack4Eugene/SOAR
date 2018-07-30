@@ -16,7 +16,7 @@ const OrganizationItem = ({ organization }) => {
                 <p className="card-text">
                     {organization.description}
                 </p>
-                <Link className="btn btn-primary float-left" to={`/organization/${organization._id}`}>More Details</Link>
+                <Link className="btn btn-primary float-left" to={`/organization/${organization._id}`}>More details</Link>
             </div>
         </Card>
     );
