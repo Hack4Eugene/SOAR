@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { map, orderBy, find } from 'lodash';
+import { map } from 'lodash';
 import moment from 'moment';
 
-import eventImg1 from '../../../../static/imgs/stock-event-1.jpg';
+// import eventImg1 from '../../../../static/imgs/stock-event-1.jpg';
 
 import ToolBar from '../../../lib/ToolBar';
 import Card from '../../../lib/Card';
@@ -26,22 +25,22 @@ const EventItem = ({ event }) => {
                 </p>
             </div>
         </Card>
-    )
+    );
 };
 
 const NoEvents = () => {
     return (
         <p className="font-italic m-3">No events yet!</p>
-    )
+    );
 };
 
 const EventsWidget = ({ events }) => {
     const EventList = events.length
         ? map(events, event =>
-            <div className="mb-4" key={event._id}>
-                <EventItem event={event}/>
-            </div>)
-        : <NoEvents/>;
+            (<div className="mb-4" key={event._id}>
+                <EventItem event={event} />
+            </div>))
+        : <NoEvents />;
 
     return (
         <div>

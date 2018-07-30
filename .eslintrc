@@ -1,24 +1,10 @@
 {
-  "plugins": [
-    "react"
-  ],
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "jsx": true
-    }
-  },
+  "extends": "cbtnuggets/rules/react",
+  "parser": "babel-eslint",
   "env": {
-    "es6":     true,
-    "browser": true,
-    "node":    true,
-    "mocha":   true
+    "jest": true
   },
-  "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended"
-  ],
   "rules": {
+    "jsx-a11y/label-has-for": 0
   }
 }

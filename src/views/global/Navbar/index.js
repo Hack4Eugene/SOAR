@@ -22,12 +22,8 @@ class Navbar extends Component {
 
         this.state = {
             isSidebarOpen: false
-        }
+        };
     }
-
-    handleClick = () => {
-        this.setState({isSidebarOpen: !this.state.isSidebarOpen }, () => console.log(this.state));
-    };
 
     getNavigationLinks = () => (
         <div className="navbar mr-5">
@@ -61,16 +57,19 @@ class Navbar extends Component {
                         <button className="btn btn-outline-primary btn-lg ml-2">Login</button>
                     </Link>
                 </Fragment>
-               ) : <Link className="text-primary" to="/logout"><button className="btn btn-outline-primary btn-md">Logout</button></Link>
-
+               ) : <Link className="text-primary" to="/logout"><button className="btn btn-outline-primary btn-md">Logout</button></Link>;
     };
 
     getUserAvatar = () => (
         <Link to="./userprofile" style={{ flexShrink: '0', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-            <img src={avatar} style={{ width: '100%', maxWidth: '58px' }}/>
+            <img alt="ECAN SOAR Avatar" src={avatar} style={{ width: '100%', maxWidth: '58px' }} />
             <p style={{ color: 'black', margin: '0 0 0 8px' }}>{this.props.userName}</p>
         </Link>
     );
+
+    handleClick = () => {
+        this.setState({ isSidebarOpen: !this.state.isSidebarOpen }, () => console.log(this.state));
+    };
 
     render() {
         const {
@@ -97,10 +96,11 @@ class Navbar extends Component {
                         classNames('navbar navbar-white border-bottom mb-4 p-0 justify-content-center',
                             { [mobileClasses]: isMobile }
                         )
-                    }>
+                    }
+                >
                     <HamburgerMenu clickFn={handleClick} open={isSidebarOpen} isMobile={isMobile} />
                     <div className="navbar-brand">
-                        <img src={logo} alt="ECAN Logo" width="150" height="150" className="d-inline-block float-left"/>
+                        <img src={logo} alt="ECAN Logo" width="150" height="150" className="d-inline-block float-left" />
                     </div>
                     {!isMobile && (
                         <div className="d-flex align-items-center">
@@ -111,7 +111,7 @@ class Navbar extends Component {
                     )}
                 </nav>
             </div>
-        )
+        );
     }
 }
 

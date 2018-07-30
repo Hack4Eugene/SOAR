@@ -1,40 +1,40 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { get, filter, isEqual, isArray, isEmpty } from 'lodash';
+import { get, filter, isEmpty } from 'lodash';
 import moment from 'moment';
-
-import EventsWidget from '../Widgets/Event'
-import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
-
-import Card from '../../lib/Card';
 import Calendar from 'react-calendar';
 
-import { getEvents } from '../../../state/actions/index.js'
+import EventsWidget from '../Widgets/Event';
+// import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
+
+import Card from '../../lib/Card';
+
+import { getEvents } from '../../../state/actions/index.js';
 
 class EventFeed extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             filteredEvents: null,
             selectedDate: null
-        }
+        };
     }
 
     componentDidMount() {
-        this.props.getEvents()
+        this.props.getEvents();
     }
 
     onDateChange(date) {
-        let tempFilteredEvents = filter(this.props.events, event => {
+        const tempFilteredEvents = filter(this.props.events, event => {
             const eventDate = moment(event.eventDate);
             const selectedDate = moment(date);
 
             return eventDate.isSame(selectedDate, 'day');
         });
 
-        this.setState({ filteredEvents: tempFilteredEvents })
+        this.setState({ filteredEvents: tempFilteredEvents });
 
         // console.log('this.state.filteredEvents', this.state.filteredEvents)
         // console.log('tempFilteredEvents', tempFilteredEvents)
@@ -53,16 +53,16 @@ class EventFeed extends Component {
     }
 
     showFeedHeader() {
-        const events = this.state.filteredEvents
+        const events = this.state.filteredEvents;
         if (events === null) {
             return (
                 <div className="col-8">
                     <h2 className="ml-3">Your Upcoming Events</h2>
                 </div>
-            )
+            );
         }
 
-        let selectedDate = 'No events on this date'
+        let selectedDate = 'No events on this date';
 
         if (!isEmpty(events)) {
             selectedDate = `Events on ${moment(events[0].eventDate).format('dddd MMM M YYYY')}`;
@@ -72,23 +72,23 @@ class EventFeed extends Component {
             <div className="col-8">
                 <h2 className="ml-3">{selectedDate}</h2>
             </div>
-        )
+        );
     }
 
     showEvents() {
         if (this.props.eventsStatus === 'SUCCESS') {
             return (
                 <div className="col-8">
-                    <EventsWidget events={ this.state.filteredEvents === null ? this.props.events : this.state.filteredEvents } />
+                    <EventsWidget events={this.state.filteredEvents === null ? this.props.events : this.state.filteredEvents} />
                 </div> 
-            )
+            );
         }
 
         return (
             <div className="col-8">
                 <h4>Loading...</h4>
             </div>
-        )
+        );
     }
 
     showCalendar() {
@@ -102,7 +102,7 @@ class EventFeed extends Component {
                     />
                 </Card>
             </div>
-        )
+        );
     }
 
     render() {
@@ -112,10 +112,12 @@ class EventFeed extends Component {
                     {this.showFeedHeader()}
                     <div className="col-4">
                         <Link to="/addevent" >
-                            <button type="button" 
+                            <button
+type="button" 
                                     className="btn btn-success float-right" 
                                     data-toggle="modal" 
-                                    data-target="#exampleModal">
+                                    data-target="#exampleModal"
+                            >
                                     Add New Event
                             </button>
                         </Link>
@@ -126,7 +128,7 @@ class EventFeed extends Component {
                     {this.showCalendar()}
                 </div>
             </div>
-        )
+        );
     }
 }
 

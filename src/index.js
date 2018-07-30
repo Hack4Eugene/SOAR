@@ -7,25 +7,25 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import createBrowserHistory from 'history/createBrowserHistory';
 
-import myReducerMiddleware, { persistedState } from './state/middleware/authentication';
-
-const authReducer = () => myReducerMiddleware();
+import myReducerMiddleware, { persistState } from './state/middleware/authentication';
 
 import reducer from './state/reducers/index';
 
 import App from './app';
+
+const authReducer = () => myReducerMiddleware();
 // import myReducerMiddleware from './state/middleware/authentication';
 
 const history = createBrowserHistory();
 
-const initialState = { env: ENVIRONMENT || 'local' };
+const initialState = { env: window.ENVIRONMENT || 'local' };
 
 const middleware = applyMiddleware(thunk);
 const enhancer = compose(middleware, authReducer());
 
 const store = createStore(
     reducer,
-    persistedState(initialState),
+    persistState(initialState),
     composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
     // TODO: replace this when ready
     // initialState.env === 'production'

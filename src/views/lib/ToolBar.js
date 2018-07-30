@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import {
@@ -15,17 +14,17 @@ class ToolBar extends Component {
         const {
             type,
             data,
-            deleteEvent,
-            deleteProject
+            deleteEvent: deleteEventFn,
+            deleteProject: deleteProjectFn
         } = this.props;
 
         switch (type) {
             case 'event': {
-                deleteEvent(data._id);
+                deleteEventFn(data._id);
                 return;
             }
             case 'project': {
-                deleteProject(data._id);
+                deleteProjectFn(data._id);
                 return;
             }
             default: return;
@@ -42,7 +41,7 @@ class ToolBar extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

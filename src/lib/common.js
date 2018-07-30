@@ -2,24 +2,18 @@ import axios from 'axios';
 import _ from 'lodash';
 import moment from 'moment';
 import 'babel-polyfill';
-import { API_ERROR } from '../state/types';
-import { serviceHost, serviceRoutes }from '../config/routes';
-import { logoutUser } from '../state/actions/index';
+import { serviceHost } from '../config/routes';
 
 export const serialize = obj => JSON.stringify(obj);
 
 export const getToken = state => _.get(state, 'authentication.token', '');
 
-async function HttpClient(state, dispatch, opts) {
+export const HttpClient = async function (state, dispatch, opts) {
     return await axios.create({
         ...opts,
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken(state)}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken(state)}` },
         timeout: 15000
     });
-}
-
-export {
-    HttpClient
 };
 
 export const loadEndpoint = (state, route) => `${serviceHost[state || 'local']}${route}`;

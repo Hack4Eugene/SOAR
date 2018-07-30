@@ -1,16 +1,16 @@
 import _ from 'lodash';
 import { isValidToken } from '../../lib/common';
 
-export const STORAGE_KEY = `ecan_${ENVIRONMENT}`;
+export const STORAGE_KEY = `ecan_${window.ENVIRONMENT}`;
 export const NULL_USER = { };
 export const NULL_SESSION = { isTokenExpired: true, isLoggedIn: false };
 
 export const validation = state => {
     if (!state) {
-        return{
+        return {
             user: {},
             authentication: { isTokenExpired: true }
-        }
+        };
     }
 
     const user = _.get(state, 'user', NULL_USER);
@@ -25,7 +25,7 @@ export const validation = state => {
             isLoggedIn,
             isTokenExpired
         }
-    }
+    };
 };
 
 export default function myReducerMiddleware(config) {
@@ -86,9 +86,9 @@ export default function myReducerMiddleware(config) {
 
         return store;
     };
-};
+}
 
-export const persistedState = initialState => {
+export const persistState = initialState => {
     const persistedState = JSON.parse(localStorage.getItem(STORAGE_KEY));
     const user = _.get(persistedState, 'user', {});
     const authentication = _.get(persistedState, 'authentication', NULL_SESSION);

@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
-
 import Navbar from '../Navbar/index';
-import Sidebar from '../Sidebar';
 
 import { isMobileViewport } from '../../../lib/util';
 
-import logo from '../../../static/imgs/ecan_logo.png';
+// import logo from '../../../static/imgs/ecan_logo.png';
 
 class Header extends Component {
     constructor(props) {
@@ -46,7 +43,7 @@ class Header extends Component {
                     <Navbar isMobile={this.state.isMobile} />
                 </div>
             </header>
-        )
+        );
     }
 }
 
