@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { Router } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import createBrowserHistory from 'history/createBrowserHistory';
 
-import myReducerMiddleware, { STORAGE_KEY, persistedState } from './state/middleware/authentication';
+import myReducerMiddleware, { persistedState } from './state/middleware/authentication';
 
 const authReducer = () => myReducerMiddleware();
 
@@ -26,9 +26,11 @@ const enhancer = compose(middleware, authReducer());
 const store = createStore(
     reducer,
     persistedState(initialState),
-    process.env.NODE_ENV === 'production'
-        ? enhancer
-        : composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
+    composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
+    // TODO: replace this when ready
+    // initialState.env === 'production'
+    //     ? composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
+    //     : composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
 );
 
 ReactDOM.render(

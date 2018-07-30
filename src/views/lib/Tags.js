@@ -35,7 +35,7 @@ class Tags extends Component {
                 <div className="card-header">
                     Interests
                 </div>
-                <div className="card-body">
+                <div className="card-body ">
                     {this.getTags()}
                 </div>
             </Card>

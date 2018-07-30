@@ -9,11 +9,12 @@
   "private": false,
   "scripts": {
     "build:webpack": "CONFIG_ENV=production webpack --colors --progress --config webpack.config.js --mode production",
-    "build": "npm run clean && build:webpack",
+    "build": "npm run clean && npm run build:webpack",
     "start:webpack": "webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
-    "start": "npm run clean && npm run start:webpack",
+    "start": "npm run start:webpack",
     "clean": "rm -rf ./dist",
-    "postinstall": "npm rebuild node-sass --force"
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -21,6 +22,9 @@
     "babel-polyfill": "^6.26.0",
     "classnames": "^2.2.5",
     "css-loader": "^0.28.11",
+    "eslint": "^5.2.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "eslint-plugin-react": "^7.10.0",
     "file-loader": "^1.1.11",
     "history": "^4.7.2",
     "moment": "^2.22.1",

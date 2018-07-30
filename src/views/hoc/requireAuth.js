@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
 import LoginPage from '../pages/Login';
@@ -26,4 +25,4 @@ class PrivateRoute extends Component {
     }
 }
 
-export default connect(mapStateToProps)(withRouter(PrivateRoute));
+export default connect(mapStateToProps)(PrivateRoute);
