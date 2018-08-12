@@ -135,7 +135,6 @@ class AddUser extends Component {
             orgs.push(value);
             return orgs;
         }, []);
-        console.log(tempUser);
         this.setState({ newUser: tempUser });
     };
 
@@ -182,7 +181,6 @@ class AddUser extends Component {
     };
 
     render() {
-        console.log(this.props, this.state);
         const shouldRedirect = (_.isString(this.state.redirect) && this.state.submitted === true) && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
         if (shouldRedirect) {
             return this.state.redirect

@@ -70,7 +70,6 @@ organizations: {
 
         case LOGIN_USER_RESOLVED: {
             const { user, authentication } = payload;
-            console.log(user);
             return _.assign({}, state, {
                 user: {
                     ...user,
@@ -84,7 +83,6 @@ organizations: {
         }
 
         case LOGIN_USER_REJECTED: {
-            console.log(payload);
             return _.assign({}, state, {
                 ...state.user,
                 ...state.authentication,

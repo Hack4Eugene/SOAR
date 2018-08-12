@@ -70,8 +70,6 @@ export default function myReducerMiddleware(config) {
                 ? { user, authentication }
                 : { user: NULL_USER, authentication: NULL_SESSION };
 
-            console.log(isLoggedIn);
-
             if (isLoggedIn === false) {
                 state.authentication = storage.authentication;
                 state.user = storage.user;

@@ -17,8 +17,15 @@
 
   ul {
     padding: 0;
-    margin: 60px 0;
+    margin: 80px 0;
     text-align: left;
+
+    hr {
+      background: #d5d5d5;
+      width: 88%;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
 
     li {
       display: flex;

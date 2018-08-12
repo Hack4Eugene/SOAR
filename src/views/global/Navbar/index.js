@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import _ from 'lodash';
 
-import { HamburgerMenu } from '../HamburgerMenu';
+import HamburgerMenu from '../HamburgerMenu';
 import Sidebar from '../Sidebar';
 
 import logo from '../../../static/imgs/ecan_logo.png';
@@ -23,6 +23,18 @@ class Navbar extends Component {
         this.state = {
             isSidebarOpen: false
         };
+
+        this.nav = React.createRef();
+        this.hamburgerMenu = React.createRef();
+        this.onClick = this.handleClick.bind(this);
+    }
+
+    componentDidMount() {
+        window.addEventListener('click', this.onClick);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('click', this.onClick);
     }
 
     getNavigationLinks = () => (
@@ -67,15 +79,32 @@ class Navbar extends Component {
         </Link>
     );
 
-    handleClick = () => {
-        this.setState({ isSidebarOpen: !this.state.isSidebarOpen }, () => console.log(this.state));
+    handleClick = (e) => {
+        const target = e.target;
+        const navbar = this.nav.current;
+        const hamburgerMenu = this.hamburgerMenu.current.container.current;
+        const hamburgerMenuTouchPoints = [hamburgerMenu, ...hamburgerMenu.children, ...hamburgerMenu.children[0].children];
+
+        const shouldOpenSidebar = _.includes(hamburgerMenuTouchPoints, target);
+        const isTargetChildOfSidebar = navbar.firstChild === target;
+
+        //Prevent clicking the page from opening menu
+        if (!this.state.isSidebarOpen && !shouldOpenSidebar) {
+            return;
+        }
+
+        //Ignore click target inside sidebar
+        if (this.state.isSidebarOpen && isTargetChildOfSidebar) {
+            return;
+        }
+
+        this.setState({ isSidebarOpen: !this.state.isSidebarOpen });
     };
 
     render() {
         const {
             props,
-            state,
-            handleClick
+            state
         } = this;
 
         const {
@@ -86,22 +115,24 @@ class Navbar extends Component {
             isMobile
         } = props;
 
-        const mobileClasses = 'justify-content-center';
+        const mobileNavClasses = 'justify-content-start';
+        const mobileImgClasses = 'm-auto';
 
         return (
-            <div>
-                <Sidebar open={isSidebarOpen} />
+            <div ref={this.nav}>
+                <Sidebar open={isSidebarOpen} isLoggedIn={this.props.isLoggedIn} />
                 <nav
                     className={
-                        classNames('navbar navbar-white border-bottom mb-4 p-0 justify-content-center',
-                            { [mobileClasses]: isMobile }
+                        classNames('navbar navbar-white border-bottom p-0',
+                            {
+                                [mobileNavClasses]: isMobile,
+                                'justify-content-center': !isMobile
+                            }
                         )
                     }
                 >
-                    <HamburgerMenu clickFn={handleClick} open={isSidebarOpen} isMobile={isMobile} />
-                    <div className="navbar-brand">
-                        <img src={logo} alt="ECAN Logo" width="150" height="150" className="d-inline-block float-left" />
-                    </div>
+                    <HamburgerMenu open={isSidebarOpen} isMobile={isMobile} ref={this.hamburgerMenu} />
+                    <img src={logo} alt="ECAN Logo" style={{ flex: '0 0 100px' }} className={classNames({ [mobileImgClasses]: isMobile })} />
                     {!isMobile && (
                         <div className="d-flex align-items-center">
                             {this.getNavigationLinks()}

@@ -151,7 +151,6 @@ export const getOrganizationsById = ids => {
     // if (!ids) return;
     return (dispatch, getState) => {
         const url = `${loadEndpoint(_.get(getState(), 'env'), GET_ORGANIZATION_BY_ID)}/${ids.join('&')}`;
-        console.log(url);
         HttpClient(getState()).then(client => client.get(url))
             .then(result => dispatch({ type: GET_ORG_ID_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_ORG_ID_REJECTED, payload: err }));
