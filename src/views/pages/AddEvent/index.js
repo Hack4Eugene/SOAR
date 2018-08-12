@@ -1,23 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import { get, filter, cloneDeep } from 'lodash';
-import moment from 'moment';
-
-import EventsWidget from '../../components/Widgets/Event'
-import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
+import { Link } from 'react-router-dom';
+import { get, cloneDeep } from 'lodash';
 
 import Card from '../../lib/Card';
-import Calendar from 'react-calendar';
+// import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
 
-import { createEvent } from '../../../state/actions/index.js'
+import { createEvent } from '../../../state/actions/index.js';
 
 const mapStateToProps = (state) => ({
   events: get(state, 'events', {})
 });
 
 class AddEvent extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
             newEvent: {
@@ -36,7 +32,7 @@ class AddEvent extends Component {
               },
               private: false
             }
-        }
+        };
     }
 
     componentWillMount() {
@@ -44,38 +40,40 @@ class AddEvent extends Component {
     }
 
     submitEvent() {
-      this.props.createEvent(JSON.stringify(this.state.newEvent))
+      this.props.createEvent(JSON.stringify(this.state.newEvent));
     }
 
     handleFormInput(e) {
       const newState = cloneDeep(this.state.newEvent);
-      switch(e.target.id) {
+      switch (e.target.id) {
         case 'eventName':
-          newState.name = e.target.value
-          this.setState({newEvent: newState})
-          break
+          newState.name = e.target.value;
+          this.setState({ newEvent: newState });
+          break;
         case 'eventDate':
-          newState.eventDate = e.target.value
-          this.setState({newEvent: newState})
-          break
+          newState.eventDate = e.target.value;
+          this.setState({ newEvent: newState });
+          break;
         case 'eventDescription':
-          newState.description = e.target.value
-          this.setState({newEvent: newState})
-          break
+          newState.description = e.target.value;
+          this.setState({ newEvent: newState });
+          break;
         case 'eventLocation':
-          newState.location = e.target.value
-          this.setState({newEvent: newState})
-          break
+          newState.location = e.target.value;
+          this.setState({ newEvent: newState });
+          break;
         // case 'eventProject':
         //   this.setState({ newEvent: {...this.state.newEvent, project: e.target.value} })
         case 'eventTags':
-          newState.tags = e.target.value
-          this.setState({newEvent: newState})
-          break
+          newState.tags = e.target.value;
+          this.setState({ newEvent: newState });
+          break;
         case 'eventPrivate':
-          newState.private = e.target.checked
-          this.setState({newEvent: newState})
-          break
+          newState.private = e.target.checked;
+          this.setState({ newEvent: newState });
+          break;
+          default:
+              break;
       }
     }
 
@@ -85,23 +83,23 @@ class AddEvent extends Component {
           <div className="card-body">
             {/* <form> */}
               <div className="form-group">
-                <label for="eventName">Title</label>
-                <input type="text" className="form-control" id="eventName" onChange={(e) => this.handleFormInput(e)}/>
+                <label htmlFor="eventName">Title</label>
+                <input type="text" className="form-control" id="eventName" onChange={(e) => this.handleFormInput(e)} />
               </div>
               <div className="form-group">
-                <label for="eventDate">Date</label>
-                <input type="datetime-local" className="form-control" id="eventDate" onChange={(e) => this.handleFormInput(e)}/>
+                <label htmlFor="eventDate">Date</label>
+                <input type="datetime-local" className="form-control" id="eventDate" onChange={(e) => this.handleFormInput(e)} />
               </div>
               <div className="form-group">
-                <label for="eventDescription">Description</label>
-                <textarea type="text" className="form-control" id="eventDescription" onChange={(e) => this.handleFormInput(e)}/>
+                <label htmlFor="eventDescription">Description</label>
+                <textarea className="form-control" id="eventDescription" onChange={(e) => this.handleFormInput(e)} />
               </div>
               <div className="form-group">
-                <label for="eventLocation">Location</label>
-                <input type="text" className="form-control" id="eventLocation" onChange={(e) => this.handleFormInput(e)}/>
+                <label htmlFor="eventLocation">Location</label>
+                <input type="text" className="form-control" id="eventLocation" onChange={(e) => this.handleFormInput(e)} />
               </div>
               <div className="form-group">
-                <label for="eventProject">Project</label>
+                <label htmlFor="eventProject">Project</label>
                 <select className="form-control" id="eventProject" onChange={(e) => this.handleFormInput(e)}>
                   <option>Select Project</option>
                   <option>Fall Food Initiative</option>
@@ -109,12 +107,18 @@ class AddEvent extends Component {
                 </select>
               </div>
               <div className="form-group">
-                <label for="eventTags">Tags</label>
-                <input type="text" className="form-control" id="eventTags" placeholder="Enter a comma separated list..." onChange={(e) => this.handleFormInput(e)}/>
+                <label htmlFor="eventTags">Tags</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    id="eventTags"
+                    placeholder="Enter a comma separated list..."
+                    onChange={(e) => this.handleFormInput(e)}
+                />
               </div>
               <div className="form-check form-group">
-                <input className="form-check-input" type="checkbox" id="eventPrivate" onChange={(e) => this.handleFormInput(e)}/>
-                <label className="form-check-label" for="eventPrivate">
+                <input className="form-check-input" type="checkbox" id="eventPrivate" onChange={(e) => this.handleFormInput(e)} />
+                <label className="form-check-label" htmlFor="eventPrivate">
                   Private Event
                 </label>
               </div>
@@ -122,11 +126,11 @@ class AddEvent extends Component {
             {/* </form> */}
           </div>
       </Card>
-      )
+      );
     }
 
     render() {
-      return(
+      return (
           <div className="container">                    
               <div className="row justify-content-center">
                   <div className="col-5">
@@ -134,10 +138,12 @@ class AddEvent extends Component {
                   </div>
                   <div className="col-3">
                     <Link to="/events">
-                      <button type="button" 
+                      <button
+type="button" 
                               className="btn btn-success float-right" 
                               data-toggle="modal" 
-                              data-target="#exampleModal">
+                              data-target="#exampleModal"
+                      >
                               Back to Events
                       </button>
                     </Link>
@@ -149,7 +155,7 @@ class AddEvent extends Component {
                   </div>                  
               </div>
           </div>
-        )
+        );
     }
 }
 

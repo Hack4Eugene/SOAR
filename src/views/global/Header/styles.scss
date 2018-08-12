@@ -1,0 +1,14 @@
+header {
+  background: #fff;
+  width: 100%;
+  z-index: 1000;
+  -webkit-transition: position .5s;
+  -moz-transition: position .5s;
+  -o-transition: position .5s;
+  top: 0;
+  transition: all 1s ease;
+
+  &.fixed {
+    position: fixed;
+  }
+}

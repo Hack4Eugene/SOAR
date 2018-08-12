@@ -1,57 +1,57 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { get, filter, isEqual, isArray, isEmpty } from 'lodash';
+import { get, filter, isEmpty } from 'lodash';
 import moment from 'moment';
+import Calendar from 'react-calendar';
 
 import EventsWidget from '../Widgets/Event';
-import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
+// import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
 
 import Card from '../../lib/Card';
-import Calendar from 'react-calendar';
 
 import { getEvents } from '../../../state/actions/index.js';
 
 class EventFeed extends Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
 
         this.state = {
             filteredEvents: null,
             selectedDate: null
-        }
+        };
     }
 
     componentDidMount() {
-        this.props.getEvents()
+        this.props.getEvents();
     }
 
     onDateChange(date) {
         const selectedDate = moment(date);
 
-        let tempFilteredEvents = filter(this.props.events, event => {
+        const tempFilteredEvents = filter(this.props.events, event => {
             const eventDate = moment(event.eventDate);
             return eventDate.isSame(selectedDate, 'day');
         });
 
         this.setState({ 
             filteredEvents: tempFilteredEvents,
-            selectedDate: selectedDate
-        })
+            selectedDate
+        });
     }
 
     showFeedHeader() {
-        const events = this.state.filteredEvents
+        const events = this.state.filteredEvents;
 
         if (events === null) {
             return (
                 <div className="col-8">
                     <h2>Your Upcoming Events</h2>
                 </div>
-            )
+            );
         }
 
-        const formattedDate = moment(this.state.selectedDate).format('dddd MMM D, YYYY')
+        const formattedDate = moment(this.state.selectedDate).format('dddd MMM D, YYYY');
 
         let dateMsg = `No events on ${formattedDate}`;
 
@@ -63,7 +63,7 @@ class EventFeed extends Component {
             <div className="col-8">
                 <h2>{dateMsg}</h2>
             </div>
-        )
+        );
     }
 
     showEvents() {
@@ -79,21 +79,21 @@ class EventFeed extends Component {
                         } 
                     />
                 </div> 
-            )
+            );
         }
 
         return (
             <div className="col-8">
                 <h4>Loading...</h4>
             </div>
-        )
+        );
     }
 
     resetFilter = () => {
         this.setState({
             filteredEvents: null
-        })
-    }
+        });
+    };
 
     showCalendar() {
         return (
@@ -110,12 +110,12 @@ class EventFeed extends Component {
                             className="btn btn-light w-100 mt-3" 
                             style={{ border: '1px solid rgba(0, 0, 0, 0.125)' }}
                             onClick={this.resetFilter}
-                        >
+                    >
                                 Show all events
                         </button>
                 }
             </div>
-        )
+        );
     }
 
     showAddEventButton() {
@@ -132,7 +132,7 @@ class EventFeed extends Component {
                     </button>
                 </Link>
             </div>
-        )
+        );
     }
 
     render() {
@@ -147,7 +147,7 @@ class EventFeed extends Component {
                     {this.showCalendar()}
                 </div>
             </div>
-        )
+        );
     }
 }
 

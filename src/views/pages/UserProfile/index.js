@@ -1,23 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import _, { get, filter, isEqual, isArray } from 'lodash';
+import { Link } from 'react-router-dom';
+import _, { get } from 'lodash';
 import moment from 'moment';
 import classnames from 'classnames';
-
 
 import { SUCCESS } from '../../../state/statusTypes';
 
 import { getUserByID, getOrganizationsById } from '../../../state/actions/index.js';
 import Card from '../../lib/Card';
-import EventsWidget from '../../components/Widgets/Event';
-
-import parkImg from '../../../static/imgs/food.jpg';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
 import peaceImg from '../../../static/imgs/peace-corps.jpg';
 import habitatImg from '../../../static/imgs/habitat-humanity.png';
 import userImg from '../../../static/imgs/user-image.png';
-import Tags from '../../lib/Tags';
 
 const mapStateToProps = (state) => ({
     profile: get(state, 'user', {}),
@@ -50,7 +45,7 @@ class UserProfilePage extends Component {
                     active: false
                 }
             ]
-        }
+        };
     }
     componentWillMount() {
         if (this.props.isLoaded) {
@@ -71,7 +66,7 @@ class UserProfilePage extends Component {
             };
             return tabs;
         }, []);
-        this.setState({ tabs: tabState })
+        this.setState({ tabs: tabState });
     };
 
     isActiveTab = tab => tab === this.getActiveTab().name;
@@ -91,8 +86,6 @@ class UserProfilePage extends Component {
     render() {
         const {
             name,
-            username,
-            organization,
             createdAt
         } = this.props.profile;
 
@@ -100,7 +93,7 @@ class UserProfilePage extends Component {
             <div className="container">
                 <div className="row">
                     <div className="col-lg-1">
-                        <img src={userImg} className="user-image"/>
+                        <img alt="User" src={userImg} className="user-image" />
                     </div>
                     <div className="col">
                         <h1>{name}</h1>
@@ -108,7 +101,7 @@ class UserProfilePage extends Component {
                     </div>
 
                 </div>
-                <hr className="my-4"/>
+                <hr className="my-4" />
                 <div className="row">
                     <div className="col-3">
 
@@ -119,30 +112,31 @@ class UserProfilePage extends Component {
                             <ul className="list-group list-group-flush">
                                 <li
                                     className={classnames('list-group-item', {
-                                        'active': this.isActiveTab('about')
+                                        active: this.isActiveTab('about')
                                     })}
                                     onClick={() => this.setActiveTab('about')}
                                 >About</li>
                                 <li
                                     className={classnames('list-group-item', {
-                                        'active': this.isActiveTab('events')
+                                        active: this.isActiveTab('events')
                                     })}
                                     onClick={() => this.setActiveTab('events')}
                                 >Events</li>
-                                <li  className={classnames('list-group-item', {
-                                        'active': this.isActiveTab('projects')
+                                <li
+className={classnames('list-group-item', {
+                                        active: this.isActiveTab('projects')
                                     })}
                                      onClick={() => this.setActiveTab('projects')}
                                 >Projects</li>
                                 <li
                                     className={classnames('list-group-item', {
-                                        'active': this.isActiveTab('organizations')
+                                        active: this.isActiveTab('organizations')
                                     })}
                                     onClick={() => this.setActiveTab('organizations')}
                                 >Organizations</li>
                                 <li
                                     className={classnames('list-group-item', {
-                                        'active': this.isActiveTab('settings')
+                                        active: this.isActiveTab('settings')
                                     })}
                                     onClick={() => this.setActiveTab('settings')}
                                 >Settings</li>
@@ -159,7 +153,7 @@ class UserProfilePage extends Component {
                             <div className="card-body">
                                 <div className="row">
                                     <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
-                                        <img className="card-image card-org-image" src={foodLaneImg}/>
+                                        <img alt="Food for Lane County" className="card-image card-org-image" src={foodLaneImg} />
                                         <div className="card-body org-card-body">
                                             <Link className="btn btn-outline-success org-card-button" to="/profile">Go
                                                 to organization</Link>
@@ -168,7 +162,7 @@ class UserProfilePage extends Component {
                                     <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
 
 
-                                        <img className="card-image card-org-image" src={habitatImg}/>
+                                        <img alt="Habitat" className="card-image card-org-image" src={habitatImg} />
                                         <div className="card-body org-card-body">
                                             <Link className="btn btn-outline-success org-card-button" to="/profile">Go
                                                 to organization</Link>
@@ -177,11 +171,12 @@ class UserProfilePage extends Component {
                                     <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
 
 
-                                        <img className="card-image card-org-image" src={peaceImg}/>
+                                        <img alt="Peace" className="card-image card-org-image" src={peaceImg} />
                                         <div
 
 
-                                            className="card-body org-card-body">
+                                            className="card-body org-card-body"
+                                        >
                                             <Link className="btn btn-outline-success org-card-button" to="/profile">Go
                                                 to organization</Link>
                                         </div>
@@ -192,7 +187,7 @@ class UserProfilePage extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 
