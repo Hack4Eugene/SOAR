@@ -49,9 +49,6 @@ module.exports = {
                     res.status(error.status || 500).send(error);
                 });
         } else {
-            console.log(`Updating organization: ${req.params.organization_id}`);
-
-
             return OrganizationModel.findOne({ _id: req.params.organization_id })
                 .then(organizationRecord => {
                     if (_.isEmpty(organizationRecord)) {

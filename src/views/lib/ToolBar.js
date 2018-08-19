@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import _ from 'lodash';
 import { connect } from 'react-redux';
 
-import {
-    deleteEvent,
-    deleteProject
-} from '../../state/actions/index';
+import { deleteEvent } from '../../state/actions/eventActions';
+import { deleteProject } from '../../state/actions/projectActions';
 
 import './toolbar.scss';
 
@@ -15,17 +12,17 @@ class ToolBar extends Component {
         const {
             type,
             data,
-            deleteEvent,
-            deleteProject
+            deleteEvent: deleteEventFn,
+            deleteProject: deleteProjectFn
         } = this.props;
 
         switch (type) {
             case 'event': {
-                deleteEvent(data._id);
+                deleteEventFn(data._id);
                 return;
             }
             case 'project': {
-                deleteProject(data._id);
+                deleteProjectFn(data._id);
                 return;
             }
             default: return;
@@ -34,15 +31,10 @@ class ToolBar extends Component {
 
     render() {
         return (
-            <div>
-                <div className="d-inline-flex justify-content-between w-100">
-                    {this.props.children}
-                    <div className="d-inline-flex justify-self-end icon-container">
-                        <i className="fas fa-pencil-alt mr-2" /><i className=" ml-2 fas fa-times" onClick={this.onDeleteClick} />
-                    </div>
-                </div>
+            <div className="d-inline-flex icon-container">
+                <i className="fas fa-pencil-alt mr-2 dark-gray" /><i className="ml-2 fas fa-times dark-gray" onClick={this.onDeleteClick} />
             </div>
-        )
+        );
     }
 }
 
