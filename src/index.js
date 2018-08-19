@@ -9,7 +9,7 @@ import createBrowserHistory from 'history/createBrowserHistory';
 
 import myReducerMiddleware, { persistState } from './state/middleware/authentication';
 
-import reducer from './state/reducers/index';
+import reducer from './state/reducers/rootReducer';
 
 import App from './app';
 

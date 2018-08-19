@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {
-    deleteEvent,
-    deleteProject
-} from '../../state/actions/index';
+import { deleteEvent } from '../../state/actions/eventActions';
+import { deleteProject } from '../../state/actions/projectActions';
 
 import './toolbar.scss';
 
