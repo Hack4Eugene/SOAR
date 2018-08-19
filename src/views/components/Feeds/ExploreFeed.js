@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import _ from 'lodash'
+import _ from 'lodash';
 
 import ProjectFeed from './ProjectFeed';
 import EventsWidget from '../Widgets/Event';
@@ -26,7 +26,7 @@ class ExploreFeed extends Component {
         this.state = {
             data: [],
             displaying: 'events'
-        }
+        };
     }
 
     componentWillMount() {
@@ -34,13 +34,6 @@ class ExploreFeed extends Component {
         this.props.getProjects();
         this.props.getOrganizations();
     }
-
-    toggleTabs = (type) => {
-        if (this.state.displaying === type) {
-            return;
-        }
-        this.setState({ data: this.props[type].data, displaying: type })
-    };
 
     getFeed = () => {
         const { getProjectsFeed, getEventsFeed, getOrganizationsFeed } = this;
@@ -50,7 +43,7 @@ class ExploreFeed extends Component {
     };
 
     getProjectsFeed = () => {
-        return <ProjectFeed />
+        return <ProjectFeed />;
     };
 
     getEventsFeed = () => {
@@ -63,8 +56,15 @@ class ExploreFeed extends Component {
         return <OrganizationsWidget organizations={organizations.data} />;
     };
 
+    toggleTabs = (type) => {
+        if (this.state.displaying === type) {
+            return;
+        }
+        this.setState({ data: this.props[type].data, displaying: type });
+    };
+
     render() {
-        if (!this.props[this.state.displaying].data || this.props[this.state.displaying].data.length <= 0 ) return <div />;
+        if (!this.props[this.state.displaying].data || this.props[this.state.displaying].data.length <= 0) return <div />;
         return (
             <div className="container">
                 <nav>
@@ -76,7 +76,7 @@ class ExploreFeed extends Component {
                                     <a
                                         onClick={e => this.toggleTabs('events')}
                                         className={classnames('nav-link', {
-                                            'active': this.state.displaying === 'events'
+                                            active: this.state.displaying === 'events'
                                         })}
                                         href="#"
                                     >
@@ -88,7 +88,7 @@ class ExploreFeed extends Component {
                                     <a
                                         onClick={e => this.toggleTabs('projects')}
                                         className={classnames('nav-link', {
-                                            'active': this.state.displaying === 'projects'
+                                            active: this.state.displaying === 'projects'
                                         })}
                                         href="#"
                                     >
@@ -100,7 +100,7 @@ class ExploreFeed extends Component {
                                     <a
                                         onClick={e => this.toggleTabs('organizations')}
                                         className={classnames('nav-link', {
-                                            'active': this.state.displaying === 'organizations'
+                                            active: this.state.displaying === 'organizations'
                                         })}
                                         href="#"
                                     >
@@ -113,7 +113,7 @@ class ExploreFeed extends Component {
                 </nav>
                 {this.getFeed()}
             </div>
-        )
+        );
     }
 }
 

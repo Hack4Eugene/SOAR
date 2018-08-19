@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 
 import './global.scss';
 
@@ -15,7 +15,6 @@ import AddUser from './views/pages/AddUser';
 import LoginPage from './views/pages/Login';
 import ProfilePage from './views/pages/UserProfile';
 import ProjectPage from './views/pages/Project';
-import UserProfilePage from './views/pages/UserProfile';
 import PrivateRoute from './views/hoc/requireAuth';
 import OrganizationPage from './views/pages/Organization';
 
@@ -28,7 +27,7 @@ class App extends Component {
                     <Switch>
                         <Route path="/login" component={LoginPage} />
                         <Route path="/adduser" component={AddUser} />
-                        <PrivateRoute path="/logout" component={() => <LoginPage expireSession={true} />} />
+                        <PrivateRoute path="/logout" component={() => <LoginPage expireSession />} />
                         <PrivateRoute path="/" exact component={ProjectFeed} />
                         <PrivateRoute path="/events" component={EventFeed} />
                         <PrivateRoute path="/event/:id" component={Event} />
@@ -39,11 +38,10 @@ class App extends Component {
                         <PrivateRoute path="/profile" component={ProfilePage} />
                         <PrivateRoute path="/profile" component={OrganizationPage} />
                         <PrivateRoute path="/project/:id" component={ProjectPage} />
-                        <PrivateRoute path="/userprofile" component={UserProfilePage} />
                     </Switch>
                 </div>
             </div>
-        )
+        );
     }
 }
 

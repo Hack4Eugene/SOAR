@@ -13,8 +13,8 @@ class ProjectCard extends Component {
                     {this.props.link}
                 </div>
             </div>
-        )
+        );
     }
 }
 
-export default ProjectCard
+export default ProjectCard;

@@ -7,7 +7,7 @@ class Tags extends Component {
         if (!this.props.tags) {
             return (
                 <div>Add some interests to find matches!</div>
-            )
+            );
         }
 
         const colorClassess = [
@@ -26,7 +26,7 @@ class Tags extends Component {
             */
             const color = colorClassess[i % numColors];
             return <span className={`badge badge-pill badge-${color} mr-2`} key={i}>{_.toUpper(tag)}</span>;
-        })
+        });
     };
 
     render() {
@@ -35,11 +35,11 @@ class Tags extends Component {
                 <div className="card-header">
                     Interests
                 </div>
-                <div className="card-body">
+                <div className="card-body ">
                     {this.getTags()}
                 </div>
             </Card>
-        )
+        );
     }
 }
 
