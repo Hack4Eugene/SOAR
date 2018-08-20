@@ -74,7 +74,6 @@ class OrganizationPage extends Component {
     }
 
     render() {
-        console.log(this.props)
         return (
             <div className="container">
                 <div className="jumbotron p-4">
@@ -186,7 +185,7 @@ class OrganizationPage extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

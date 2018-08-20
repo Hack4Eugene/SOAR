@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { map, orderBy, find } from 'lodash';
+import { map } from 'lodash';
 import moment from 'moment';
 
 import Card from '../../../lib/Card';
@@ -12,28 +12,28 @@ const OrganizationItem = ({ organization }) => {
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
                 <h4 className="card-title mb-0">{organization.name}</h4>
-                <br/>
+                <br />
                 <p className="card-text">
                     {organization.description}
                 </p>
-                <Link className="btn btn-primary float-left" to={`/organization/${organization._id}`}>More Details</Link>
+                <Link className="btn btn-primary float-left" to={`/organization/${organization._id}`}>More details</Link>
             </div>
         </Card>
-    )
+    );
 };
 
 const NoOrganizations = () => {
     return (
         <p className="font-italic m-3">No organizations yet!</p>
-    )
+    );
 };
 
 const OrganizationsWidget = ({ organizations }) => {
     const OrganizationList = organizations.length
         ? map(organizations, organization =>
-            <div className="mb-4" key={organization._id}>
+            (<div className="mb-4" key={organization._id}>
                 <OrganizationItem organization={organization} />
-            </div>)
+            </div>))
         : <NoOrganizations />;
 
     return (

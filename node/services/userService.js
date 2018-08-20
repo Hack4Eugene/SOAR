@@ -107,8 +107,6 @@ module.exports = {
                 Updating a user
              */
             authenticate(req, res, next, () => {
-                console.log(`Updating user: ${req.params.user_id}`);
-
                 UserModel.findOne({ _id: req.params.user_id })
                     .then(userRecord => {
                         if (_.isEmpty(userRecord)) {

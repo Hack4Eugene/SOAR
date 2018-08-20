@@ -6,7 +6,7 @@ class Card extends Component {
             <div className="card">
                 {this.props.children}
             </div>
-        )
+        );
     }
 }
 
