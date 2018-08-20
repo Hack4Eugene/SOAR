@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import _, { get, filter, cloneDeep } from 'lodash';
 
-import Card from '../Card';
+import Card from '../../lib/Card';
 
-import { createUser, getOrganizations } from '../../state/actions/index.js'
+import { createUser, getOrganizations } from '../../../state/actions/index'
 
 import './AddUser.scss';
-import { SUCCESS, NOT_STARTED } from '../../state/statusTypes';
+import { SUCCESS, NOT_STARTED } from '../../../state/statusTypes';
 
 const mapStateToProps = (state) => ({
     user: get(state, 'user', {}),

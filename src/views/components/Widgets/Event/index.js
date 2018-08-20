@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { map, orderBy, find } from 'lodash';
 import moment from 'moment';
 
-import eventImg1 from '../static/imgs/stock-event-1.jpg';
+import eventImg1 from '../../../../static/imgs/stock-event-1.jpg';
 
-import ToolBar from './ToolBar';
-import Card from './Card';
+import ToolBar from '../../../lib/ToolBar';
+import Card from '../../../lib/Card';
 
 const EventItem = ({ event }) => {
     const date = moment(event.eventDate).format('MMMM D, YYYY - h:mm a');

@@ -4,13 +4,13 @@ import { Link } from 'react-router-dom';
 import { get, filter, cloneDeep } from 'lodash';
 import moment from 'moment';
 
-import EventsWidget from '../EventsWidget'
-import eventImg1 from '../../static/imgs/stock-event-1.jpg';
+import EventsWidget from '../../components/Widgets/Event'
+import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
 
-import Card from '../Card';
+import Card from '../../lib/Card';
 import Calendar from 'react-calendar';
 
-import { addOrganization } from '../../state/actions/index.js'
+import { addOrganization } from '../../../state/actions/index.js'
 
 const mapStateToProps = (state) => ({
   events: get(state, 'events', {}),

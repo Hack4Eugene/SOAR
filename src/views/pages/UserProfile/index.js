@@ -6,18 +6,18 @@ import moment from 'moment';
 import classnames from 'classnames';
 
 
-import { SUCCESS } from '../../state/statusTypes';
+import { SUCCESS } from '../../../state/statusTypes';
 
-import { getUserByID, getOrganizationsById } from '../../state/actions/index.js';
-import Card from '../Card';
-import EventsWidget from '../EventsWidget';
+import { getUserByID, getOrganizationsById } from '../../../state/actions/index.js';
+import Card from '../../lib/Card';
+import EventsWidget from '../../components/Widgets/Event';
 
-import parkImg from '../../static/imgs/food.jpg';
-import foodLaneImg from '../../static/imgs/food-lane-county.jpg';
-import peaceImg from '../../static/imgs/peace-corps.jpg';
-import habitatImg from '../../static/imgs/habitat-humanity.png';
-import userImg from '../../static/imgs/user-image.png';
-import Tags from '../Tags';
+import parkImg from '../../../static/imgs/food.jpg';
+import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
+import peaceImg from '../../../static/imgs/peace-corps.jpg';
+import habitatImg from '../../../static/imgs/habitat-humanity.png';
+import userImg from '../../../static/imgs/user-image.png';
+import Tags from '../../lib/Tags';
 
 const mapStateToProps = (state) => ({
     profile: get(state, 'user', {}),
