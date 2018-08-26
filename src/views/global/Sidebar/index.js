@@ -31,7 +31,7 @@ class Sidebar extends Component {
         } = this.props;
 
         return (
-            <div className={classNames('sidebar', { open })}>
+            <div className={classNames('sidebar', { open })} onClick={() => this.props.toggleSidebarFn()}>
                 <ul>
                     <li>
                         <NavLink className="" to="/">

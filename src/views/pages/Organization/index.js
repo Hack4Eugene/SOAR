@@ -9,7 +9,6 @@ import Card from '../../lib/Card';
 import ProjectCard from '../../components/Widgets/Project/index.js';
 import Calendar from 'react-calendar';
 
-// import { getOrganizationsById, getProjectsByOrganization } from '../../../state/actions/index.js'
 import { getOrganizationsById } from '../../../state/actions/organizationActions';
 import { getProjectsByOrganization } from '../../../state/actions/projectActions';
 
