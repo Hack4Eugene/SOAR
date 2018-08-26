@@ -216,6 +216,7 @@ class EventPage extends Component {
 const mapStateToProps = (state) => {
     console.log('state', state);
     return ({
+        events: get(state, 'events.data', {}),
         selectedEvent: get(state, 'events.selectedEvent.data.data', {}),
         eventStatus: get(state, 'events.selectedEvent.status'),
         userId: get(state, 'user._id', ''),
