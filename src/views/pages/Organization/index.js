@@ -53,7 +53,7 @@ class OrganizationPage extends Component {
 
     showProjects() {
         if (this.props.projectsStatus === 'SUCCESS') {
-            console.log(this.props.projects);
+            console.log('Got projects', this.props.projects);
 
             const ProjectList = this.props.projects.length
                 ? map(this.props.projects, (project, i) => <ProjectItem key={i} title={project.name} description={project.description}/>)
@@ -93,7 +93,7 @@ class OrganizationPage extends Component {
                 <div className="d-inline-flex flex-row flex-wrap justify-items-start">
                     {this.showProjects()}
                 </div>
-                <div className="row">
+                {/* <div className="row">
                     <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
                         <div className="card-header">
                             <h5 className="card-title mb-0">Winter Food Drive</h5>
@@ -166,7 +166,7 @@ class OrganizationPage extends Component {
                             <a href="#" className="btn btn-outline-success float-right">More Info</a>
                         </div>
                     </div>
-                </div>
+                </div> */}
 
                 <div className="jumbotron jumbotron-fluid p-4">
                     <div className="container">
