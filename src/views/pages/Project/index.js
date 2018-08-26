@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { get } from 'lodash';
 
-import { getEvents } from '../../../state/actions/index.js';
+import { getEvents } from '../../../state/actions/eventActions';
 
 import parkImg from '../../../static/imgs/food.jpg';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';

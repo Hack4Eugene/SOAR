@@ -5,7 +5,8 @@ import _, { get, cloneDeep } from 'lodash';
 
 import Card from '../../lib/Card';
 
-import { createUser, getOrganizations } from '../../../state/actions/index';
+import { createUser } from '../../../state/actions/userActions';
+import { getOrganizations } from '../../../state/actions/organizationActions';
 
 import './AddUser.scss';
 import { SUCCESS, NOT_STARTED } from '../../../state/statusTypes';

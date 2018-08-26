@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
-import { incrementEventsFinished, setEventsFinished, getProjects } from '../../../state/actions/index';
+import { incrementEventsFinished, setEventsFinished } from '../../../state/actions/eventActions';
+import { getProjects } from '../../../state/actions/projectActions';
 
 import ProjectCard from '../Widgets/Project';
 import { SUCCESS } from '../../../state/statusTypes';
