@@ -7,14 +7,12 @@ import { isMobileViewport } from '../../../lib/util';
 
 import './styles.scss';
 
-// import logo from '../../../static/imgs/ecan_logo.png';
-
 class Header extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            isMobile: isMobileViewport(),
+            isMobile: false,
             shouldFixHeader: false
         };
 
@@ -47,8 +45,8 @@ class Header extends Component {
 
     handleScroll(e) {
         const header = this.header.current;
-        const headerHeight = header.clientHeight / 2;
-        const scrollPosition = e.pageY;
+        const headerHeight = header.offsetHeight / 2;
+        const scrollPosition = window.pageYOffset;
 
         const shouldFixHeader = scrollPosition >= headerHeight;
 
