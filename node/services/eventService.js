@@ -30,11 +30,20 @@ module.exports = {
 
                     const newEventDocument = foundEventDocument;
                     _.forEach(req.body, (value, key) => {
-                        newEventDocument[key] = value;
+                        if (key === 'attendee') {
+                            const attendees = newEventDocument[`${key}s`]
+                            _.includes(attendees, value)
+                            ? _.remove(attendees, userId => { return userId === value })
+                            : attendees.push(value)
+                        } else {
+                            newEventDocument[key] = value
+                        }
                     });
 
                     return EventModel.update({ _id: req.params.event_id }, newEventDocument)
-                        .then(updatedEventDocument => res.status(200).send(updatedEventDocument));
+                        .then(updatedEventDocument => {
+                            res.status(200).send(updatedEventDocument)
+                        });
                 })
                 .catch(error => {
                     console.log(error);

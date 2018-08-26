@@ -39,6 +39,9 @@ const EventSchema = new Schema({
     },
     tags: {
         type: [String]
+    },
+    attendees: {
+        type: [String]
     }
 });
 
