@@ -37,6 +37,8 @@ module.exports = {
 
         DELETE_EVENT: '/event',
 
+        UPDATE_EVENT: '/event',
+
         /*
          * User endpoints
          */
