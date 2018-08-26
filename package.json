@@ -10,7 +10,7 @@
   "scripts": {
     "build:webpack": "CONFIG_ENV=production webpack --colors --progress --config webpack.config.js --mode production",
     "build": "npm run clean && npm run build:webpack",
-    "start:webpack": "webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development",
+    "start:webpack": "webpack-dev-server --colors --progress --hot --open --config webpack.config.js --mode development --host 0.0.0.0",
     "start": "npm run start:webpack",
     "clean": "rm -rf ./dist",
     "lint": "eslint ./src",
@@ -34,6 +34,7 @@
     "moment": "^2.22.1",
     "node-sass": "^4.8.3",
     "path": "^0.12.7",
+    "q": "^1.5.1",
     "react": "^16.3.1",
     "react-calendar": "^2.14.0",
     "react-dom": "^16.3.1",

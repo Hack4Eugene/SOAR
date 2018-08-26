@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import moment from 'moment';
-import { withRouter } from 'react-router-dom'
-import { get, filter, isEqual, isArray } from 'lodash';
+import { Link } from 'react-router-dom';
+import { get } from 'lodash';
 
-import { SUCCESS } from '../../../state/statusTypes';
+import { getProjectById } from '../../../state/actions/projectActions';
 
-import Card from '../../lib/Card';
-
-import { getEvents } from '../../../state/actions/eventActions';
-import { loginUser } from '../../../state/actions/authenticationActions';
-import EventsWidget from '../../components/Widgets/Event';
+import ToolBar from '../../lib/ToolBar';
+import Modal from '../../lib/Modal';
 
 import parkImg from '../../../static/imgs/food.jpg';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
@@ -21,7 +16,7 @@ import habitatImg from '../../../static/imgs/habitat-humanity.png';
 import './ProjectPage.css';
 
 const mapStateToProps = (state) => ({
-    events: get(state, 'events', {})
+    project: get(state, 'projects.detailed', {})
     // animationVal: _.get(state, 'events.animationVal', null),
     // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
 });
@@ -30,12 +25,14 @@ class Project extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            filteredEvents: props.events
+            filteredEvents: props.events,
+            showModal: false
         };
     }
 
     componentWillMount() {
-        this.props.getEvents();
+        const projectID = get(this.props, 'computedMatch.params.id', 'projectID');
+        this.props.getProjectById(projectID);
     }
 
     componentDidMount() {
@@ -44,11 +41,18 @@ class Project extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div className="container pt-4">
+                <Modal show={this.state.showModal}>
+                    <div>
+                        Hello, Im Modal content!
+                    </div>
+                </Modal>
                 <div className="row">
                     <div className="col">
                         <div className="jumbotron p-4 project-jumbo">
-                            <h1 className="display-4">Harvest to Home Project</h1>
+                            <ToolBar customDelete={() => this.setState({ showModal: !this.state.showModal })}>
+                                <h1 className="display-4">Harvest to Home Project</h1>
+                            </ToolBar>
                             <p className="lead">This spring, various groups in our network will collaborate in the
                                 entire process of growing, harvesting, and distributing food to local underserved youth.
                                 Join us for the whole series, or pick a single event from our timeline below!</p>
@@ -179,4 +183,4 @@ class Project extends Component {
     }
 }
 
-export default connect(mapStateToProps, { getEvents })(Project);
+export default connect(mapStateToProps, { getProjectById })(Project);

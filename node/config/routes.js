@@ -37,12 +37,16 @@ const endpoints = {
 
     DELETE_EVENT: '/event/:event_id',
 
+    UPDATE_EVENT: '/event/:event_id',
+
     /*
      * User endpoints
      */
     GET_USERS: '/users',
 
     GET_USER_BY_ID: '/user/:user_id',
+
+    GET_USERS_BY_IDS: '/users/:user_ids',
 
     LOGIN: '/login',
 

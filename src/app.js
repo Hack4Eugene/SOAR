@@ -23,7 +23,7 @@ class App extends Component {
         return (
             <div>
                 <Header />
-                <div className="mr-3 ml-3">
+                <div className="mr-3 ml-3 mt-4">
                     <Switch>
                         <Route path="/login" component={LoginPage} />
                         <Route path="/adduser" component={AddUser} />

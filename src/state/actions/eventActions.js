@@ -6,12 +6,15 @@ import {
     DELETE_EVENT_REJECTED,
     DELETE_EVENT_RESOLVED,
     GET_EVENTS_REJECTED,
-    GET_EVENTS_RESOLVED, INCREMENT_EVENT_FINISH, SET_EVENTS_FINISHED
+    GET_EVENTS_RESOLVED, INCREMENT_EVENT_FINISH, SET_EVENTS_FINISHED,
+    GET_EVENT_RESOLVED, GET_EVENT_REJECTED,
+    UPDATE_EVENT_RESOLVED, UPDATE_EVENT_REJECTED,
+    GET_ATTENDEES_DETAILS_RESOLVED, GET_ATTENDEES_DETAILS_REJECTED
 } from '../types';
 
 import { serviceRoutes } from '../../config/routes';
 
-const { GET_EVENTS, POST_EVENT, DELETE_EVENT } = serviceRoutes;
+const { GET_EVENTS, POST_EVENT, DELETE_EVENT, GET_EVENT_BY_ID, UPDATE_EVENT, GET_USERS_BY_IDS } = serviceRoutes;
 
 export const getEvents = () => {
     return (dispatch, getState) => {
@@ -63,4 +66,38 @@ export const incrementEventsFinished = () => {
             });
         }
     };
+};
+
+export const getEventById = (eventId) => {
+    return (dispatch, getState) => {
+        HttpClient(getState(), dispatch)
+            .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)))
+            .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err  }))
+
+    }
+};
+
+export const updateEvent = (eventId, updateObj) => (dispatch, getState) => {
+    const url = `${loadEndpoint(_.get(getState(), 'env'), `${UPDATE_EVENT}/${eventId}`)}`;
+
+    HttpClient(getState())
+        .then(client => client.post(url, updateObj))
+        .then(result => {
+            dispatch({ type: UPDATE_EVENT_RESOLVED });
+            dispatch(getEvents());
+        })
+        .catch(err => dispatch({ type: UPDATE_EVENT_REJECTED, payload: err  }))    
+};
+
+export const getAttendeesDetails = (userIds) => (dispatch, getState) => {
+    // dispatch({ type: GET_USERS_BY_IDS_PENDING });
+
+    const state = getState();
+    const endpointUrl = `${loadEndpoint(state.env, `${GET_USERS_BY_IDS}/${_.join(userIds, ',')}`)}`;
+
+    HttpClient(state)
+    .then(client => client.get(endpointUrl)
+        .then(result => dispatch({ type: GET_ATTENDEES_DETAILS_RESOLVED, payload: result }))
+        .catch(err => dispatch({ type: GET_ATTENDEES_DETAILS_RESOLVED, payload: err })))
 };

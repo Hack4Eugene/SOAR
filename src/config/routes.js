@@ -37,12 +37,16 @@ module.exports = {
 
         DELETE_EVENT: '/event',
 
+        UPDATE_EVENT: '/event',
+
         /*
          * User endpoints
          */
         GET_USERS: '/users',
 
         GET_USER_BY_ID: '/user',
+
+        GET_USERS_BY_IDS: '/users',
 
         LOGIN: '/login',
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get, filter, isEqual, isArray, isEmpty } from 'lodash';
-import { getEventById } from '../../../state/actions/index.js';
+import { get, includes } from 'lodash';
+import { getEventById, updateEvent, getAttendeesDetails } from '../../../state/actions/eventActions.js';
 import Card from '../../lib/Card';
 import moment from 'moment';
 import eventImage from '../../../static/imgs/sat-market.jpg';
@@ -27,6 +27,16 @@ class EventPage extends Component {
         this.props.getEventById(eventId);
     }
 
+    componentDidUpdate(prevProps) {
+        // console.log('componentDidUpdate')
+        const prevAttendeesIds = _.get(prevProps, 'selectedEvent.attendees', []);
+        const attendeesIds = _.get(this.props, 'selectedEvent.attendees', []);
+        
+        if (this.props.selectedEventStatus === 'SUCCESS' && prevAttendeesIds !== attendeesIds) {
+            this.props.getAttendeesDetails(attendeesIds);
+        }
+    }
+
     showEventMap = () => (
         <div className="fill">
             <StaticGoogleMap size="600x600">
@@ -40,7 +50,7 @@ class EventPage extends Component {
     )
 
     showMainContent = () => {
-        const event = get(this.props, 'selectedEvent.data', {})
+        const event = get(this.props, 'selectedEvent', {})
         const eventTitle = get(event, 'name', '')
         const eventDescription = get(event, 'description', '')
 
@@ -68,64 +78,58 @@ class EventPage extends Component {
         )
     }
 
-    showSideContent = () => {
-        return (
-            <div className="col-4">
-                {this.showRSVPBox()}
-                {this.showEventDetailsBox()}
-                {this.showHost()}
-                {this.showAttendees()}
-            </div>
-        )
-    }
+    showSideContent = () => (
+        <div className="col-4">
+            {this.showRSVPBox()}
+            {this.showEventDetailsBox()}
+            {this.showHost()}
+            {this.showAttendees()}
+        </div>
+    )
 
-    showHost = () => {
-        return (
-            <div className="mb-4">
-                <Card>
-                    <div className="card-header" style={{ color: '#666' }}>
-                        <p className="mb-0">
-                            <i className="fa fa-user mr-3" />
-                            Event Host
-                        </p>
-                    </div>
-                    <div className="card-body d-flex flex-column justify-content-center">
-                        <img className="event-user-avatar m-auto mb-3" src={hazenImg} />
-                        <h5 className="m-auto mb-0">David Hazen</h5>
-                        <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>ECAN</p>
-                    </div>
-                </Card>
-            </div>
-            
-        )
-    }
-
-    showAttendees = () => {
-        return (
+    showHost = () => (
+        <div className="mb-4">
             <Card>
                 <div className="card-header" style={{ color: '#666' }}>
                     <p className="mb-0">
-                        <i className="fa fa-users mr-3" />
-                        Attendees (12)
+                        <i className="fa fa-user mr-3" />
+                        Event Host
                     </p>
                 </div>
                 <div className="card-body d-flex flex-column justify-content-center">
-                    <img className="event-user-avatar m-auto mb-3" src={maryImg} />
-                    <h5 className="m-auto mb-0">Mary O'Connor</h5>
-                    <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>Peace Corps</p>
-                </div>
-                <hr className="m-0" />
-                <div className="card-body d-flex flex-column justify-content-center">
-                    <img className="event-user-avatar m-auto mb-3" src={janetImg} />
-                    <h5 className="m-auto mb-0">Janet Davis</h5>
-                    <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>White Bird Clinic</p>
+                    <img className="event-user-avatar m-auto mb-3" src={hazenImg} />
+                    <h5 className="m-auto mb-0">David Hazen</h5>
+                    <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>ECAN</p>
                 </div>
             </Card>
-        )
-    }
+        </div>
+        
+    )
+
+    showAttendees = () => (
+        <Card>
+            <div className="card-header" style={{ color: '#666' }}>
+                <p className="mb-0">
+                    <i className="fa fa-users mr-3" />
+                    Attendees (12)
+                </p>
+            </div>
+            <div className="card-body d-flex flex-column justify-content-center">
+                <img className="event-user-avatar m-auto mb-3" src={maryImg} />
+                <h5 className="m-auto mb-0">Mary O'Connor</h5>
+                <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>Peace Corps</p>
+            </div>
+            <hr className="m-0" />
+            <div className="card-body d-flex flex-column justify-content-center">
+                <img className="event-user-avatar m-auto mb-3" src={janetImg} />
+                <h5 className="m-auto mb-0">Janet Davis</h5>
+                <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>White Bird Clinic</p>
+            </div>
+        </Card>
+    )
 
     showEventDetailsBox = () => {
-        const event = get(this.props, 'selectedEvent.data', {})
+        const event = get(this.props, 'selectedEvent', {})
         const eventDate = get(event, 'eventDate', '')
         const eventLocation = get(event, 'location', '')
 
@@ -163,23 +167,48 @@ class EventPage extends Component {
         )
     }
 
-    showRSVPBox = () => (
-        <div className="mb-4">
-            <Card>
-                <div className="card-body">
-                    <div className="d-flex flex-row justify-content-between mb-0">
-                        <h6 className="mb-3">Are you going to this event?</h6>
-                        {/* <p style={{ fontStyle: 'italic', color: '#939393' }}>12 people going</p> */}
+    showRSVPBox = () => {
+        const attendees = get(this.props, 'selectedEvent.attendees', [])
+        const isAttending = includes(attendees, this.props.userId)
+
+        return (
+            <div className="mb-4">
+                <Card>
+                    <div className="card-body">
+                        <div className="d-flex flex-row justify-content-between mb-0">
+                            <h6 className="mb-3">
+                                {
+                                    isAttending
+                                    ? 'You RSVP\'d to this event!'
+                                    : 'Are you going to this event?'
+                                }
+                            </h6>
+                        </div>
+                        <p className="d-flex flex-row justify-content-between mb-0">
+                            <button 
+                                type="button" 
+                                className={`btn btn-outline-${isAttending ? 'danger' : 'primary'} w-100`}
+                                onClick={this.updateEventAttendance}
+                            >
+                                {
+                                    isAttending 
+                                    ? 'I\'m no longer attending' 
+                                    : 'I\'ll be there!'
+                                }
+                            </button>
+                        </p>
                     </div>
-                    <p className="d-flex flex-row justify-content-between mb-0">
-                        <button type="button" class="btn btn-outline-primary w-100">Yes</button>
-                        <button type="button" class="btn btn-outline-secondary w-100 mr-3 ml-3">Maybe</button>
-                        <button type="button" class="btn btn-outline-danger w-100">No</button>
-                    </p>
-                </div>
-            </Card>
-        </div>
-    )
+                </Card>
+            </div>
+        )
+    }
+
+    updateEventAttendance = () => {
+        const obj = {
+            attendee: this.props.userId,
+        }
+        this.props.updateEvent(this.props.selectedEvent._id, obj)
+    }
     
     render() {
         return (
@@ -195,10 +224,13 @@ class EventPage extends Component {
 }
 
 const mapStateToProps = (state) => {
+    console.log('state', state);
     return ({
-        selectedEvent: get(state, 'selectedEvent', {}),
-        eventStatus: get(state, 'selectedEvent.status', 'NOT_STARTED')
+        events: get(state, 'events.data', {}),
+        selectedEvent: get(state, 'events.selectedEvent.data.data', {}),
+        selectedEventStatus: get(state, 'events.selectedEvent.status'),
+        userId: get(state, 'user._id', ''),
     });
 };
 
-export default connect(mapStateToProps, { getEventById })(EventPage);
+export default connect(mapStateToProps, { getEventById, updateEvent, getAttendeesDetails })(EventPage);
