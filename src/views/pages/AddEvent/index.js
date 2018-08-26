@@ -6,7 +6,7 @@ import { get, cloneDeep } from 'lodash';
 import Card from '../../lib/Card';
 // import eventImg1 from '../../../static/imgs/stock-event-1.jpg';
 
-import { createEvent } from '../../../state/actions/index.js';
+import { createEvent } from '../../../state/actions/eventActions';
 
 const mapStateToProps = (state) => ({
   events: get(state, 'events', {})

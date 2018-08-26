@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import Card from '../../lib/Card';
 
-import { loginUser, logoutUser } from '../../../state/actions/index.js';
+import { loginUser, logoutUser } from '../../../state/actions/authenticationActions';
 
 const mapStateToProps = (state) => ({
     isLoggedIn: !_.get(state, 'authentication.isTokenExpired', false) && _.get(state, 'authentication.isLoggedIn', false),

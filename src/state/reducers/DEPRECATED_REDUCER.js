@@ -20,7 +20,7 @@ const initialState = {
     profile: {}
 };
 
-const reducer = (state = initialState, action) => {
+const DEPRECATED_REDUCER = (state = initialState, action) => {
     const { type, payload = { message: '' } } = action;
 
     switch (type) {
@@ -150,4 +150,4 @@ organizations: {
     }
 };
 
-export default reducer;
+export default DEPRECATED_REDUCER;

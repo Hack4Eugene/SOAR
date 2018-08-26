@@ -9,7 +9,8 @@ import { SUCCESS } from '../../../state/statusTypes';
 
 import Card from '../../lib/Card';
 
-import { loginUser, getEvents } from '../../../state/actions/index.js';
+import { getEvents } from '../../../state/actions/eventActions';
+import { loginUser } from '../../../state/actions/authenticationActions';
 import EventsWidget from '../../components/Widgets/Event';
 
 import parkImg from '../../../static/imgs/food.jpg';
