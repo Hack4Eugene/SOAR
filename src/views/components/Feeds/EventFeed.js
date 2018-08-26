@@ -10,7 +10,7 @@ import EventsWidget from '../Widgets/Event';
 
 import Card from '../../lib/Card';
 
-import { getEvents } from '../../../state/actions/index.js';
+import { getEvents } from '../../../state/actions/eventActions';
 
 class EventFeed extends Component {
     constructor(props) {

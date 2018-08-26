@@ -163,7 +163,7 @@ export const getOrganizationsById = ids => {
  Project Actions
  */
 
-export const getProjectsByOrganization = () => {
+export const getProjectsByOrganization = id => {
     return (dispatch, getState) => {
         HttpClient(getState()).then(client => client.get(
             `${loadEndpoint(

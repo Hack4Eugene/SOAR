@@ -7,7 +7,8 @@ import classnames from 'classnames';
 
 import { SUCCESS } from '../../../state/statusTypes';
 
-import { getUserByID, getOrganizationsById } from '../../../state/actions/index.js';
+import { getUserByID } from '../../../state/actions/userActions';
+import { getOrganizationsById } from '../../../state/actions/organizationActions';
 import Card from '../../lib/Card';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
 import peaceImg from '../../../static/imgs/peace-corps.jpg';

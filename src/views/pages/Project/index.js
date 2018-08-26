@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { get } from 'lodash';
+import { Link, Redirect } from 'react-router-dom';
+import moment from 'moment';
+import { withRouter } from 'react-router-dom'
+import { get, filter, isEqual, isArray } from 'lodash';
 
-import { getEvents } from '../../../state/actions/index.js';
+import { SUCCESS } from '../../../state/statusTypes';
+
+import Card from '../../lib/Card';
+
+import { getEvents } from '../../../state/actions/eventActions';
+import { loginUser } from '../../../state/actions/authenticationActions';
+import EventsWidget from '../../components/Widgets/Event';
 
 import parkImg from '../../../static/imgs/food.jpg';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';

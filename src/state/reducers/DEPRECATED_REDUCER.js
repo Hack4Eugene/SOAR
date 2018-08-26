@@ -6,7 +6,8 @@ import {
     ADD_ORG_RESOLVED,
     GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
-    GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED,
+    GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, GET_PROJECTS_BY_ORG_RESOLVED, GET_PROJECTS_BY_ORG_REJECTED, 
+    DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED, API_ERROR,
     GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORG_ID_RESOLVED, GET_ORG_ID_REJECTED,
     POST_USER_RESOLVED, POST_USER_PENDING, POST_USER_REJECTED,
     GET_EVENT_RESOLVED, GET_EVENT_REJECTED
@@ -21,7 +22,7 @@ const initialState = {
     profile: {}
 };
 
-const reducer = (state = initialState, action) => {
+const DEPRECATED_REDUCER = (state = initialState, action) => {
     const { type, payload = { message: '' } } = action;
 
     switch (type) {
@@ -131,6 +132,14 @@ organizations: {
             return _.assign({}, state, { projects: { error: { ...payload }, status: ERROR } });
         }
 
+        case GET_PROJECTS_BY_ORG_RESOLVED: {
+            return _.assign({}, state, { projectsForOrganization: { ...state.projectsForOrganization, data: [...payload.data], status: SUCCESS } })
+        }
+
+        case GET_PROJECTS_BY_ORG_REJECTED: {
+            return _.assign({}, state, { projectsForOrganization: { error: { ...payload }, status: ERROR } })
+        }
+
         case DELETE_PROJECT_RESOLVED: {
             return _.assign({}, state, { projects: { ...state.projects, status: SUCCESS } });
         }
@@ -151,4 +160,4 @@ organizations: {
     }
 };
 
-export default reducer;
+export default DEPRECATED_REDUCER;

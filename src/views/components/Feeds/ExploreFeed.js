@@ -7,11 +7,9 @@ import ProjectFeed from './ProjectFeed';
 import EventsWidget from '../Widgets/Event';
 import OrganizationsWidget from '../Widgets/Organization';
 
-import {
-    getEvents,
-    getProjects,
-    getOrganizations
-} from '../../../state/actions/index';
+import { getEvents } from '../../../state/actions/eventActions';
+import { getProjects } from '../../../state/actions/projectActions';
+import { getOrganizations } from '../../../state/actions/organizationActions';
 
 const mapStateToProps = state => ({
     events: _.get(state, 'events', {}),

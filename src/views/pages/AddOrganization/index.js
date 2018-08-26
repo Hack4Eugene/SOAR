@@ -4,7 +4,7 @@ import { get, cloneDeep } from 'lodash';
 
 import Card from '../../lib/Card';
 
-import { addOrganization } from '../../../state/actions/index.js';
+import { addOrganization } from '../../../state/actions/organizationActions';
 
 const mapStateToProps = (state) => ({
   events: get(state, 'events', {}),
