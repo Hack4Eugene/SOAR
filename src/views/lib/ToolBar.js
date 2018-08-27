@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { deleteEvent } from '../../state/actions/eventActions';
 import { deleteProject } from '../../state/actions/projectActions';
@@ -13,8 +14,11 @@ class ToolBar extends Component {
             type,
             data,
             deleteEvent: deleteEventFn,
-            deleteProject: deleteProjectFn
+            deleteProject: deleteProjectFn,
+            customDelete
         } = this.props;
+
+        if (customDelete) return customDelete(data);
 
         switch (type) {
             case 'event': {
@@ -31,11 +35,23 @@ class ToolBar extends Component {
 
     render() {
         return (
-            <div className="d-inline-flex icon-container">
-                <i className="fas fa-pencil-alt mr-2 dark-gray" /><i className="ml-2 fas fa-times dark-gray" onClick={this.onDeleteClick} />
+            <div className="d-inline-flex flex-wrap icon-container align-items-center w-100 justify-content-between">
+                {this.props.children}
+                <div>
+                    <i className="fas fa-pencil-alt mr-2 dark-gray" /><i className="ml-2 fas fa-times dark-gray" onClick={this.onDeleteClick} />
+                </div>
             </div>
         );
     }
 }
+
+ToolBar.propTypes = {
+    type: PropTypes.string,
+    data: PropTypes.object,
+    deleteEvent: PropTypes.func,
+    deleteProject: PropTypes.func,
+    customEdit: PropTypes.func,
+    customDelete: PropTypes.func
+};
 
 export default connect(null, { deleteEvent, deleteProject })(ToolBar);

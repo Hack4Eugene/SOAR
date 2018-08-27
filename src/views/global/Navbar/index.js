@@ -30,11 +30,11 @@ class Navbar extends Component {
     }
 
     componentDidMount() {
-        window.addEventListener('click', this.onClick);
+        document.addEventListener('click', this.onClick);
     }
 
     componentWillUnmount() {
-        window.removeEventListener('click', this.onClick);
+        document.removeEventListener('click', this.onClick);
     }
 
     getNavigationLinks = () => (
@@ -120,7 +120,11 @@ class Navbar extends Component {
 
         return (
             <div ref={this.nav}>
-                <Sidebar open={isSidebarOpen} isLoggedIn={this.props.isLoggedIn} />
+                <Sidebar
+                    toggleSidebarFn={() => this.setState({ isSideBarOpen: !this.state.isSidebarOpen })}
+                    open={isSidebarOpen}
+                    isLoggedIn={this.props.isLoggedIn}
+                />
                 <nav
                     className={
                         classNames('navbar navbar-white border-bottom p-0',
@@ -132,7 +136,11 @@ class Navbar extends Component {
                     }
                 >
                     <HamburgerMenu open={isSidebarOpen} isMobile={isMobile} ref={this.hamburgerMenu} />
-                    <img src={logo} alt="ECAN Logo" style={{ flex: '0 0 100px' }} className={classNames({ [mobileImgClasses]: isMobile })} />
+                    <img
+                        src={logo} alt="ECAN Logo"
+                        style={{ flex: '0 0 100px', maxWidth: '100px' }}
+                        className={classNames({ [mobileImgClasses]: isMobile })}
+                    />
                     {!isMobile && (
                         <div className="d-flex align-items-center">
                             {this.getNavigationLinks()}
