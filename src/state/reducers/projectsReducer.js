@@ -5,7 +5,9 @@ import {
     DELETE_PROJECT_REJECTED,
     DELETE_PROJECT_RESOLVED,
     GET_PROJECTS_REJECTED,
-    GET_PROJECTS_RESOLVED
+    GET_PROJECTS_RESOLVED,
+    GET_PROJECTS_BY_ORG_RESOLVED,
+    GET_PROJECTS_BY_ORG_REJECTED
 } from '../types';
 
 const initialState = {
@@ -31,6 +33,14 @@ const projectReducer = (state = initialState, action) => {
         }
 
         case DELETE_PROJECT_REJECTED: {
+            return { ...state, error: { ...payload }, status: ERROR };
+        }
+
+        case GET_PROJECTS_BY_ORG_RESOLVED: {
+            return { ...state, projectsForOrganization: payload, status: SUCCESS };
+        }
+
+        case GET_PROJECTS_BY_ORG_REJECTED: {
             return { ...state, error: { ...payload }, status: ERROR };
         }
 

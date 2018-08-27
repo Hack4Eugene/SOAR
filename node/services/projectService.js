@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectId;
 const Schema = mongoose.Schema;
 const _ = require('lodash');
 const moment = require('moment');
@@ -53,7 +54,7 @@ module.exports = {
     },
 
     getProjectsByOrganization: (req, res) => {
-        return ProjectModel.find({ 'organization.id': req.params.organization_id })
+        return ProjectModel.find({ 'organization.id': ObjectId(req.params.organization_id) })
             .then(projectDocuments => res.status(200).send(projectDocuments))
             .catch(error => {
                 console.log(error);
