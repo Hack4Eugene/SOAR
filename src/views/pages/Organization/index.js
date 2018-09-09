@@ -21,8 +21,8 @@ const mapStateToProps = (state) => ({
     posts: get(state, 'posts', {}),
     user: get(state, 'user', {}),
     organization: get(state, 'profile.organizations.data[0]', {}),
-    projects: get(state, 'projectsForOrganization.data', []),
-    projectsStatus: get(state, 'projectsForOrganization.status', 'NOT_STARTED')
+    projects: get(state, 'projects.projectsForOrganization.data', []),
+    projectsStatus: get(state, 'projects.projectsForOrganization.statusText', 'NOT_STARTED')
     // animationVal: _.get(state, 'events.animationVal', null),
     // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
 });
@@ -31,14 +31,13 @@ class ProjectItem extends Component {
     render() {
         console.log({prop:this.props});
         return (
-            <div className="card col p-0" style={{ width: '100%' }}>
+            <div className="card m-3" style={{maxWidth: '300px'}}>
                 <div className="card-header">
                     <h5 className="card-title mb-0">{this.props.title}</h5>
                 </div>
                 <div className="card-body">
-
                     <p className="card-text">{this.props.description}</p>
-                    <a href="#" className="btn btn-outline-success float-right">More Info</a>
+                    <a href={`/project/${this.props.id}`} className="btn btn-outline-success d-flex" style={{marginLeft: 'auto', maxWidth: '99px', alignSelf: 'flex-end', justifySelf: 'flex-end'}}>More Info</a>
                 </div>
             </div>
         )
@@ -54,18 +53,15 @@ class OrganizationPage extends Component {
     }
 
     showProjects() {
-        if (this.props.projectsStatus === 'SUCCESS') {
+        console.log(`Projects Status: ${this.props.projectsStatus}`);
+        if (this.props.projectsStatus === 'OK') {
             console.log('Got projects', this.props.projects);
 
             const ProjectList = this.props.projects.length
-                ? map(this.props.projects, (project, i) => <ProjectItem key={i} title={project.name} description={project.description}/>)
+                ? map(this.props.projects, (project, i) => <ProjectItem key={i} title={project.name} description={project.description} id={project._id}/>)
                 : <div />;
 
-            return (
-                <div>
-                    {ProjectList}
-                </div>
-            );
+            return ProjectList;
         }
 
         return (
@@ -92,7 +88,7 @@ class OrganizationPage extends Component {
                     <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..."/>
                     {/* </p> */}
                 </div>
-                <div className="d-inline-flex flex-row flex-wrap justify-items-start">
+                <div className="d-flex flex-row flex-wrap">
                     {this.showProjects()}
                 </div>
                 {/* <div className="row">

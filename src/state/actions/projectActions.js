@@ -13,11 +13,11 @@ import { serviceRoutes } from '../../config/routes';
 
 const { GET_PROJECTS_BY_ORGANIZATION, GET_PROJECTS, DELETE_PROJECT, GET_PROJECT_BY_ID } = serviceRoutes;
 
-export const getProjectsByOrganization = () => {
+export const getProjectsByOrganization = projectID => {
     return (dispatch, getState) => {
         HttpClient(getState()).then(client => client.get(
             `${loadEndpoint(
-                _.get(getState(), 'env'), GET_PROJECTS_BY_ORGANIZATION)}/5ac9877976448030b88ac636`
+                _.get(getState(), 'env'), GET_PROJECTS_BY_ORGANIZATION)}/${projectID}`
             ))
             .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
             .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }));
