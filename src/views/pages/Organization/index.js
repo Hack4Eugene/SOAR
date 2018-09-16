@@ -15,13 +15,12 @@ import { getOrganizationsById } from '../../../state/actions/organizationActions
 import { getProjectsByOrganization } from '../../../state/actions/projectActions';
 
 import '../UserProfile/UserProfilePage.css';
-import Project from '../Project';
 
 const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
     posts: get(state, 'posts', {}),
     user: get(state, 'user', {}),
-    organization: get(state, 'profile.organizations.data[0]', {}),
+    organization: get(state, 'organizations.organizationsById[0]', {}),
     projects: get(state, 'projects.projectsForOrganization.data', []),
     projectsStatus: get(state, 'projects.projectsForOrganization.statusText', 'NOT_STARTED')
     // animationVal: _.get(state, 'events.animationVal', null),
@@ -35,7 +34,7 @@ class ProjectItem extends Component {
             'separator': /,? +/
         });
         return (
-            <div className="card m-3" style={{maxWidth: '300px'}}>
+            <div className="card m-3" style={{ maxWidth: '300px' }}>
                 <div className="card-header">
                     <h5 className="card-title mb-0">{this.props.title}</h5>
                 </div>
