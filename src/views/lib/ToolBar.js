@@ -38,7 +38,8 @@ class ToolBar extends Component {
             <div className="d-inline-flex flex-wrap icon-container align-items-center w-100 justify-content-between">
                 {this.props.children}
                 <div>
-                    <i className="fas fa-pencil-alt mr-2 dark-gray" /><i className="ml-2 fas fa-times dark-gray" onClick={this.onDeleteClick} />
+                    <i className="fas fa-pencil-alt mr-2 dark-gray" onClick={this.props.onEdit} />
+                    <i className="ml-2 fas fa-times dark-gray" onClick={this.onDeleteClick} />
                 </div>
             </div>
         );
@@ -50,7 +51,7 @@ ToolBar.propTypes = {
     data: PropTypes.object,
     deleteEvent: PropTypes.func,
     deleteProject: PropTypes.func,
-    customEdit: PropTypes.func,
+    onEdit: PropTypes.func,
     customDelete: PropTypes.func
 };
 

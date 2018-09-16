@@ -7,7 +7,7 @@ const RequestError = require('../lib/Errors');
 const { ObjectId } = mongoose;
 
 module.exports = {
-    getAll: (req, res, next) => {
+    getAll(req, res, next) {
         return OrganizationModel.find()
             .then(organizationRecords => {
                 res.status(200).send(organizationRecords);
@@ -18,7 +18,7 @@ module.exports = {
             });
     },
 
-    getByID: (req, res, next) => {
+    getByID(req, res, next) {
         OrganizationModel.find({ _id: { $in: req.params.organization_ids.split("&") } })
             .then(organizationRecord => {
                 res.status(200).send(organizationRecord);
@@ -29,7 +29,7 @@ module.exports = {
             });
     },
 
-    createOrUpdate: (req, res, next) => {
+    createOrUpdate(req, res, next) {
         if (!req.params.organization_id) {
             const newOrganization = _.omitBy(req.body, function (key, value) {
                 return key === 'userId';
@@ -37,12 +37,15 @@ module.exports = {
 
             newOrganization.created_at = new Date();
 
-            return OrganizationModel.create(newOrganization)
-                .then(savedRecord => {
-                    return UserModel.findOneAndUpdate({ _id: req.body.userId }, { $set: { 'organization.id': savedRecord._id, 'organization.name': savedRecord.name, 'organization.role': 'admin' }})
-                        .then(userRecord => {
-                            res.status(201).send(savedRecord);
-                        });
+            OrganizationModel.create(newOrganization)
+                .then(savedRecord => UserModel.findOneAndUpdate({
+                    _id: req.body.userId },
+                    {
+                        $set: { 'organization.id': savedRecord._id, 'organization.name': savedRecord.name, 'organization.role': 'admin' }
+                    }
+                ))
+                .then(userRecord => {
+                    res.status(201).send(savedRecord);
                 })
                 .catch(error => {
                     console.log(error);
@@ -68,19 +71,10 @@ module.exports = {
                     res.status(error.status || 500).send(error);
                 });
         }
-
-        return OrganizationModel.create(req.body)
-            .then(savedRecord => {
-                res.status(201).send(savedRecord);
-            })
-            .catch(error => {
-                console.log(error);
-                res.status(error.status || 500).send(error);
-            });
     },
 
-    deleteOrganization: (id) => {
+    deleteOrganization(id) {
         return OrganizationModel.deleteOne({ _id: id })
-            .then(() => ({ 'msg': 'deleted' }));
+            .then(() => ({ msg: 'deleted' }));
     }
 };

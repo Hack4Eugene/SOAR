@@ -5,7 +5,7 @@ const { authenticate } = require('../middleware/ecan-passport-strategy');
 module.exports = function (app) {
     app.get(routes.GET_USERS, authenticate, getAll);
 
-    app.get(routes.GET_USER_BY_ID, (req, res, next) => authenticate(req, res, next, getByID));
+    app.get(routes.GET_USER_BY_ID, authenticate, getByID);
 
     app.get(routes.GET_USERS_BY_IDS, authenticate, getMultipleByIDs);
 
@@ -13,7 +13,7 @@ module.exports = function (app) {
 
     app.post(routes.POST_USER, createOrUpdate);
 
-    app.delete(routes.DELETE_USER, (req, res, next) => authenticate(req, res, next, deleteUser));
+    app.delete(routes.DELETE_USER, authenticate, deleteUser);
     /*
         Todo: I think a helpful route would be a route that returns a users roles.
     */

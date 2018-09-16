@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { get, filter, map, chunk } from 'lodash';
 import moment from 'moment';
 import _ from 'lodash';
-import { withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom';
 
 import Card from '../../lib/Card';
 import ProjectCard from '../../components/Widgets/Project/index.js';
@@ -43,7 +43,7 @@ class ProjectItem extends Component {
                     <a href={`/project/${this.props.id}`} className="btn btn-outline-success d-flex" style={{marginLeft: 'auto', maxWidth: '99px'}}>More Info</a>
                 </div>
             </div>
-        )
+        );
     }
 }
 
@@ -82,7 +82,7 @@ class OrganizationPage extends Component {
             }
 
             const ProjectList = this.props.projects.length
-                ? map(this.props.projects, (project, i) => <ProjectItem key={i} title={project.name} description={project.description} id={project._id}/>)
+                ? map(this.props.projects, (project, i) => <ProjectItem key={i} title={project.name} description={project.description} id={project._id} />)
                 : <div />;
 
             return ProjectList;
@@ -92,7 +92,7 @@ class OrganizationPage extends Component {
             <div className="col-8">
                 <h4>Loading...</h4>
             </div>
-        )
+        );
     }
 
     render() {
@@ -101,15 +101,15 @@ class OrganizationPage extends Component {
                 <div className="jumbotron p-4">
                     <h1 className="display-4">{this.props.organization.name}</h1>
                     <p className="lead">{this.props.organization.description}</p>
-                    <hr className="my-4"/>
+                    <hr className="my-4" />
                     <p>We accomplish this by soliciting, collecting, rescuing, growing, preparing and packaging food for
                         distribution through a network of more than 150 partner agencies and distribution sites; through
                         public awareness, education and community advocacy; and through programs designed to improve the
                         ability of low-income individuals to maintain an adequate supply of wholesome, nutritious
                         food.</p>
                     {/* <p class="lead"> */}
-                    <hr className="my-4"/>
-                    <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..."/>
+                    <hr className="my-4" />
+                    <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..." />
                     {/* </p> */}
                 </div>
                 <div className="d-flex flex-row flex-wrap" style={{justifyContent: 'center'}}>

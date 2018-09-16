@@ -3,11 +3,11 @@ const {getAll, getByID, createOrUpdate, deleteEvent} = require('../services/even
 const { authenticate } = require('../middleware/ecan-passport-strategy');
 
 module.exports = function (app) {
-    app.get(routes.GET_EVENTS, (req, res, next) => authenticate(req, res, next, getAll));
+    app.get(routes.GET_EVENTS, authenticate, getAll);
 
     app.get(routes.GET_EVENT_BY_ID, authenticate, getByID);
 
-    app.post(routes.POST_EVENT, (req, res, next) => authenticate(req, res, next, createOrUpdate));
+    app.post(routes.POST_EVENT, authenticate, createOrUpdate);
 
-    app.delete(routes.DELETE_EVENT, (req, res, next) => authenticate(req, res, next, deleteEvent));
+    app.delete(routes.DELETE_EVENT, authenticate, deleteEvent);
 };
