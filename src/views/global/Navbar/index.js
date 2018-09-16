@@ -13,7 +13,7 @@ import './styles.scss';
 
 const mapStateToProps = state => ({
     isLoggedIn: _.get(state, 'authentication.isLoggedIn', false),
-    userName: _.get(state, 'user.name', null)
+    userName: _.get(state, 'user.data.name', null)
 });
 
 class Navbar extends Component {
@@ -30,11 +30,13 @@ class Navbar extends Component {
     }
 
     componentDidMount() {
-        document.addEventListener('click', this.onClick);
+        document.addEventListener('click', this.onClick, true);
+        document.addEventListener('ontouchend', this.onClick, false);
     }
 
     componentWillUnmount() {
-        document.removeEventListener('click', this.onClick);
+        document.removeEventListener('click', this.onClick, true);
+        document.removeEventListener('ontouchend', this.onClick, false);
     }
 
     getNavigationLinks = () => (
@@ -73,7 +75,7 @@ class Navbar extends Component {
     };
 
     getUserAvatar = () => (
-        <Link to="./userprofile" style={{ flexShrink: '0', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <Link to="/profile" style={{ flexShrink: '0', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
             <img alt="ECAN SOAR Avatar" src={avatar} style={{ width: '100%', maxWidth: '58px' }} />
             <p style={{ color: 'black', margin: '0 0 0 8px' }}>{this.props.userName}</p>
         </Link>

@@ -9,6 +9,7 @@ import {
 
 const initialState = {
     user: {
+        data: {},
         status: NOT_STARTED
     }
 };
@@ -19,7 +20,9 @@ const userReducer = (state = initialState, action) => {
     switch (type) {
         case LOGIN_USER_RESOLVED: {
             return {
-                ...payload.user,
+                data: {
+                    ...payload.user
+                },
                 status: SUCCESS
             };
         }
@@ -33,7 +36,9 @@ const userReducer = (state = initialState, action) => {
 
         case POST_USER_RESOLVED: {
             return {
-                ...payload.user,
+                data: {
+                    ...payload.user
+                },
                 status: SUCCESS
             };
         }

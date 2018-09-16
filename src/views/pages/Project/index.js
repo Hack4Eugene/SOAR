@@ -1,22 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { get } from 'lodash';
+import { get, reduce, isEqual } from 'lodash';
 
-import { getProjectById } from '../../../state/actions/projectActions';
+import { getProjectById, updateProject } from '../../../state/actions/projectActions';
+import { NOT_STARTED, SUCCESS } from '../../../state/statusTypes';
 
 import ToolBar from '../../lib/ToolBar';
 import Modal from '../../lib/Modal';
+import EditProject from '../../components/Forms/EditProject';
+
+import { diffBetween } from '../../../lib/util';
 
 import parkImg from '../../../static/imgs/food.jpg';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
 import peaceImg from '../../../static/imgs/peace-corps.jpg';
 import habitatImg from '../../../static/imgs/habitat-humanity.png';
 
-import './ProjectPage.css';
+import './ProjectPage.scss';
 
 const mapStateToProps = (state) => ({
-    project: get(state, 'projects.detailed', {})
+    project: get(state, 'projects.detailed.data', {}),
+    projectStatus: get(state, 'projects.detailed.status', NOT_STARTED),
+    form: get(state, 'form.EditProject')
     // animationVal: _.get(state, 'events.animationVal', null),
     // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
 });
@@ -30,40 +36,55 @@ class Project extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const projectID = get(this.props, 'computedMatch.params.id', 'projectID');
         this.props.getProjectById(projectID);
     }
 
-    componentDidMount() {
-        console.log(this.props.computedMatch.params.id);
+    componentDidUpdate(prevProps, prevState) {
+        const isModalShown = this.state.showModal;
+        const isNewProjectData = prevProps.project !== this.props.project;
+        const isNewDataFinal = this.props.projectStatus === SUCCESS;
+
+        if (isModalShown && isNewProjectData && isNewDataFinal) {
+            this.setState({ showModal: false }); //eslint-disable-line react/no-did-update-set-state
+        }
     }
 
+    submitEdits = () => {
+        const currentRecord = this.props.project;
+        const updates = get(this.props.form, 'values', {});
+        // const filteredUpdates = diffBetween(currentRecord, updates);
+
+        this.props.updateProject(this.props.project._id, updates);
+    };
+
     render() {
+        const {
+            name,
+            tagline,
+            description
+        } = this.props.project;
+
         return (
             <div className="container pt-4">
-                <Modal show={this.state.showModal}>
-                    <div>
-                        Hello, Im Modal content!
-                    </div>
+                <Modal show={this.state.showModal} hide={() => this.setState({ showModal: !this.state.showModal })}>
+                    <EditProject
+                        initialValues={this.props.project}
+                        onSubmit={this.submitEdits}
+                    />
                 </Modal>
                 <div className="row">
                     <div className="col">
                         <div className="jumbotron p-4 project-jumbo">
-                            <ToolBar customDelete={() => this.setState({ showModal: !this.state.showModal })}>
-                                <h1 className="display-4">Harvest to Home Project</h1>
+                            <ToolBar onEdit={() => this.setState({ showModal: !this.state.showModal })}>
+                                <h1 className="display-4">{name}</h1>
                             </ToolBar>
-                            <p className="lead">This spring, various groups in our network will collaborate in the
-                                entire process of growing, harvesting, and distributing food to local underserved youth.
-                                Join us for the whole series, or pick a single event from our timeline below!</p>
+                            <p className="lead">{tagline}</p>
                             <hr className="my-4" />
                             <img alt="park" src={parkImg} className="project-header-img" />
                             <hr className="my-4" />
-                            <p>We accomplish this by soliciting, collecting, rescuing, growing, preparing and packaging
-                                food for distribution through a network of more than 150 partner agencies and
-                                distribution sites; through public awareness, education and community advocacy; and
-                                through programs designed to improve the ability of low-income individuals to maintain
-                                an adequate supply of wholesome, nutritious food.</p>
+                            <p>{description}</p>
                             <h1 className="display-4 alliance-header">- Our Alliance -</h1>
 
                             <div className="row">
@@ -183,4 +204,4 @@ class Project extends Component {
     }
 }
 
-export default connect(mapStateToProps, { getProjectById })(Project);
+export default connect(mapStateToProps, { getProjectById, updateProject })(Project);

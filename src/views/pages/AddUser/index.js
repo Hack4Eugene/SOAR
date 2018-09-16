@@ -51,7 +51,7 @@ class AddUser extends Component {
     }
 
     getOrganizationBox = () => {
-        if (this.props.organizations.Status !== SUCCESS) {
+        if (this.props.organizations.status !== SUCCESS) {
             return;
         }
 
@@ -68,7 +68,7 @@ class AddUser extends Component {
                 onChange={(e) => this.handleFormInput(e)}
             >
                 {
-                    this.props.organizations.Status === SUCCESS && _.map(this.props.organizations.data, (org, i) => (
+                    _.map(this.props.organizations.data, (org, i) => (
                         <option value={org.name} key={i}>{org.name}</option>
                     ))
                 }
@@ -92,17 +92,20 @@ class AddUser extends Component {
 
     handleFormInput(e) {
         const tempUser = cloneDeep(this.state.newUser);
+
+        console.log({ e: e.target });
+
         switch (e.target.id) {
             case 'fullName':
-                e.target.value = _.get(tempUser, 'name', '');
+                tempUser.name = e.target.value;
                 this.setState({ newUser: tempUser });
                 break;
             case 'userName':
-                e.target.value = _.get(tempUser, 'username');
+                tempUser.username = e.target.value;
                 this.setState({ newUser: tempUser });
                 break;
             case 'password':
-                e.target.value = _.get(tempUser, 'password');
+                tempUser.password = e.target.value;
                 this.setState({ newUser: tempUser });
                 break;
             case 'organizations': //eslint-disable-line no-case-declarations
@@ -149,8 +152,6 @@ class AddUser extends Component {
     renderForm = () => {
         return (
             <Card>
-                {/* <div className="card-header">{date}</div> */}
-                {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
                 <div className="card-body">
                     <div className="form-group">
                         <label htmlFor="name">Full Name</label>

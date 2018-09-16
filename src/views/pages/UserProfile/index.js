@@ -16,7 +16,7 @@ import habitatImg from '../../../static/imgs/habitat-humanity.png';
 import userImg from '../../../static/imgs/user-image.png';
 
 const mapStateToProps = (state) => ({
-    profile: get(state, 'user', {}),
+    profile: get(state, 'user.data', {}),
     isLoaded: get(state, 'user.status', null) === SUCCESS
 });
 

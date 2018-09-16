@@ -7,6 +7,7 @@
   z-index: 500;
   height: 100%;
   width: 100%;
+  overflow: auto;
 
   &.show {
     position: fixed;
@@ -17,6 +18,17 @@
       height: 800px;
       max-width: 750px;
       margin: 20px auto;
+      flex-direction: column;
+      overflow: auto;
+      position: relative;
+
+      .close-container {
+        i {
+          font-size: 24px;
+          color: #222222;
+          cursor: pointer;
+        }
+      }
     }
   }
 }

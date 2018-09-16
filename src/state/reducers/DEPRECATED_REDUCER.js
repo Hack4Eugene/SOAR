@@ -133,11 +133,11 @@ organizations: {
         }
 
         case GET_PROJECTS_BY_ORG_RESOLVED: {
-            return _.assign({}, state, { projectsForOrganization: { ...state.projectsForOrganization, data: [...payload.data], status: SUCCESS } })
+            return _.assign({}, state, { projectsForOrganization: { ...state.projectsForOrganization, data: [...payload.data], status: SUCCESS } });
         }
 
         case GET_PROJECTS_BY_ORG_REJECTED: {
-            return _.assign({}, state, { projectsForOrganization: { error: { ...payload }, status: ERROR } })
+            return _.assign({}, state, { projectsForOrganization: { error: { ...payload }, status: ERROR } });
         }
 
         case DELETE_PROJECT_RESOLVED: {
