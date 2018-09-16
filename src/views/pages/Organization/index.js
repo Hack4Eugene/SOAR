@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { get, filter, map, chunk } from 'lodash';
 import moment from 'moment';
+import _ from 'lodash';
 import { withRouter } from 'react-router-dom'
 
 import Card from '../../lib/Card';
@@ -29,15 +30,18 @@ const mapStateToProps = (state) => ({
 
 class ProjectItem extends Component {
     render() {
-        console.log({prop:this.props});
+        const truncatedDescription = _.truncate(this.props.description, {
+            'length': 200,
+            'separator': /,? +/
+        });
         return (
             <div className="card m-3" style={{maxWidth: '300px'}}>
                 <div className="card-header">
                     <h5 className="card-title mb-0">{this.props.title}</h5>
                 </div>
-                <div className="card-body">
-                    <p className="card-text">{this.props.description}</p>
-                    <a href={`/project/${this.props.id}`} className="btn btn-outline-success d-flex" style={{marginLeft: 'auto', maxWidth: '99px', alignSelf: 'flex-end', justifySelf: 'flex-end'}}>More Info</a>
+                <div className="card-body" style={{ maxHeight: '250px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                    <p className="card-text">{truncatedDescription}</p>
+                    <a href={`/project/${this.props.id}`} className="btn btn-outline-success d-flex" style={{marginLeft: 'auto', maxWidth: '99px'}}>More Info</a>
                 </div>
             </div>
         )
@@ -45,17 +49,38 @@ class ProjectItem extends Component {
 }
 
 class OrganizationPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            organizationID: this.props.computedMatch.params.id
+        }
+    }
+
     componentDidMount() {
-        console.log(this.props.computedMatch.params.id);
-        const organizationID = this.props.computedMatch.params.id;
-        this.props.getOrganizationsById([organizationID]);
-        this.props.getProjectsByOrganization(organizationID);
+        this.props.getOrganizationsById([this.state.organizationID]);
+        this.props.getProjectsByOrganization(this.state.organizationID);
+    }
+
+    accessToEntity(entity) {
+        const userOrganizations = _.get(this.props.user, 'organizations', []);
+        const organizationsByIDs = _.map(userOrganizations, 'id');
+
+        return _.includes(organizationsByIDs, entity);
     }
 
     showProjects() {
-        console.log(`Projects Status: ${this.props.projectsStatus}`);
         if (this.props.projectsStatus === 'OK') {
-            console.log('Got projects', this.props.projects);
+            if (this.props.projects.length === 0) {
+                const userHasAccess = this.accessToEntity(this.state.organizationID);
+                return (
+                    <div className="jumbotron jumbotron-fluid p-4">
+                        <div className="container">
+                            <h3 className="display-5">This organization doesn't have any projects yet.</h3>
+                            {userHasAccess ? <a href='#' className="btn btn-outline-success d-flex" style={{ margin: 'auto', width: '160px' }}>Create New Project</a> : null}
+                        </div>
+                    </div>
+                )
+            }
 
             const ProjectList = this.props.projects.length
                 ? map(this.props.projects, (project, i) => <ProjectItem key={i} title={project.name} description={project.description} id={project._id}/>)
@@ -88,85 +113,10 @@ class OrganizationPage extends Component {
                     <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..."/>
                     {/* </p> */}
                 </div>
-                <div className="d-flex flex-row flex-wrap">
+                <div className="d-flex flex-row flex-wrap" style={{justifyContent: 'center'}}>
                     {this.showProjects()}
                 </div>
-                {/* <div className="row">
-                    <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
-                        <div className="card-header">
-                            <h5 className="card-title mb-0">Winter Food Drive</h5>
-                        </div>
-                        <div className="card-body">
-
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" className="btn btn-outline-success float-right">More Info</a>
-                        </div>
-                    </div>
-
-                    <div className="card col ml-3 mr-3 p-0 mb-3" style={{ width: '10rem' }}>
-                        <div className="card-header">
-                            <h5 className="card-title mb-0">Meal Prep Initiative</h5>
-                        </div>
-                        <div className="card-body">
-
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" className="btn btn-outline-success float-right">More Info</a>
-                        </div>
-                    </div>
-
-                    <div className="card col p-0 mr-3 mb-3" style={{ width: '10rem' }}>
-                        <div className="card-header">
-                            <h5 className="card-title mb-0">Gluten Free Gardener</h5>
-                        </div>
-                        <div className="card-body">
-
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" className="btn btn-outline-success float-right">More Info</a>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
-                        <div className="card-header">
-                            <h5 className="card-title mb-0">Frozen Food Storage</h5>
-                        </div>
-                        <div className="card-body">
-
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" className="btn btn-outline-success float-right">More Info</a>
-                        </div>
-                    </div>
-
-                    <div className="card col ml-3 mr-3 p-0 mb-3" style={{ width: '10rem' }}>
-                        <div className="card-header">
-                            <h5 className="card-title mb-0">Personal Hygiene Classes</h5>
-                        </div>
-                        <div className="card-body">
-
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" className="btn btn-outline-success float-right">More Info</a>
-                        </div>
-                    </div>
-
-                    <div className="card col p-0 mr-3 mb-3" style={{ width: '10rem' }}>
-                        <div className="card-header">
-                            <h5 className="card-title mb-0">Summer Hunger Fighters</h5>
-                        </div>
-                        <div className="card-body">
-
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk
-                                of the card's content.</p>
-                            <a href="#" className="btn btn-outline-success float-right">More Info</a>
-                        </div>
-                    </div>
-                </div> */}
-
-                <div className="jumbotron jumbotron-fluid p-4">
+                <div className="jumbotron jumbotron-fluid p-4" style={{marginTop: '2rem'}}>
                     <div className="container">
                         <h1 className="display-4">Lend a hand! ✋</h1>
                         <p className="lead">Are you interested in joining our organization? We're looking for individuals
