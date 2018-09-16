@@ -31,8 +31,39 @@ module.exports = {
          */
         UserModel.findOne({ _id: req.params.user_id })
         .then(userRecord => {
-            delete userRecords.password;
+            delete userRecord.password;
             res.status(200).send(userRecord);
+        })
+        .catch(error => {
+            console.log(error);
+            res.status(error.status || 500).send(error);
+        });
+    },
+
+    getMultipleByIDs: (req, res, next) => {
+        /*
+            Route needs middleware that would parse the access token for the stored ID,
+            Could potentially append to req body in middleware
+         */
+        console.log('SERVICE req.params.user_ids', req.params.user_ids)
+
+        const userIdArray = _.split(req.params.user_ids, ',')
+
+        console.log('SERVICE userIdArray', userIdArray)
+        console.log('UserModel', UserModel)
+
+        // UserModel.cleanByIdArray(userIdArray)
+        UserModel.find({ _id: { $in: userIdArray } })
+        .then(userRecords => {
+            console.log('SERVICE userRecords', userRecords);
+            // _.forEach(userRecords, record => {
+            //     delete record.password;
+            // })
+            const cleanRecords = _.map(userRecords, record => {
+                record.password = ''
+                return record
+            })
+            res.status(200).send(cleanRecords);
         })
         .catch(error => {
             console.log(error);

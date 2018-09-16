@@ -5,7 +5,7 @@ const { authenticate } = require('../middleware/ecan-passport-strategy');
 module.exports = function (app) {
     app.get(routes.GET_EVENTS, (req, res, next) => authenticate(req, res, next, getAll));
 
-    app.get(routes.GET_EVENT_BY_ID, (req, res, next) => authenticate(req, res, next, getByID));
+    app.get(routes.GET_EVENT_BY_ID, authenticate, getByID);
 
     app.post(routes.POST_EVENT, (req, res, next) => authenticate(req, res, next, createOrUpdate));
 
