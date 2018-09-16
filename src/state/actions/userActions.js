@@ -1,12 +1,13 @@
 import { HttpClient, loadEndpoint, serialize } from '../../lib/common';
-import { 
+import { stripAxiosRequestFromError } from '../../lib/util';
+import {
     GET_USER_BY_ID_PENDING,
-    GET_USER_BY_ID_RESOLVED, 
+    GET_USER_BY_ID_RESOLVED,
     GET_USERS_BY_IDS_PENDING,
-    GET_USERS_BY_IDS_RESOLVED, 
-    POST_USER_PENDING, 
-    POST_USER_REJECTED, 
-    POST_USER_RESOLVED 
+    GET_USERS_BY_IDS_RESOLVED,
+    POST_USER_PENDING,
+    POST_USER_REJECTED,
+    POST_USER_RESOLVED
 } from '../types';
 import { serviceRoutes } from '../../config/routes';
 
@@ -25,7 +26,7 @@ export const createUser = profile => {
                 };
                 return dispatch({ type: POST_USER_RESOLVED, payload: newState });
             })
-            .catch(err => dispatch({ type: POST_USER_REJECTED, payload: err }));
+            .catch(err => dispatch({ type: POST_USER_REJECTED, payload: stripAxiosRequestFromError(err) }));
     };
 };
 

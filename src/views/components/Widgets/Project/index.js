@@ -16,7 +16,7 @@ const ProjectItem = ({ project }) => {
                 </div>
             </div>
         </Card>
-    )
+    );
 };
 
 class ProjectCard extends Component {

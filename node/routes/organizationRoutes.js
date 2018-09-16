@@ -9,16 +9,15 @@ const sendPromise = (req, res, promise) => {
 };
 
 module.exports = (app) => {
-    app.get(routes.GET_ORGANIZATIONS, (req, res, next) => authenticate(req, res, next, getAll));
+    app.get(routes.GET_ORGANIZATIONS, getAll);
 
-    app.get(routes.GET_ORGANIZATIONS_BY_ID, (req, res, next) => authenticate(req, res, next, getByID));
+    app.get(routes.GET_ORGANIZATIONS_BY_ID, authenticate, getByID);
 
-    app.post(routes.POST_ORGANIZATION, (req, res, next) => authenticate(req, res, next, createOrUpdate));
+    app.post(routes.POST_ORGANIZATION, authenticate, createOrUpdate);
 
     app.delete(
         routes.DELETE_ORGANIZATION,
-        (req, res, next) => (
-            authenticate(req, res, next, sendPromise(req, res, deleteOrganization(req.params.organization_id)))
-        )
+        authenticate,
+        (req, res) => sendPromise(req, res, deleteOrganization(req.params.organization_id))
     );
 };

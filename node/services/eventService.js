@@ -1,13 +1,11 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
-const Schema = mongoose.Schema;
 const EventModel = mongoose.model('EventModel');
 const ProjectModel = mongoose.model('ProjectModel');
 const RequestError = require('../lib/Errors');
-const { authenticate } = require('../middleware/ecan-passport-strategy');
 
 module.exports = {
-    createOrUpdate: (req, res) => {
+    createOrUpdate(req, res) {
         if (!req.params.event_id) {
             return EventModel.create(req.body)
                 .then(newEventDocument => {
@@ -20,8 +18,7 @@ module.exports = {
                     console.log(error);
                     res.status(error.status || 500).send(error);
                 });
-        }
-        else {
+        } else {
             return EventModel.findOne({ _id: req.params.event_id })
                 .then(foundEventDocument => {
                     if (foundEventDocument == null) {
@@ -52,26 +49,26 @@ module.exports = {
         }
     },
 
-    getAll: (req, res, next) => {
+    getAll(req, res, next) {
         EventModel.find()
             .then(eventDocuments =>
                 res.status(200).send(eventDocuments))
             .catch(error => {
                 console.log(error);
                 res.status(error.status || 500).send(error);
-            })
+            });
     },
 
-    getByID: (req, res) => {
+    getByID(req, res) {
         return EventModel.findOne({ _id: req.params.event_id })
             .then(eventDocument => res.status(200).send(eventDocument))
             .catch(error => {
                 console.log(error);
                 res.status(error.status || 500).send(error);
-            })
+            });
     },
 
-    deleteEvent: (req, res, next) => {
+    deleteEvent(req, res, next) {
         return EventModel.remove({ _id: req.params.event_id })
             .then(res.status(204).send({ 'msg': 'deleted' }))
             .catch(error => {
@@ -79,4 +76,4 @@ module.exports = {
                 res.status(error.status || 500).send(error);
             });
     }
-}
+};

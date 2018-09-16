@@ -1,17 +1,19 @@
 import _ from 'lodash';
 
 import { HttpClient, loadEndpoint } from '../../lib/common';
+import { stripAxiosRequestFromError } from '../../lib/util';
 import {
     DELETE_PROJECT_REJECTED,
     DELETE_PROJECT_RESOLVED, GET_PROJECT_BY_ID_PENDING, GET_PROJECT_BY_ID_REJECTED, GET_PROJECT_BY_ID_RESOLVED,
     GET_PROJECTS_BY_ORG_REJECTED,
     GET_PROJECTS_BY_ORG_RESOLVED,
-    GET_PROJECTS_REJECTED, GET_PROJECTS_RESOLVED
+    GET_PROJECTS_REJECTED, GET_PROJECTS_RESOLVED,
+    POST_PROJECT_RESOLVED, POST_PROJECT_REJECTED, POST_PROJECT_PENDING
 } from '../types';
 
 import { serviceRoutes } from '../../config/routes';
 
-const { GET_PROJECTS_BY_ORGANIZATION, GET_PROJECTS, DELETE_PROJECT, GET_PROJECT_BY_ID } = serviceRoutes;
+const { GET_PROJECTS_BY_ORGANIZATION, GET_PROJECTS, DELETE_PROJECT, GET_PROJECT_BY_ID, POST_PROJECT } = serviceRoutes;
 
 export const getProjectsByOrganization = projectID => {
     return (dispatch, getState) => {
@@ -53,4 +55,17 @@ export const getProjectById = projectID => (dispatch, getState) => {
         .then(client => client.get(`${loadEndpoint(env, GET_PROJECT_BY_ID)}/${projectID}`))
         .then(result => dispatch({ type: GET_PROJECT_BY_ID_RESOLVED, payload: result }))
         .catch(err => dispatch({ type: GET_PROJECT_BY_ID_REJECTED, error: err }));
+};
+
+export const updateProject = (projectID, updates) => (dispatch, getState) => {
+    const state = getState();
+    const env = _.get(state, 'env', 'local');
+
+    dispatch({ type: POST_PROJECT_PENDING });
+
+    HttpClient(state)
+        .then(client => client.post(`${loadEndpoint(env, POST_PROJECT)}/${projectID}`, updates))
+        .then(result => dispatch({ type: POST_PROJECT_RESOLVED, payload: result }))
+        .then(() => dispatch(getProjectById(projectID)))
+        .catch(err => dispatch({ type: POST_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
 };
