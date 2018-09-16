@@ -33,8 +33,8 @@ module.exports = {
          */
         UserModel.findOne({ _id: req.params.user_id })
         .then(userRecord => {
-            delete userRecord.password;
-            res.status(200).send(userRecord);
+            userRecord = userRecord.toObject();
+            res.status(200).send(_.omit(userRecord, 'password'));
         })
         .catch(error => {
             console.log(error);
@@ -43,10 +43,6 @@ module.exports = {
     },
 
     getMultipleByIDs: (req, res, next) => {
-        /*
-            Route needs middleware that would parse the access token for the stored ID,
-            Could potentially append to req body in middleware
-         */
         console.log('SERVICE req.params.user_ids', req.params.user_ids);
 
         const userIdArray = _.split(req.params.user_ids, ',');
@@ -54,16 +50,12 @@ module.exports = {
         console.log('SERVICE userIdArray', userIdArray);
         console.log('UserModel', UserModel);
 
-        // UserModel.cleanByIdArray(userIdArray)
         UserModel.find({ _id: { $in: userIdArray } })
         .then(userRecords => {
             console.log('SERVICE userRecords', userRecords);
-            // _.forEach(userRecords, record => {
-            //     delete record.password;
-            // })
             const cleanRecords = _.map(userRecords, record => {
-                record.password = '';
-                return record;
+                record = record.toObject();
+                return _.omit(record, 'password');
             });
             res.status(200).send(cleanRecords);
         })
@@ -81,6 +73,8 @@ module.exports = {
                     return res.status(404).send(new RequestError(`User ${username} not found`, 'NOT_FOUND'));
                 }
 
+                userRecord = userRecord.toObject();
+
                 const { password: hash = null } = userRecord;
 
                 if (hash === null) {
@@ -91,7 +85,6 @@ module.exports = {
                 return comparePasswordHash(password, hash)
                     .then(isValidHash => {
                         if (isValidHash) {
-                            delete userRecord.password;
                             //generate a signed json web token with their ID as the payload
                             const token = jwt.sign({ id: userRecord._id }, jwtOpts.secretOrKey, { expiresIn: TOKEN_LIFETIME }); //Expires in an hour
                             return res.status(200).send(_.assign({}, {
@@ -99,7 +92,7 @@ module.exports = {
                                     token,
                                     expiresAt: moment.utc().add(TOKEN_LIFETIME, 'seconds')
                                 }
-                            }, { user: userRecord }));
+                            }, { user: _.omit(userRecord, 'password') }));
                         }
 
                         return res.status(500).send(new RequestError('Password does not match', 'ACCESS_DENIED'));
@@ -130,8 +123,8 @@ module.exports = {
                 .then(userDefinedFields => Object.assign({}, userDefinedFields, { createdAt: moment() }))
                 .then(newUser => UserModel.create(newUser))
                 .then(newUserDocument => {
-                    delete newUserDocument.password;
-                    res.status(200).send(newUserDocument);
+                    newUserDocument = newUserDocument.toObject();
+                    res.status(200).send(_.omit(newUserDocument));
                 })
                 .catch(err => {
                     res.status(err.status || 500).send(err);
@@ -152,18 +145,16 @@ module.exports = {
                         UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
                             .then(res => {
                                 if (!_.isUndefined(res) && _.isInteger(res) && res > 0) {
-                                    throw new RequestError('Username has been taken', 'BAD_REQUEST')
+                                    throw new RequestError('Username has been taken', 'BAD_REQUEST');
                                 }
                             })
                             .catch(err => res.status(err.status || 500).send(err));
 
-                        let updatedRecord = req.body;
-
+                        const updatedRecord = req.body;
                         if (!updatedRecord.password) {
                             UserModel.update({ _id: req.params.user_id }, updatedRecord)
                                 .then(result => res.status(200).send(result))
                                 .catch(err => res.status(500).send(err));
-
                         }
                         //User is updating password
                         getHash(password, SALT_ROUNDS)
@@ -172,9 +163,9 @@ module.exports = {
                             })
                             .then(updatedRecordWithHashedPassword => {
                                 UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
-                                    .then(result => {
-                                        delete result.password;
-                                        res.status(200).send(result)
+                                    .then(newUserRecord => {
+                                        newUserRecord = newUserRecord.toObject();
+                                        res.status(200).send(_.omit(newUserRecord, 'password'));
                                     })
                                     .catch(err => {
                                         throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
