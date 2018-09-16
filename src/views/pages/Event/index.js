@@ -179,7 +179,7 @@ class EventPage extends Component {
                             <h6 className="mb-3">
                                 {
                                     isAttending
-                                    ? 'You RSVP\'d to this event!'
+                                    ? 'You\'re going to this event!'
                                     : 'Are you going to this event?'
                                 }
                             </h6>
