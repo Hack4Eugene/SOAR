@@ -38,14 +38,16 @@ module.exports = {
             newOrganization.created_at = new Date();
 
             OrganizationModel.create(newOrganization)
-                .then(savedRecord => UserModel.findOneAndUpdate({
-                    _id: req.body.userId },
-                    {
-                        $set: { 'organization.id': savedRecord._id, 'organization.name': savedRecord.name, 'organization.role': 'admin' }
-                    }
-                ))
-                .then(userRecord => {
-                    res.status(201).send(savedRecord);
+                .then(savedRecord => {
+                    return UserModel.findOneAndUpdate({ _id: req.body.userId },
+                        { $set: { 'organization.id': savedRecord._id, 'organization.name': savedRecord.name, 'organization.role': 'admin' } })
+                        .then(userRecord => {
+                            res.status(201).send(savedRecord);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            res.status(error.status || 500).send(error);
+                        });
                 })
                 .catch(error => {
                     console.log(error);
@@ -63,7 +65,7 @@ module.exports = {
                         updatedRecord[key] = value;
                     });
 
-                    return OrganizationModel.update({ _id: ObjectId(req.params.organization_id) }, updatedRecord)
+                    return OrganizationModel.update({ _id: req.params.organization_id }, updatedRecord)
                         .then(result => res.status(200).send(result));
                 })
                 .catch(error => {

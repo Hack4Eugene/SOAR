@@ -100,13 +100,9 @@ class OrganizationPage extends Component {
             <div className="container">
                 <div className="jumbotron p-4">
                     <h1 className="display-4">{this.props.organization.name}</h1>
-                    <p className="lead">{this.props.organization.description}</p>
+                    <p className="lead">{this.props.organization.tagline || ''}</p>
                     <hr className="my-4" />
-                    <p>We accomplish this by soliciting, collecting, rescuing, growing, preparing and packaging food for
-                        distribution through a network of more than 150 partner agencies and distribution sites; through
-                        public awareness, education and community advocacy; and through programs designed to improve the
-                        ability of low-income individuals to maintain an adequate supply of wholesome, nutritious
-                        food.</p>
+                    <p>{this.props.organization.description || ''}</p>
                     {/* <p class="lead"> */}
                     <hr className="my-4" />
                     <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..." />
