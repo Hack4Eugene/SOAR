@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { ERROR, LOADING, NOT_STARTED, SUCCESS } from '../statusTypes';
 import {
     DELETE_PROJECT_REJECTED,

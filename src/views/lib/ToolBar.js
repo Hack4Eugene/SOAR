@@ -35,7 +35,7 @@ class ToolBar extends Component {
 
     render() {
         return (
-            <div className="d-inline-flex flex-wrap icon-container align-items-center w-100 justify-content-between">
+            <div className="toolbar-container d-inline-flex flex-wrap icon-container align-items-center w-100 justify-content-between">
                 {this.props.children}
                 <div>
                     <i className="fas fa-pencil-alt mr-2 dark-gray" onClick={this.props.onEdit} />

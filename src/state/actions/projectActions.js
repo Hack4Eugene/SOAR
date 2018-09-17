@@ -54,7 +54,7 @@ export const getProjectById = projectID => (dispatch, getState) => {
     HttpClient(state)
         .then(client => client.get(`${loadEndpoint(env, GET_PROJECT_BY_ID)}/${projectID}`))
         .then(result => dispatch({ type: GET_PROJECT_BY_ID_RESOLVED, payload: result }))
-        .catch(err => dispatch({ type: GET_PROJECT_BY_ID_REJECTED, error: err }));
+        .catch(err => dispatch({ type: GET_PROJECT_BY_ID_REJECTED, payload: err }));
 };
 
 export const updateProject = (projectID, updates) => (dispatch, getState) => {

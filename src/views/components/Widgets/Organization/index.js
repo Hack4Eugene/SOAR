@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { map } from 'lodash';
-import moment from 'moment';
 
 import Card from '../../../lib/Card';
 

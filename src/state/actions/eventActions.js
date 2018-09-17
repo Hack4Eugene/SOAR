@@ -33,7 +33,7 @@ export const createEvent = (event) => {
             .then(result => {
                 dispatch({ type: ADD_EVENT_RESOLVED, payload: result });
             })
-            .catch(err => dispatch({ type: ADD_EVENT_REJECTED, error: err }));
+            .catch(err => dispatch({ type: ADD_EVENT_REJECTED, payload: err }));
     };
 };
 
@@ -73,9 +73,8 @@ export const getEventById = (eventId) => {
         HttpClient(getState(), dispatch)
             .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)))
             .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result }))
-            .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err  }))
-
-    }
+            .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err }));
+    };
 };
 
 export const updateEvent = (eventId, updateObj) => (dispatch, getState) => {
@@ -87,17 +86,15 @@ export const updateEvent = (eventId, updateObj) => (dispatch, getState) => {
             dispatch({ type: UPDATE_EVENT_RESOLVED });
             dispatch(getEvents());
         })
-        .catch(err => dispatch({ type: UPDATE_EVENT_REJECTED, payload: err  }))    
+        .catch(err => dispatch({ type: UPDATE_EVENT_REJECTED, payload: err }));    
 };
 
 export const getAttendeesDetails = (userIds) => (dispatch, getState) => {
-    // dispatch({ type: GET_USERS_BY_IDS_PENDING });
-
     const state = getState();
     const endpointUrl = `${loadEndpoint(state.env, `${GET_USERS_BY_IDS}/${_.join(userIds, ',')}`)}`;
 
     HttpClient(state)
     .then(client => client.get(endpointUrl)
         .then(result => dispatch({ type: GET_ATTENDEES_DETAILS_RESOLVED, payload: result }))
-        .catch(err => dispatch({ type: GET_ATTENDEES_DETAILS_RESOLVED, payload: err })))
+        .catch(err => dispatch({ type: GET_ATTENDEES_DETAILS_REJECTED, payload: err })));
 };

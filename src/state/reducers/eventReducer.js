@@ -63,11 +63,11 @@ const eventReducer = (state = initialState, action) => {
         }
 
         case UPDATE_EVENT_RESOLVED: {
-            return { ...state, status: SUCCESS  }
+            return { ...state, status: SUCCESS };
         }
 
         case UPDATE_EVENT_REJECTED: {
-            return { ...state, error: payload, status: ERROR  }
+            return { ...state, error: payload, status: ERROR };
         }
 
         case GET_ATTENDEES_DETAILS_RESOLVED: {
@@ -80,7 +80,7 @@ const eventReducer = (state = initialState, action) => {
                         status: SUCCESS 
                     } 
                 } 
-            }
+            };
         }
 
         case GET_ATTENDEES_DETAILS_REJECTED: {
@@ -93,7 +93,7 @@ const eventReducer = (state = initialState, action) => {
                         status: ERROR 
                     } 
                 } 
-            }
+            };
         }
 
         default: return state;

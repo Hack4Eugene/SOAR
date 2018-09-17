@@ -47,9 +47,6 @@ module.exports = {
 
         const userIdArray = _.split(req.params.user_ids, ',');
 
-        console.log('SERVICE userIdArray', userIdArray);
-        console.log('UserModel', UserModel);
-
         UserModel.find({ _id: { $in: userIdArray } })
         .then(userRecords => {
             console.log('SERVICE userRecords', userRecords);

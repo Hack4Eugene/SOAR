@@ -1,21 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { get, filter, map, chunk } from 'lodash';
-import moment from 'moment';
-import _ from 'lodash';
-import { withRouter } from 'react-router-dom';
-
-import Card from '../../lib/Card';
-import ProjectCard from '../../components/Widgets/Project/index.js';
-import Calendar from 'react-calendar';
+import _, { get, map } from 'lodash';
 
 // import { getOrganizationsById, getProjectsByOrganization } from '../../../state/actions/index.js'
 import { getOrganizationsById } from '../../../state/actions/organizationActions';
 import { getProjectsByOrganization } from '../../../state/actions/projectActions';
 
-import '../UserProfile/UserProfilePage.css';
-import Project from '../Project';
+import '../UserProfile/UserProfilePage.scss';
 
 const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
@@ -31,17 +22,17 @@ const mapStateToProps = (state) => ({
 class ProjectItem extends Component {
     render() {
         const truncatedDescription = _.truncate(this.props.description, {
-            'length': 200,
-            'separator': /,? +/
+            length: 200,
+            separator: /,? +/
         });
         return (
-            <div className="card m-3" style={{maxWidth: '300px'}}>
+            <div className="card m-3" style={{ maxWidth: '300px' }}>
                 <div className="card-header">
                     <h5 className="card-title mb-0">{this.props.title}</h5>
                 </div>
                 <div className="card-body" style={{ maxHeight: '250px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                     <p className="card-text">{truncatedDescription}</p>
-                    <a href={`/project/${this.props.id}`} className="btn btn-outline-success d-flex" style={{marginLeft: 'auto', maxWidth: '99px'}}>More Info</a>
+                    <a href={`/project/${this.props.id}`} className="btn btn-outline-success d-flex" style={{ marginLeft: 'auto', maxWidth: '99px' }}>More Info</a>
                 </div>
             </div>
         );
@@ -53,7 +44,7 @@ class OrganizationPage extends Component {
         super(props);
         this.state = {
             organizationID: this.props.computedMatch.params.id
-        }
+        };
     }
 
     componentDidMount() {
@@ -76,10 +67,10 @@ class OrganizationPage extends Component {
                     <div className="jumbotron jumbotron-fluid p-4">
                         <div className="container">
                             <h3 className="display-5">This organization doesn't have any projects yet.</h3>
-                            {userHasAccess ? <a href='#' className="btn btn-outline-success d-flex" style={{ margin: 'auto', width: '160px' }}>Create New Project</a> : null}
+                            {userHasAccess ? <a href="#" className="btn btn-outline-success d-flex" style={{ margin: 'auto', width: '160px' }}>Create New Project</a> : null}
                         </div>
                     </div>
-                )
+                );
             }
 
             const ProjectList = this.props.projects.length
@@ -113,10 +104,10 @@ class OrganizationPage extends Component {
                     <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..." />
                     {/* </p> */}
                 </div>
-                <div className="d-flex flex-row flex-wrap" style={{justifyContent: 'center'}}>
+                <div className="d-flex flex-row flex-wrap" style={{ justifyContent: 'center' }}>
                     {this.showProjects()}
                 </div>
-                <div className="jumbotron jumbotron-fluid p-4" style={{marginTop: '2rem'}}>
+                <div className="jumbotron jumbotron-fluid p-4" style={{ marginTop: '2rem' }}>
                     <div className="container">
                         <h1 className="display-4">Lend a hand! ✋</h1>
                         <p className="lead">Are you interested in joining our organization? We're looking for individuals
