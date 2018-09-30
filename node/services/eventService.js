@@ -19,29 +19,38 @@ module.exports = {
                     res.status(error.status || 500).send(error);
                 });
         } else {
+            let newEventDocument = null;
             return EventModel.findOne({ _id: req.params.event_id })
                 .then(foundEventDocument => {
                     if (foundEventDocument == null) {
                         throw new RequestError(`Event ${req.params.event_id} not found`, 'NOT_FOUND');
                     }
 
-                    const newEventDocument = foundEventDocument;
+                    newEventDocument = foundEventDocument;
+                })
+                .then(() => {
                     _.forEach(req.body, (value, key) => {
                         if (key === 'attendee') {
-                            const attendees = newEventDocument[`attendees`]
-                            _.includes(attendees, value)
-                            ? _.remove(attendees, userId => { return userId === value })
-                            : attendees.push(value)
-                        } else {
-                            newEventDocument[key] = value
+                            const attendees = newEventDocument.attendees;
+                            const shouldRemoveAttendee = _.includes(attendees, value);
+                            if (shouldRemoveAttendee) return _.remove(attendees, userId => { return userId === value; });
+                            attendees.push(value);
                         }
+
+                        newEventDocument[key] = value;
                     });
 
-                    return EventModel.update({ _id: req.params.event_id }, newEventDocument)
-                        .then(updatedEventDocument => {
-                            res.status(200).send(updatedEventDocument)
-                        });
+                    return EventModel.update({ _id: req.params.event_id }, newEventDocument, { new: true });
                 })
+                .then(updatedEventDocument => {
+                    newEventDocument = updatedEventDocument;
+
+                    if (req.body.project) {
+                        return ProjectModel.addEventId(req.body.project, req.params.event_id);
+                    }
+                })
+                .then(newProject => { console.log({ newProject }); })
+                .then(() => { res.status(200).send(newEventDocument); })
                 .catch(error => {
                     console.log(error);
                     res.status(error.status || 500).send(error);

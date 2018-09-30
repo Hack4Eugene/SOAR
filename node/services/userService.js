@@ -27,42 +27,33 @@ module.exports = {
     },
 
     getByID: (req, res, next) => {
-        /*
-            Route needs middleware that would parse the access token for the stored ID,
-            Could potentially append to req body in middleware
-         */
         UserModel.findOne({ _id: req.params.user_id })
-        .then(userRecord => {
-            userRecord = userRecord.toObject();
-            res.status(200).send(_.omit(userRecord, 'password'));
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(error.status || 500).send(error);
-        });
+            .then(userRecord => {
+                userRecord = userRecord.toObject();
+                res.status(200).send(_.omit(userRecord, 'password'));
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(error.status || 500).send(error);
+            });
     },
 
     getMultipleByIDs: (req, res, next) => {
-        console.log('SERVICE req.params.user_ids', req.params.user_ids);
-
-        const userIdArray = _.split(req.params.user_ids, ',');
-
-        console.log('SERVICE userIdArray', userIdArray);
-        console.log('UserModel', UserModel);
+        const userIdArray = _.map(_.split(req.params.user_ids, ','), ObjectId);
 
         UserModel.find({ _id: { $in: userIdArray } })
-        .then(userRecords => {
-            console.log('SERVICE userRecords', userRecords);
-            const cleanRecords = _.map(userRecords, record => {
-                record = record.toObject();
-                return _.omit(record, 'password');
+            .then(userRecords => {
+                console.log('SERVICE userRecords', userRecords);
+                const cleanRecords = _.map(userRecords, record => {
+                    record = record.toObject();
+                    return _.omit(record, 'password');
+                });
+                res.status(200).send(cleanRecords);
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(error.status || 500).send(error);
             });
-            res.status(200).send(cleanRecords);
-        })
-        .catch(error => {
-            console.log(error);
-            res.status(error.status || 500).send(error);
-        });
     },
 
     login: (req, res, next) => {
@@ -108,7 +99,7 @@ module.exports = {
         const { username, password } = req.body;
         if (!req.params.user_id) {
             /*
-                Creating a User
+             Creating a User
              */
             //Lookup the username
             UserModel
@@ -131,7 +122,7 @@ module.exports = {
                 });
         } else {
             /*
-                Updating a user
+             Updating a user
              */
             authenticate(req, res, next, () => {
                 UserModel.findOne({ _id: req.params.user_id })
@@ -140,7 +131,6 @@ module.exports = {
                             throw new RequestError(`User ${req.params.user_id} not found`, 'NOT_FOUND');
                         }
 
-                        const { username } = req.body;
                         //Lookup the username for someone with a different id so you could still pass in your current username and have it not freak out
                         UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
                             .then(res => {

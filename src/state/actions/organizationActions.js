@@ -28,7 +28,7 @@ export const addOrganization = (org) => {
                 _.get(getState(), 'env'), POST_ORGANIZATION), serialize(org)
             ))
             .then(result => dispatch({ type: ADD_ORG_RESOLVED, payload: result }))
-            .catch(err => dispatch({ type: ADD_ORG_REJECTED, error: err }));
+            .catch(err => dispatch({ type: ADD_ORG_REJECTED, payload: err }));
     };
 };
 

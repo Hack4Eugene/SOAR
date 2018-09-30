@@ -1,10 +1,11 @@
+const Q = require('q');
 const mongoose = require('mongoose');
 const ObjectId = require('mongodb').ObjectId;
 const Schema = mongoose.Schema;
 const _ = require('lodash');
 const moment = require('moment');
 const ProjectModel = mongoose.model('ProjectModel');
-const EventModel = mongoose.model('EventModel');
+const EventService = require('./eventService');
 const RequestError = require('../lib/Errors');
 
 module.exports = {
@@ -21,7 +22,8 @@ module.exports = {
     },
 
     getByID(req, res) {
-        return ProjectModel.findOne({ _id: req.params.project_id })
+        return ProjectModel.findOne({ _id: req.params.project_id }).exec()
+            // .then(projectDocument => Q.all(_.map(eventId => EventService.getByID())))
             .then(projectDocument => res.status(200).send(projectDocument))
             .catch(error => {
                 console.log(error);

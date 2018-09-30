@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { get, reduce, isEqual } from 'lodash';
+import _, { get } from 'lodash';
 
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
+import { getOrganizations } from '../../../state/actions/organizationActions';
 import { NOT_STARTED, SUCCESS } from '../../../state/statusTypes';
 
 import ToolBar from '../../lib/ToolBar';
 import Modal from '../../lib/Modal';
 import EditProject from '../../components/Forms/EditProject';
-
-import { diffBetween } from '../../../lib/util';
 
 import parkImg from '../../../static/imgs/food.jpg';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
@@ -22,7 +21,9 @@ import './ProjectPage.scss';
 const mapStateToProps = (state) => ({
     project: get(state, 'projects.detailed.data', {}),
     projectStatus: get(state, 'projects.detailed.status', NOT_STARTED),
-    form: get(state, 'form.EditProject')
+    form: get(state, 'form.EditProject'),
+    organizations: _.get(state, 'organizations.data', {}),
+    organizationStatus: _.get(state, 'organizations.status', NOT_STARTED)
     // animationVal: _.get(state, 'events.animationVal', null),
     // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
 });
@@ -39,6 +40,7 @@ class Project extends Component {
     componentDidMount() {
         const projectID = get(this.props, 'computedMatch.params.id', 'projectID');
         this.props.getProjectById(projectID);
+        this.props.getOrganizations();
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -52,19 +54,23 @@ class Project extends Component {
     }
 
     submitEdits = () => {
-        const currentRecord = this.props.project;
         const updates = get(this.props.form, 'values', {});
-        // const filteredUpdates = diffBetween(currentRecord, updates);
 
         this.props.updateProject(this.props.project._id, updates);
     };
 
     render() {
+        const { organizations, organizationStatus, projectStatus } = this.props;
         const {
             name,
             tagline,
-            description
+            description,
+            organization
         } = this.props.project;
+
+        const host = _.find(organizations, org => org._id === organization);
+
+        if (organizationStatus !== SUCCESS || projectStatus !== SUCCESS) return <div>Loading...</div>;
 
         return (
             <div className="container pt-4">
@@ -80,26 +86,31 @@ class Project extends Component {
                             <ToolBar onEdit={() => this.setState({ showModal: !this.state.showModal })}>
                                 <h1 className="display-4">{name}</h1>
                             </ToolBar>
+                            <p><i>Hosted By: {host && host.name}</i></p>
+
                             <p className="lead">{tagline}</p>
                             <hr className="my-4" />
+
                             <img alt="park" src={parkImg} className="project-header-img" />
                             <hr className="my-4" />
-                            <p>{description}</p>
-                            <h1 className="display-4 alliance-header">- Our Alliance -</h1>
 
-                            <div className="row">
-                                <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
+                            <p>{description}</p>
+
+                            <h1 className="display-4 alliance-header">- Our Alliance -</h1>
+                            <div className="d-flex flex-row flex-wrap justify-content-center">
+                                <div className="card">
                                     <div className="card-header">
                                         <h5 className="card-title mb-0">FOOD for Lane County</h5>
                                     </div>
 
                                     <img alt="Food for Lane County" className="card-image card-org-image" src={foodLaneImg} />
                                     <div className="card-body org-card-body">
-                                        <Link className="btn btn-outline-success org-card-button" to="/profile">Go to
-                                            organization</Link>
+                                        <Link className="btn btn-outline-success org-card-button" to="/profile">
+                                            Go to organization
+                                        </Link>
                                     </div>
                                 </div>
-                                <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
+                                <div className="card">
                                     <div className="card-header">
                                         <h5 className="card-title mb-0">Habitat for Humanity</h5>
                                     </div>
@@ -110,7 +121,7 @@ class Project extends Component {
                                             organization</Link>
                                     </div>
                                 </div>
-                                <div className="card col p-0 ml-3 mb-3" style={{ width: '10rem' }}>
+                                <div className="card">
                                     <div className="card-header">
                                         <h5 className="card-title mb-0">Peace Corps</h5>
                                     </div>
@@ -204,4 +215,4 @@ class Project extends Component {
     }
 }
 
-export default connect(mapStateToProps, { getProjectById, updateProject })(Project);
+export default connect(mapStateToProps, { getProjectById, updateProject, getOrganizations })(Project);

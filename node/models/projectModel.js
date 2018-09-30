@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectId;
 const Schema = mongoose.Schema;
 const _ = require('lodash');
 
@@ -39,5 +40,10 @@ const ProjectSchema = new Schema({
         type: [Schema.Types.ObjectId]
     }
 });
+
+ProjectSchema.statics.addEventId = function (projectId, eventId) {
+    console.log({ eventId, id: projectId });
+    return this.findOneAndUpdate({ _id: ObjectId(projectId) }, { $push: { events: ObjectId(eventId) } }, { new: true }).exec();
+};
 
 module.exports = mongoose.model('ProjectModel', ProjectSchema);

@@ -3,8 +3,10 @@ import { stripAxiosRequestFromError } from '../../lib/util';
 import {
     GET_USER_BY_ID_PENDING,
     GET_USER_BY_ID_RESOLVED,
+    GET_USER_BY_ID_REJECTED,
     GET_USERS_BY_IDS_PENDING,
     GET_USERS_BY_IDS_RESOLVED,
+    GET_USERS_BY_IDS_REJECTED,
     POST_USER_PENDING,
     POST_USER_REJECTED,
     POST_USER_RESOLVED
@@ -26,7 +28,7 @@ export const createUser = profile => {
                 };
                 return dispatch({ type: POST_USER_RESOLVED, payload: newState });
             })
-            .catch(err => dispatch({ type: POST_USER_REJECTED, payload: stripAxiosRequestFromError(err) }));
+            .catch(err => dispatch({ type: POST_USER_REJECTED, error: stripAxiosRequestFromError(err) }));
     };
 };
 
@@ -38,8 +40,11 @@ export const getUserByID = () => (dispatch, getState) => {
 
     HttpClient(state)
     .then(client => {
-        dispatch({ type: GET_USER_BY_ID_RESOLVED, payload: client.get(endpointUrl) })
-    });
+        dispatch({ type: GET_USER_BY_ID_RESOLVED, payload: client.get(endpointUrl) });
+    })
+        .catch(err => {
+            dispatch({ type: GET_USER_BY_ID_REJECTED, payload: err });
+        });
 };
 
 export const getUsersByIds = () => (dispatch, getState) => {
@@ -51,5 +56,5 @@ export const getUsersByIds = () => (dispatch, getState) => {
     HttpClient(state)
     .then(client => client.get(endpointUrl)
         .then(result => dispatch({ type: GET_USERS_BY_IDS_RESOLVED, payload: result }))
-        .catch(err => dispatch({ type: GET_USERS_BY_IDS_REJECTED, payload: err })))
+        .catch(err => dispatch({ type: GET_USERS_BY_IDS_REJECTED, payload: err })));
 };
