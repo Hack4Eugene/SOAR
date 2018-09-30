@@ -32,5 +32,9 @@ const UserSchema = new Schema({
     ]
 });
 
+UserSchema.statics.getAttendeeDetails = function (attendeeIds) {
+    return this.find({ _id: { $in: attendeeIds } }, { name: 1 }).exec();
+};
+
 module.exports = mongoose.model('UserModel', UserSchema);
 
