@@ -52,7 +52,7 @@ class OrganizationPage extends Component {
         super(props);
         this.state = {
             organizationID: this.props.computedMatch.params.id
-        }
+        };
     }
 
     componentDidMount() {
@@ -78,7 +78,7 @@ class OrganizationPage extends Component {
                             {userHasAccess ? <a href='#' className="btn btn-outline-success d-flex" style={{ margin: 'auto', width: '160px' }}>Create New Project</a> : null}
                         </div>
                     </div>
-                )
+                );
             }
 
             const ProjectList = this.props.projects.length
@@ -95,6 +95,31 @@ class OrganizationPage extends Component {
         );
     }
 
+    showTags() {
+        const tagList = [];
+        const badgeList = ['badge-success', 'badge-warning', 'badge-primary', 'badge-danger'];
+
+        _.forEach(this.props.organization.tags, tag => {
+            const randomIndex = Math.floor(Math.random() * badgeList.length);
+            const dynamicClassName = `align-self-center badge badge-pill ${badgeList[randomIndex]} mr-2`;
+            tagList.push(<span className={dynamicClassName} key={tag}>{tag}</span>);
+        });
+
+        if (tagList.length > 0) {
+            return (
+                <div>
+                    <p className="lead">
+                        Are you interested in joining our organization? We're looking for individuals with the following skills and interests:
+                    </p>,
+                    {tagList}
+                </div>
+            );
+        }
+        return (
+            <p className="lead">Are you interested in joining our organization?</p>
+        );
+    }
+
     render() {
         return (
             <div className="container">
@@ -108,23 +133,19 @@ class OrganizationPage extends Component {
                     <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..." />
                     {/* </p> */}
                 </div>
-                <div className="d-flex flex-row flex-wrap" style={{justifyContent: 'center'}}>
-                    {this.showProjects()}
+                <div className="container">
+                    <h2 className="display-4">Projects</h2>
+                    <div className="d-flex flex-row flex-wrap justify-content-start">
+                        {this.showProjects()}
+                    </div>
                 </div>
-                <div className="jumbotron jumbotron-fluid p-4" style={{marginTop: '2rem'}}>
+                <div className="jumbotron jumbotron-fluid p-4" style={{ marginTop: '2rem' }}>
                     <div className="container">
                         <h1 className="display-4">Lend a hand! ✋</h1>
-                        <p className="lead">Are you interested in joining our organization? We're looking for individuals
-                            with the following skills and interests:</p>
-                        <span className="badge badge-pill badge-success mr-2">Cooks</span>
-                        <span className="badge badge-pill badge-success mr-2">Drivers</span>
-                        <span className="badge badge-pill badge-warning mr-2">Shift Managers</span>
-                        <span className="badge badge-pill badge-primary mr-2">Night Owls</span>
-                        <span className="badge badge-pill badge-success mr-2">Elder Caregivers</span>
-                        <span className="badge badge-pill badge-danger mr-2">Artists</span>
-                        <span className="badge badge-pill badge-primary mr-2">STEM Advocates</span>
-
-                        <button type="button" className="btn btn-outline-success float-right">Join Now</button>
+                        <div className="d-flex flex-wrap justify-content-between">
+                            {this.showTags()}
+                            <button type="button" className="btn btn-outline-success float-right align-self-center">Join Now</button>
+                        </div>
                     </div>
                 </div>
             </div>

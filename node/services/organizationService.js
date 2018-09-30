@@ -30,7 +30,8 @@ module.exports = {
     },
 
     createOrUpdate(req, res, next) {
-        if (!req.params.organization_id) {
+        const { organizationID } = req.params.organization_id;
+        if (!organizationID) {
             const newOrganization = _.omitBy(req.body, function (key, value) {
                 return key === 'userId';
             });
@@ -54,10 +55,10 @@ module.exports = {
                     res.status(error.status || 500).send(error);
                 });
         } else {
-            return OrganizationModel.findOne({ _id: req.params.organization_id })
+            return OrganizationModel.findOne({ _id: organizationID })
                 .then(organizationRecord => {
                     if (_.isEmpty(organizationRecord)) {
-                        throw new RequestError(`Organization ${req.params.organization_id} not found`, 'NOT_FOUND');
+                        throw new RequestError(`Organization ${organizationID} not found`, 'NOT_FOUND');
                     }
 
                     const updatedRecord = organizationRecord;
@@ -65,7 +66,7 @@ module.exports = {
                         updatedRecord[key] = value;
                     });
 
-                    return OrganizationModel.update({ _id: req.params.organization_id }, updatedRecord)
+                    return OrganizationModel.update({ _id: organizationID }, updatedRecord)
                         .then(result => res.status(200).send(result));
                 })
                 .catch(error => {

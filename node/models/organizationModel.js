@@ -48,6 +48,10 @@ const OrganizationSchema = new Schema({
     deleted_at: {
         type: Date,
         default: null
+    },
+    tags: {
+        type: [String],
+        default: []
     }
 });
 
