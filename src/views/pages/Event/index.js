@@ -1,29 +1,35 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { get, includes } from 'lodash';
-import { getEventById, updateEvent, getAttendeesDetails } from '../../../state/actions/eventActions.js';
-import Card from '../../lib/Card';
+import _, { get, includes } from 'lodash';
 import moment from 'moment';
+import {
+    StaticGoogleMap,
+    Marker,
+} from 'react-static-google-map';
+
+import { getEventById, updateEvent, getAttendeesDetails } from '../../../state/actions/eventActions.js';
+import EditEvent from '../../components/Forms/EditEvent';
+import Card from '../../lib/Card';
+
 import eventImage from '../../../static/imgs/sat-market.jpg';
 import eventMap from '../../../static/imgs/event-map.png';
 import hazenImg from '../../../static/imgs/david-hazen.jpg';
 import maryImg from '../../../static/imgs/mary.jpeg';
 import janetImg from '../../../static/imgs/janet.jpg';
-import './EventPage.css';
-
-import {
-    StaticGoogleMap,
-    Marker,
-    Path,
-  } from 'react-static-google-map';
+import './EventPage.scss';
+import ToolBar from '../../lib/ToolBar';
+import Modal from '../../lib/Modal';
 
 class EventPage extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+        this.state = {
+            showEditEventModal: false
+        };
     }
 
     componentDidMount() {
-        const eventId = get(this.props, 'computedMatch.params.id', '')
+        const eventId = get(this.props, 'computedMatch.params.id', '');
         this.props.getEventById(eventId);
     }
 
@@ -31,8 +37,10 @@ class EventPage extends Component {
         // console.log('componentDidUpdate')
         const prevAttendeesIds = _.get(prevProps, 'selectedEvent.attendees', []);
         const attendeesIds = _.get(this.props, 'selectedEvent.attendees', []);
-        
-        if (this.props.selectedEventStatus === 'SUCCESS' && prevAttendeesIds !== attendeesIds) {
+
+
+        if (this.props.selectedEventStatus === 'SUCCESS' && !_.isEqual(prevAttendeesIds, attendeesIds)) {
+            console.log({ prevAttendeesIds, attendeesIds });
             this.props.getAttendeesDetails(attendeesIds);
         }
     }
@@ -47,17 +55,17 @@ class EventPage extends Component {
             </StaticGoogleMap>
         </div>
         
-    )
+    );
 
     showMainContent = () => {
-        const event = get(this.props, 'selectedEvent', {})
-        const eventTitle = get(event, 'name', '')
-        const eventDescription = get(event, 'description', '')
+        const event = get(this.props, 'selectedEvent', {});
+        const eventTitle = get(event, 'name', '');
+        const eventDescription = get(event, 'description', '');
 
         return (
             <div className="col-8">
                 <div className="jumbotron p-4 mb-4">
-                    <h1 className="display-4">{eventTitle}</h1>
+                    <ToolBar data={event} type={'event'} onEdit={() => this.setState({ showEditEventModal: true })}><h1 className="display-4">{eventTitle}</h1></ToolBar>
                     <hr />
                     <p className="lead">{eventDescription}</p>
                 </div>
@@ -75,8 +83,8 @@ class EventPage extends Component {
                     </div>
                 </Card>
             </div>
-        )
-    }
+        );
+    };
 
     showSideContent = () => (
         <div className="col-4">
@@ -85,7 +93,7 @@ class EventPage extends Component {
             {this.showHost()}
             {this.showAttendees()}
         </div>
-    )
+    );
 
     showHost = () => (
         <div className="mb-4">
@@ -103,8 +111,7 @@ class EventPage extends Component {
                 </div>
             </Card>
         </div>
-        
-    )
+    );
 
     showAttendees = () => (
         <Card>
@@ -126,12 +133,12 @@ class EventPage extends Component {
                 <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>White Bird Clinic</p>
             </div>
         </Card>
-    )
+    );
 
     showEventDetailsBox = () => {
-        const event = get(this.props, 'selectedEvent', {})
-        const eventDate = get(event, 'eventDate', '')
-        const eventLocation = get(event, 'location', '')
+        const event = get(this.props, 'selectedEvent', {});
+        const eventDate = get(event, 'eventDate', '');
+        const eventLocation = get(event, 'location', '');
 
         return (
             <div className="mb-4">
@@ -153,7 +160,7 @@ class EventPage extends Component {
                         <hr />
                         <div className="flex-row">
                             <p>
-                                <i className="fa fa-map-marker mr-3 event-page-icon" style={{ marginLeft: '1px' }}/>
+                                <i className="fa fa-map-marker mr-3 event-page-icon" style={{ marginLeft: '1px' }} />
                                 {eventLocation}
                             </p>
                         </div>
@@ -164,12 +171,12 @@ class EventPage extends Component {
                     </div>
                 </Card>
             </div>
-        )
-    }
+        );
+    };
 
     showRSVPBox = () => {
-        const attendees = get(this.props, 'selectedEvent.attendees', [])
-        const isAttending = includes(attendees, this.props.userId)
+        const attendees = get(this.props, 'selectedEvent.attendees', []);
+        const isAttending = includes(attendees, this.props.userId);
 
         return (
             <div className="mb-4">
@@ -200,36 +207,41 @@ class EventPage extends Component {
                     </div>
                 </Card>
             </div>
-        )
-    }
+        );
+    };
 
     updateEventAttendance = () => {
         const obj = {
             attendee: this.props.userId,
-        }
-        this.props.updateEvent(this.props.selectedEvent._id, obj)
-    }
+        };
+        this.props.updateEvent(this.props.selectedEvent._id, obj);
+    };
     
     render() {
         return (
             <div className="container pb-4">
                 <div className="row">
+                    <Modal show={this.state.showEditEventModal} hide={() => this.setState({ showEditEventModal: false })}>
+                        <EditEvent
+                              onSubmit={updates => this.props.updateEvent(this.props.selectedEvent._id, updates)}
+                              initialValues={this.props.selectedEvent}
+                        />
+                    </Modal>
                     {this.showMainContent()}
                     {this.showSideContent()}
                 </div>
             </div>
         );
     }
-    
 }
 
 const mapStateToProps = (state) => {
     console.log('state', state);
     return ({
         events: get(state, 'events.data', {}),
-        selectedEvent: get(state, 'events.selectedEvent.data.data', {}),
+        selectedEvent: get(state, 'events.selectedEvent.data', {}),
         selectedEventStatus: get(state, 'events.selectedEvent.status'),
-        userId: get(state, 'user._id', ''),
+        userId: get(state, 'user.data._id', ''),
     });
 };
 

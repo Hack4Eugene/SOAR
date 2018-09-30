@@ -92,15 +92,12 @@ class UserProfilePage extends Component {
 
         return (
             <div className="container">
-                <div className="row">
-                    <div className="col-lg-1">
-                        <img alt="User" src={userImg} className="user-image" />
-                    </div>
-                    <div className="col">
+                <div className="d-flex flex-row flex-nowrap user-profile-banner">
+                    <img alt="User" src={userImg} className="user-image" />
+                    <div>
                         <h1>{name}</h1>
                         <i>Member since {moment(createdAt).format('YYYY')}</i>
                     </div>
-
                 </div>
                 <hr className="my-4" />
                 <div className="row">

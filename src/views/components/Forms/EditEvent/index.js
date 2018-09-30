@@ -3,15 +3,15 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { getOrganizations } from '../../../../state/actions/organizationActions';
+import { getProjects } from '../../../../state/actions/projectActions';
 import { SUCCESS } from '../../../../state/statusTypes';
 
 const mapStateToProps = state => ({
-    organizations: _.get(state, 'organizations.data'),
-    organizationStatus: _.get(state, 'organizations.status')
+    projects: _.orderBy(_.get(state, 'projects.data', []), 'name'),
+    projectStatus: _.get(state, 'projects.status')
 });
 
-class EditProject extends Component {
+class EditEvent extends Component {
     constructor(props) {
         super(props);
 
@@ -20,11 +20,15 @@ class EditProject extends Component {
         };
     }
 
+    componentDidMount() {
+        this.props.getProjects();
+    }
+
     render() {
-        if (this.props.organizationStatus !== SUCCESS) return <div />;
+        if (this.props.projectStatus !== SUCCESS) return <div>Loading...</div>;
 
         return (
-            <div className="" style={{ margin: '0 auto' }}>
+            <div className="" style={{ margin: '0 auto', width: '75%' }}>
                 <form className="d-flex flex-column" onSubmit={this.props.handleSubmit}>
                     <CustomField
                         label="Name"
@@ -47,22 +51,12 @@ class EditProject extends Component {
                         rows={5}
                     />
                     <CustomSelect
-                        label="Organization"
-                        name="organization"
+                        label="Project"
+                        name="project"
                     >
-                        <option>Organization...</option>
-                        {_.map(this.props.organizations, org => (
-                            <option value={org._id} key={org._id}>{org.name}</option>
-                        ))}
-                    </CustomSelect>
-                    <CustomSelect
-                        label="Alliance"
-                        name="alliance"
-                        multiple
-                    >
-                        <option>Alliance...</option>
-                        {_.map(this.props.organizations, org => (
-                            <option value={org._id} key={`${org._id}-alliance`}>{org.name}</option>
+                        <option>Project...</option>
+                        {_.map(this.props.projects, project => (
+                            <option value={project._id} key={project._id}>{project.name}</option>
                         ))}
                     </CustomSelect>
                     <button className="mt-3 btn btn-primary" type="submit">Submit Edits</button>
@@ -93,12 +87,12 @@ const CustomSelect = props => {
     );
 };
 
-EditProject = connect( //eslint-disable-line no-class-assign
+EditEvent = connect( //eslint-disable-line no-class-assign
     mapStateToProps,
-    { getOrganizations }
-)(EditProject);
+    { getProjects }
+)(EditEvent);
 
 export default reduxForm({
-    form: 'EditProject',
+    form: 'EditEvent',
     enableReinitialize: true
-})(EditProject);
+})(EditEvent);

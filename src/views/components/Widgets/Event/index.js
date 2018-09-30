@@ -5,8 +5,6 @@ import { map } from 'lodash';
 import moment from 'moment';
 
 // import eventImg1 from '../../../../static/imgs/stock-event-1.jpg';
-
-import ToolBar from '../../../lib/ToolBar';
 import Card from '../../../lib/Card';
 import './Event.scss';
 
@@ -20,7 +18,6 @@ const EventItem = ({ event, filtered }) => {
             <div className="card-header">
                 <div className="event-card-header">
                     {date}
-                    <ToolBar data={event} type="event" />
                 </div>
                 
             </div>

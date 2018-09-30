@@ -7,7 +7,7 @@ import {
     GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
     GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, GET_PROJECTS_BY_ORG_RESOLVED, GET_PROJECTS_BY_ORG_REJECTED, 
-    DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED, API_ERROR,
+    DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED,
     GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORG_ID_RESOLVED, GET_ORG_ID_REJECTED,
     POST_USER_RESOLVED, POST_USER_PENDING, POST_USER_REJECTED,
     GET_EVENT_RESOLVED, GET_EVENT_REJECTED
@@ -72,11 +72,11 @@ organizations: {
         }
 
         case GET_EVENT_RESOLVED: {
-            return _.assign({}, state, { selectedEvent: { ...payload, status: SUCCESS } })
+            return _.assign({}, state, { selectedEvent: { ...payload, status: SUCCESS } });
         }
 
         case GET_EVENT_REJECTED: {
-            return _.assign({}, state, { selectedEvent: { error: { ...payload }, status: ERROR } })
+            return _.assign({}, state, { selectedEvent: { error: { ...payload }, status: ERROR } });
         }
 
         case LOGIN_USER_RESOLVED: {

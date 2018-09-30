@@ -63,37 +63,35 @@ const eventReducer = (state = initialState, action) => {
         }
 
         case UPDATE_EVENT_RESOLVED: {
-            return { ...state, status: SUCCESS  }
+            return { ...state, status: SUCCESS };
         }
 
         case UPDATE_EVENT_REJECTED: {
-            return { ...state, error: payload, status: ERROR  }
+            return { ...state, error: payload, status: ERROR };
         }
 
         case GET_ATTENDEES_DETAILS_RESOLVED: {
-            return { 
-                ...state, 
-                selectedEvent: { 
-                    ...state.selectedEvent, 
-                    attendeesDetails: { 
-                        data: payload, 
-                        status: SUCCESS 
-                    } 
-                } 
-            }
+            return {
+                ...state,
+                selectedEvent: {
+                    ...state.selectedEvent,
+                    attendeesDetails: {
+                        status: SUCCESS
+                    }
+                }
+            };
         }
 
         case GET_ATTENDEES_DETAILS_REJECTED: {
-            return { 
-                ...state, 
-                selectedEvent: { 
-                    ...state.selectedEvent, 
-                    attendeesDetails: { 
-                        error: payload, 
-                        status: ERROR 
-                    } 
-                } 
-            }
+            return {
+                ...state,
+                selectedEvent: {
+                    ...state.selectedEvent,
+                    attendeesDetails: {
+                        status: ERROR
+                    }
+                }
+            };
         }
 
         default: return state;
