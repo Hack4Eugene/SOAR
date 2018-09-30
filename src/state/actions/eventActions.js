@@ -72,7 +72,7 @@ export const getEventById = (eventId) => {
     return (dispatch, getState) => {
         HttpClient(getState(), dispatch)
             .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)))
-            .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result }))
+            .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result.data }))
             .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err }));
     };
 };
@@ -84,7 +84,7 @@ export const updateEvent = (eventId, updateObj) => (dispatch, getState) => {
         .then(client => client.post(url, updateObj))
         .then(result => {
             dispatch({ type: UPDATE_EVENT_RESOLVED });
-            dispatch(getEvents());
+            dispatch(getEventById(eventId));
         })
         .catch(err => dispatch({ type: UPDATE_EVENT_REJECTED, payload: err }));    
 };
@@ -95,6 +95,6 @@ export const getAttendeesDetails = (userIds) => (dispatch, getState) => {
 
     HttpClient(state)
     .then(client => client.get(endpointUrl)
-        .then(result => dispatch({ type: GET_ATTENDEES_DETAILS_RESOLVED, payload: result }))
+        .then(result => dispatch({ type: GET_ATTENDEES_DETAILS_RESOLVED, payload: result.data }))
         .catch(err => dispatch({ type: GET_ATTENDEES_DETAILS_REJECTED, payload: err })));
 };

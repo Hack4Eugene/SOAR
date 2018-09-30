@@ -8,6 +8,7 @@ import {
 } from 'react-static-google-map';
 
 import { getEventById, updateEvent, getAttendeesDetails } from '../../../state/actions/eventActions.js';
+import EditEvent from '../../components/Forms/EditEvent';
 import Card from '../../lib/Card';
 
 import eventImage from '../../../static/imgs/sat-market.jpg';
@@ -16,6 +17,8 @@ import hazenImg from '../../../static/imgs/david-hazen.jpg';
 import maryImg from '../../../static/imgs/mary.jpeg';
 import janetImg from '../../../static/imgs/janet.jpg';
 import './EventPage.scss';
+import ToolBar from '../../lib/ToolBar';
+import Modal from '../../lib/Modal';
 
 class EventPage extends Component {
     constructor(props) {
@@ -34,8 +37,10 @@ class EventPage extends Component {
         // console.log('componentDidUpdate')
         const prevAttendeesIds = _.get(prevProps, 'selectedEvent.attendees', []);
         const attendeesIds = _.get(this.props, 'selectedEvent.attendees', []);
-        
-        if (this.props.selectedEventStatus === 'SUCCESS' && prevAttendeesIds !== attendeesIds) {
+
+
+        if (this.props.selectedEventStatus === 'SUCCESS' && !_.isEqual(prevAttendeesIds, attendeesIds)) {
+            console.log({ prevAttendeesIds, attendeesIds });
             this.props.getAttendeesDetails(attendeesIds);
         }
     }
@@ -60,7 +65,7 @@ class EventPage extends Component {
         return (
             <div className="col-8">
                 <div className="jumbotron p-4 mb-4">
-                    <h1 className="display-4">{eventTitle}</h1>
+                    <ToolBar data={event} type={'event'} onEdit={() => this.setState({ showEditEventModal: true })}><h1 className="display-4">{eventTitle}</h1></ToolBar>
                     <hr />
                     <p className="lead">{eventDescription}</p>
                 </div>
@@ -216,6 +221,12 @@ class EventPage extends Component {
         return (
             <div className="container pb-4">
                 <div className="row">
+                    <Modal show={this.state.showEditEventModal} hide={() => this.setState({ showEditEventModal: false })}>
+                        <EditEvent
+                              onSubmit={updates => this.props.updateEvent(this.props.selectedEvent._id, updates)}
+                              initialValues={this.props.selectedEvent}
+                        />
+                    </Modal>
                     {this.showMainContent()}
                     {this.showSideContent()}
                 </div>
@@ -228,9 +239,9 @@ const mapStateToProps = (state) => {
     console.log('state', state);
     return ({
         events: get(state, 'events.data', {}),
-        selectedEvent: get(state, 'events.selectedEvent.data.data', {}),
+        selectedEvent: get(state, 'events.selectedEvent.data', {}),
         selectedEventStatus: get(state, 'events.selectedEvent.status'),
-        userId: get(state, 'user._id', ''),
+        userId: get(state, 'user.data._id', ''),
     });
 };
 

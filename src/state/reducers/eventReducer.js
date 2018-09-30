@@ -71,28 +71,26 @@ const eventReducer = (state = initialState, action) => {
         }
 
         case GET_ATTENDEES_DETAILS_RESOLVED: {
-            return { 
-                ...state, 
-                selectedEvent: { 
-                    ...state.selectedEvent, 
-                    attendeesDetails: { 
-                        data: payload, 
-                        status: SUCCESS 
-                    } 
-                } 
+            return {
+                ...state,
+                selectedEvent: {
+                    ...state.selectedEvent,
+                    attendeesDetails: {
+                        status: SUCCESS
+                    }
+                }
             };
         }
 
         case GET_ATTENDEES_DETAILS_REJECTED: {
-            return { 
-                ...state, 
-                selectedEvent: { 
-                    ...state.selectedEvent, 
-                    attendeesDetails: { 
-                        error: payload, 
-                        status: ERROR 
-                    } 
-                } 
+            return {
+                ...state,
+                selectedEvent: {
+                    ...state.selectedEvent,
+                    attendeesDetails: {
+                        status: ERROR
+                    }
+                }
             };
         }
 
