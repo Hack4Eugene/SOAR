@@ -53,7 +53,13 @@ class EventPage extends Component {
         return (
             <div className="col-8">
                 <div className="jumbotron p-4 mb-4">
-                    <ToolBar data={event} type={'event'} onEdit={() => this.setState({ showEditEventModal: true })}><h1 className="display-4">{eventTitle}</h1></ToolBar>
+                    <ToolBar 
+                        data={event} 
+                        type={'event'} 
+                        onEdit={() => this.setState({ showEditEventModal: true })}
+                    >
+                            <h1 className="display-4">{eventTitle}</h1>
+                    </ToolBar>
                     <hr />
                     <p className="lead">{eventDescription}</p>
                 </div>
@@ -66,7 +72,11 @@ class EventPage extends Component {
                         </h4>
                         <hr />
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dapibus lorem a nisl bibendum dignissim. Morbi facilisis elit in efficitur dignissim. Quisque dignissim sit amet nulla at sollicitudin. Etiam laoreet, elit eget sagittis interdum, lacus enim commodo neque, vel faucibus leo risus a lorem. Praesent fermentum sed lorem a vestibulum. Morbi porttitor ipsum porta ipsum dictum, et eleifend ex imperdiet. Cras pellentesque lobortis lorem, et placerat risus pretium sed. Phasellus iaculis quis elit congue feugiat.
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dapibus lorem a nisl bibendum dignissim. 
+                            Morbi facilisis elit in efficitur dignissim. Quisque dignissim sit amet nulla at sollicitudin. 
+                            Etiam laoreet, elit eget sagittis interdum, lacus enim commodo neque, vel faucibus leo risus a lorem. 
+                            Praesent fermentum sed lorem a vestibulum. Morbi porttitor ipsum porta ipsum dictum, et eleifend ex imperdiet. 
+                            Cras pellentesque lobortis lorem, et placerat risus pretium sed. Phasellus iaculis quis elit congue feugiat.
                         </p>
                     </div>
                 </Card>
