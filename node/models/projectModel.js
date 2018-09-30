@@ -42,7 +42,6 @@ const ProjectSchema = new Schema({
 });
 
 ProjectSchema.statics.addEventId = function (projectId, eventId) {
-    console.log({ eventId, id: projectId });
     return this.findOneAndUpdate({ _id: ObjectId(projectId) }, { $push: { events: ObjectId(eventId) } }, { new: true }).exec();
 };
 
