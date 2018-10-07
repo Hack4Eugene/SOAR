@@ -89,12 +89,3 @@ export const updateEvent = (eventId, updateObj) => (dispatch, getState) => {
         .catch(err => dispatch({ type: UPDATE_EVENT_REJECTED, payload: err }));    
 };
 
-export const getAttendeesDetails = (userIds) => (dispatch, getState) => {
-    const state = getState();
-    const endpointUrl = `${loadEndpoint(state.env, `${GET_USERS_BY_IDS}/${_.join(userIds, ',')}`)}`;
-
-    HttpClient(state)
-    .then(client => client.get(endpointUrl)
-        .then(result => dispatch({ type: GET_ATTENDEES_DETAILS_RESOLVED, payload: result.data }))
-        .catch(err => dispatch({ type: GET_ATTENDEES_DETAILS_REJECTED, payload: err })));
-};

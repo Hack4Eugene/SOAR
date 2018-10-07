@@ -5,9 +5,7 @@ import {
     GET_EVENTS_REJECTED, GET_EVENTS_RESOLVED,
     GET_EVENT_REJECTED, GET_EVENT_RESOLVED,
     INCREMENT_EVENT_FINISH, SET_EVENTS_FINISHED,
-    UPDATE_EVENT_RESOLVED, UPDATE_EVENT_REJECTED,
-    GET_USERS_BY_IDS_PENDING, GET_USERS_BY_IDS_RESOLVED, GET_USERS_BY_IDS_REJECTED,
-    GET_ATTENDEES_DETAILS_RESOLVED, GET_ATTENDEES_DETAILS_REJECTED
+    UPDATE_EVENT_RESOLVED, UPDATE_EVENT_REJECTED
 } from '../types';
 
 const initialState = {
@@ -68,30 +66,6 @@ const eventReducer = (state = initialState, action) => {
 
         case UPDATE_EVENT_REJECTED: {
             return { ...state, error: payload, status: ERROR };
-        }
-
-        case GET_ATTENDEES_DETAILS_RESOLVED: {
-            return {
-                ...state,
-                selectedEvent: {
-                    ...state.selectedEvent,
-                    attendeesDetails: {
-                        status: SUCCESS
-                    }
-                }
-            };
-        }
-
-        case GET_ATTENDEES_DETAILS_REJECTED: {
-            return {
-                ...state,
-                selectedEvent: {
-                    ...state.selectedEvent,
-                    attendeesDetails: {
-                        status: ERROR
-                    }
-                }
-            };
         }
 
         default: return state;

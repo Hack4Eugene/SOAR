@@ -21,7 +21,6 @@ module.exports = {
                 res.status(200).send(userRecords);
             })
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
@@ -33,7 +32,6 @@ module.exports = {
                 res.status(200).send(_.omit(userRecord, 'password'));
             })
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
@@ -43,7 +41,6 @@ module.exports = {
 
         UserModel.find({ _id: { $in: userIdArray } })
             .then(userRecords => {
-                console.log('SERVICE userRecords', userRecords);
                 const cleanRecords = _.map(userRecords, record => {
                     record = record.toObject();
                     return _.omit(record, 'password');
@@ -51,7 +48,6 @@ module.exports = {
                 res.status(200).send(cleanRecords);
             })
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
@@ -90,7 +86,6 @@ module.exports = {
                     });
             })
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send({ msg: 'No user for this usename was found in the Database' });
             });
     },
