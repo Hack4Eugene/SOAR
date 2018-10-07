@@ -7,7 +7,7 @@ import {
     Marker,
 } from 'react-static-google-map';
 
-import { getEventById, updateEvent, getAttendeesDetails } from '../../../state/actions/eventActions.js';
+import { getEventById, updateEvent } from '../../../state/actions/eventActions.js';
 import EditEvent from '../../components/Forms/EditEvent';
 import Card from '../../lib/Card';
 
@@ -33,18 +33,6 @@ class EventPage extends Component {
         this.props.getEventById(eventId);
     }
 
-    componentDidUpdate(prevProps) {
-        // console.log('componentDidUpdate')
-        const prevAttendeesIds = _.get(prevProps, 'selectedEvent.attendees', []);
-        const attendeesIds = _.get(this.props, 'selectedEvent.attendees', []);
-
-
-        if (this.props.selectedEventStatus === 'SUCCESS' && !_.isEqual(prevAttendeesIds, attendeesIds)) {
-            console.log({ prevAttendeesIds, attendeesIds });
-            this.props.getAttendeesDetails(attendeesIds);
-        }
-    }
-
     showEventMap = () => (
         <div className="fill">
             <StaticGoogleMap size="600x600">
@@ -65,7 +53,13 @@ class EventPage extends Component {
         return (
             <div className="col-8">
                 <div className="jumbotron p-4 mb-4">
-                    <ToolBar data={event} type={'event'} onEdit={() => this.setState({ showEditEventModal: true })}><h1 className="display-4">{eventTitle}</h1></ToolBar>
+                    <ToolBar 
+                        data={event} 
+                        type={'event'} 
+                        onEdit={() => this.setState({ showEditEventModal: true })}
+                    >
+                            <h1 className="display-4">{eventTitle}</h1>
+                    </ToolBar>
                     <hr />
                     <p className="lead">{eventDescription}</p>
                 </div>
@@ -78,7 +72,11 @@ class EventPage extends Component {
                         </h4>
                         <hr />
                         <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dapibus lorem a nisl bibendum dignissim. Morbi facilisis elit in efficitur dignissim. Quisque dignissim sit amet nulla at sollicitudin. Etiam laoreet, elit eget sagittis interdum, lacus enim commodo neque, vel faucibus leo risus a lorem. Praesent fermentum sed lorem a vestibulum. Morbi porttitor ipsum porta ipsum dictum, et eleifend ex imperdiet. Cras pellentesque lobortis lorem, et placerat risus pretium sed. Phasellus iaculis quis elit congue feugiat.
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dapibus lorem a nisl bibendum dignissim. 
+                            Morbi facilisis elit in efficitur dignissim. Quisque dignissim sit amet nulla at sollicitudin. 
+                            Etiam laoreet, elit eget sagittis interdum, lacus enim commodo neque, vel faucibus leo risus a lorem. 
+                            Praesent fermentum sed lorem a vestibulum. Morbi porttitor ipsum porta ipsum dictum, et eleifend ex imperdiet. 
+                            Cras pellentesque lobortis lorem, et placerat risus pretium sed. Phasellus iaculis quis elit congue feugiat.
                         </p>
                     </div>
                 </Card>
@@ -90,7 +88,7 @@ class EventPage extends Component {
         <div className="col-4">
             {this.showRSVPBox()}
             {this.showEventDetailsBox()}
-            {this.showHost()}
+            {/* {this.showHost()} */}
             {this.showAttendees()}
         </div>
     );
@@ -113,27 +111,34 @@ class EventPage extends Component {
         </div>
     );
 
-    showAttendees = () => (
-        <Card>
-            <div className="card-header" style={{ color: '#666' }}>
-                <p className="mb-0">
-                    <i className="fa fa-users mr-3" />
-                    Attendees (12)
-                </p>
-            </div>
-            <div className="card-body d-flex flex-column justify-content-center">
-                <img className="event-user-avatar m-auto mb-3" src={maryImg} />
-                <h5 className="m-auto mb-0">Mary O'Connor</h5>
-                <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>Peace Corps</p>
-            </div>
-            <hr className="m-0" />
-            <div className="card-body d-flex flex-column justify-content-center">
-                <img className="event-user-avatar m-auto mb-3" src={janetImg} />
-                <h5 className="m-auto mb-0">Janet Davis</h5>
-                <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>White Bird Clinic</p>
-            </div>
-        </Card>
-    );
+    showAttendees = () => {
+        const numAttendees = this.props.attendees.length
+        return (
+            <Card>
+                <div className="card-header" style={{ color: '#666' }}>
+                    <p className="mb-0">
+                        <i className="fa fa-users mr-3" />
+                        {   
+                            numAttendees > 0
+                            ? `Attendees (${numAttendees})`
+                            : `No one is attending yet!`
+                        }
+                    </p>
+                </div>
+                {
+                    _.map(this.props.attendeesDetails, attendee => {
+                        return (
+                            <div className="card-body d-flex flex-column justify-content-center">
+                                {/* <img className="event-user-avatar m-auto mb-3" src={maryImg} /> */}
+                                <h5 className="m-auto mb-0">{attendee.name}</h5>
+                                {/* <p className="m-auto mb-0 font-italic" style={{ color: '#939393' }}>Peace Corps</p> */}
+                            </div>
+                        )
+                    })
+                }
+            </Card>
+        )
+    };
 
     showEventDetailsBox = () => {
         const event = get(this.props, 'selectedEvent', {});
@@ -164,7 +169,6 @@ class EventPage extends Component {
                                 {eventLocation}
                             </p>
                         </div>
-                        {/* <hr /> */}
                         <div className="fill">
                             <img src={eventMap} />
                         </div>
@@ -236,13 +240,14 @@ class EventPage extends Component {
 }
 
 const mapStateToProps = (state) => {
-    console.log('state', state);
     return ({
         events: get(state, 'events.data', {}),
         selectedEvent: get(state, 'events.selectedEvent.data', {}),
         selectedEventStatus: get(state, 'events.selectedEvent.status'),
         userId: get(state, 'user.data._id', ''),
+        attendees: get(state, 'events.selectedEvent.data.attendees', []),
+        attendeesDetails: get(state, 'events.selectedEvent.data.attendeesDetails', [])
     });
 };
 
-export default connect(mapStateToProps, { getEventById, updateEvent, getAttendeesDetails })(EventPage);
+export default connect(mapStateToProps, { getEventById, updateEvent })(EventPage);

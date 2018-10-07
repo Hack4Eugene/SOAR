@@ -43,7 +43,7 @@ module.exports = {
 
         UserModel.find({ _id: { $in: userIdArray } })
             .then(userRecords => {
-                console.log('SERVICE userRecords', userRecords);
+                // console.log('SERVICE userRecords', userRecords);
                 const cleanRecords = _.map(userRecords, record => {
                     record = record.toObject();
                     return _.omit(record, 'password');
