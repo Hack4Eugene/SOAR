@@ -76,7 +76,6 @@ const CustomField = props => {
 };
 
 const CustomSelect = props => {
-    console.log(props);
     return (
         <Fragment>
             <label>{props.label}</label>

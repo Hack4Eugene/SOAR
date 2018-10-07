@@ -93,8 +93,6 @@ class AddUser extends Component {
     handleFormInput(e) {
         const tempUser = cloneDeep(this.state.newUser);
 
-        console.log({ e: e.target });
-
         switch (e.target.id) {
             case 'fullName':
                 tempUser.name = e.target.value;
@@ -132,7 +130,6 @@ class AddUser extends Component {
     removeAssociatedOrganization = i => {
         const tempUser = cloneDeep(this.state.newUser);
         tempUser.organizations = _.reduce(tempUser.organizations, (orgs, value, key) => {
-            console.log({ i, value, key });
             if (key === i) {
                 return orgs;
             }

@@ -1,11 +1,8 @@
-const Q = require('q');
 const mongoose = require('mongoose');
-const ObjectId = require('mongodb').ObjectId;
-const Schema = mongoose.Schema;
 const _ = require('lodash');
-const moment = require('moment');
+const ObjectId = require('mongodb').ObjectId;
 const ProjectModel = mongoose.model('ProjectModel');
-const EventService = require('./eventService');
+const EventModel = require('../models/eventModel');
 const RequestError = require('../lib/Errors');
 
 module.exports = {
@@ -16,26 +13,29 @@ module.exports = {
                 res.status(200).send(projectDocuments);
             })
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
 
-    getByID(req, res) {
-        return ProjectModel.findOne({ _id: req.params.project_id }).exec()
-            // .then(projectDocument => Q.all(_.map(eventId => EventService.getByID())))
-            .then(projectDocument => res.status(200).send(projectDocument))
-            .catch(error => {
-                console.log(error);
-                res.status(error.status || 500).send(error);
-            });
+    async getByID(req, res) {
+        try {
+            const project = await ProjectModel.findOne({ _id: req.params.project_id }).exec();
+            const eventArray = await EventModel.getArrayOfEventsById(project.events);
+            const result = {
+                ...project.toObject(),
+                eventRecords: _.map(eventArray, event => event.toObject())
+            };
+
+            res.status(200).send(result);
+        } catch (err) {
+            throw res.status(err.status || 500).send(err);
+        }
     },
 
     getProjectsByOrganization(req, res) {
         return ProjectModel.find({ 'organization.id': ObjectId(req.params.organization_id) })
             .then(projectDocuments => res.status(200).send(projectDocuments))
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
@@ -45,7 +45,6 @@ module.exports = {
             ProjectModel.create(req.body)
                 .then(newProjectDocument => res.status(200).send(newProjectDocument))
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         } else {
@@ -59,7 +58,6 @@ module.exports = {
                         .catch(err => res.status(err.status || 500).send(err));
                 })
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         }
@@ -69,7 +67,6 @@ module.exports = {
         return ProjectModel.remove({ _id: req.params.project_id })
             .then(res.status(204).send({ msg: 'deleted' }))
             .catch(error => {
-                console.log(error);
                 return res.status(error.status || 500).send(error);
             });
     }

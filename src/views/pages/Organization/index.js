@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _, { get, map } from 'lodash';
 
-// import { getOrganizationsById, getProjectsByOrganization } from '../../../state/actions/index.js'
 import { getOrganizationsById } from '../../../state/actions/organizationActions';
 import { getProjectsByOrganization } from '../../../state/actions/projectActions';
 
@@ -15,8 +14,6 @@ const mapStateToProps = (state) => ({
     organization: get(state, 'organizations.organizationsById[0]', {}),
     projects: get(state, 'projects.projectsForOrganization.data', []),
     projectsStatus: get(state, 'projects.projectsForOrganization.statusText', 'NOT_STARTED')
-    // animationVal: _.get(state, 'events.animationVal', null),
-    // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
 });
 
 class ProjectItem extends Component {

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectId;
+const _ = require('lodash');
 const Schema = mongoose.Schema;
-const ProjectModel = require('./projectModel');
 
 const EventSchema = new Schema({
     name: {
@@ -35,6 +36,11 @@ const EventSchema = new Schema({
         type: [String]
     }
 });
+
+EventSchema.statics.getArrayOfEventsById = function (eventIdStringArray) {
+    const eventIdObjectIdArray = _.map(eventIdStringArray, ObjectId);
+    return this.find({ _id: { $in: eventIdObjectIdArray } }).exec();
+};
 
 module.exports = mongoose.model('EventModel', EventSchema);
 

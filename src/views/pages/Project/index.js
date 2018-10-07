@@ -17,6 +17,7 @@ import peaceImg from '../../../static/imgs/peace-corps.jpg';
 import habitatImg from '../../../static/imgs/habitat-humanity.png';
 
 import './ProjectPage.scss';
+import Timeline from './timeline';
 
 const mapStateToProps = (state) => ({
     project: get(state, 'projects.detailed.data', {}),
@@ -24,8 +25,6 @@ const mapStateToProps = (state) => ({
     form: get(state, 'form.EditProject'),
     organizations: _.get(state, 'organizations.data', {}),
     organizationStatus: _.get(state, 'organizations.status', NOT_STARTED)
-    // animationVal: _.get(state, 'events.animationVal', null),
-    // numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
 });
 
 class Project extends Component {
@@ -138,66 +137,7 @@ class Project extends Component {
                 </div>
 
                 <section className="timeline">
-                    <ul>
-                        <li>
-                            <div className="card">
-                                <h5 className="card-header timeline-card-header"><span
-                                    className="btn btn-outline-secondary timeline-card-badge"
-                                >March 8</span>Harvest Day
-                                    at the Farm</h5>
-                                <div className="card-body right-timeline-card-body">
-                                    Bob Smith has invited us to come harvest the rest of his potato crop. We are going
-                                    to harvest as many potatoes as we can to disperse among our food network.
-                                    <button type="button" className="btn btn-success timeline-card-button">Go to
-                                        event</button>
-                                </div>
-
-                            </div>
-                        </li>
-                        <li>
-                            <div className="card">
-                                <h5 className="card-header timeline-card-header"><span
-                                    className="btn btn-outline-secondary timeline-card-badge"
-                                >March 12</span>Canned Food
-                                    Drive</h5>
-                                <div className="card-body left-timeline-card-body">
-                                    Throughout the month of May, bring canned food to CBT Nuggets as part of our Fall
-                                    Food Initiative!
-                                    <button type="button" className="btn btn-success timeline-card-button">Go to
-                                        event</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="card">
-                                <h5 className="card-header timeline-card-header"><span
-                                    className="btn btn-outline-secondary timeline-card-badge"
-                                >April 4</span>Harvest Day
-                                    at the Farm</h5>
-                                <div className="card-body right-timeline-card-body">
-                                    Bob Smith has invited us to come harvest the rest of his potato crop. We are going
-                                    to harvest as many potatoes as we can to disperse among our food network.
-                                    <button type="button" className="btn btn-success timeline-card-button">Go to
-                                        event</button>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="card">
-                                <h5 className="card-header timeline-card-header"><span
-                                    className="btn btn-outline-secondary timeline-card-badge"
-                                >April 23</span>Meals on
-                                    Wheels</h5>
-                                <div className="card-body left-timeline-card-body">
-                                    Help us deliver all of the wonderful food we have gathered to our community! We need
-                                    drivers, navigators, and volunteers to help carry and deliver the food to those in
-                                    need.
-                                    <button type="button" className="btn btn-success timeline-card-button">Go to
-                                        event</button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                    <Timeline events={this.props.project.eventRecords} />
                 </section>
                 <div className="card" style={{ marginTop: '50px' }}>
                     <div className="card-header"><h2>Our Accomplishments</h2></div>
