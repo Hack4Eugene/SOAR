@@ -16,7 +16,6 @@ module.exports = {
                         });
                 })
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         } else {
@@ -50,10 +49,8 @@ module.exports = {
                         return ProjectModel.addEventId(req.body.project, req.params.event_id);
                     }
                 })
-                .then(newProject => { console.log({ newProject }); })
                 .then(() => { res.status(200).send(newEventDocument); })
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         }
@@ -64,7 +61,6 @@ module.exports = {
             .then(eventDocuments =>
                 res.status(200).send(eventDocuments))
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
@@ -89,7 +85,6 @@ module.exports = {
         return EventModel.remove({ _id: req.params.event_id })
             .then(res.status(204).send({ 'msg': 'deleted' }))
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     }

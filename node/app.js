@@ -20,10 +20,7 @@ const ecanDB = 'mongodb://www.ecan-db.hnavarro-api.com/ECANdb';
 
 // mongoose.connect('mongodb://localhost/ECANdb')
 mongoose.connect(ecanDB)
-    .then(client => {
-        // console.log(JSON.stringify(client,null,2))
-        console.log(`Connected to ECANdb`)
-    })
+    .then(client => { console.log('Connected to ECANdb'); })
     .catch(err => {
         console.error(`Unable to connect to ECANdb. Check if MongoDB instance is running
 					   Run mongodb instance in another terminal using: mongod
@@ -58,8 +55,8 @@ require('./routes/userRoutes')(app);
 
 app.get('/health', (req, res) => res.status(200).send({ msg: 'Active' }));
 
-app.listen(port, () => console.log(`ECAN server started on: ` + port));
+app.listen(port, () => console.log(`ECAN server started on: ${port}`));
 
-app.use((req, res, next) => res.status(404).send({ url: req.originalUrl + ' not found' }));
+app.use((req, res, next) => res.status(404).send({ url: `${req.originalUrl} not found` }));
 
 module.exports = app; //for testing
