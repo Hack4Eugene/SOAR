@@ -38,11 +38,41 @@ class ProjectFeed extends Component {
         ))
     );
 
+    showAddProjectButton() {
+        return (
+            <div className="col-4">
+                <Link to="/addproject" >
+                    <button 
+                        type="button" 
+                        className="btn btn-success float-right" 
+                        data-toggle="modal" 
+                        data-target="#exampleModal"
+                    >
+                        Add new project
+                    </button>
+                </Link>
+            </div>
+        );
+    }
+
+    showFeedHeader() {
+        return (
+            <div className="col-8">
+                <h2>Projects You Are Involved In</h2>
+            </div>
+        )
+    }
+
     render() {
         return (
             <div className="container">
-                <h2 className="m-4">Projects You Are Involved In</h2>
-                {this.mapProjects()}
+                <div className="row mb-2">
+                    {this.showFeedHeader()}
+                    {this.showAddProjectButton()}
+                </div>
+                <div className="row">
+                    {this.mapProjects()}
+                </div>
             </div>
         );
     }

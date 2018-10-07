@@ -14,6 +14,9 @@ const ProjectSchema = new Schema({
     description: {
         type: String
     },
+    createDate: {
+        type: Date
+    },
     startDate: {
         type: Date
     },
@@ -23,6 +26,9 @@ const ProjectSchema = new Schema({
     organization: {
         type: Schema.Types.ObjectId,
         required: 'objectId of the organization is needed'
+    },
+    alliance: {
+        type: Array
     },
     status: {
         type: String,

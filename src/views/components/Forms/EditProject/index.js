@@ -21,16 +21,29 @@ class EditProject extends Component {
     }
 
     render() {
+        console.log('EDIT this.props.initialValues', this.props.initialValues)
         if (this.props.organizationStatus !== SUCCESS) return <div />;
 
         return (
-            <div className="" style={{ margin: '0 auto' }}>
+            <div>
                 <form className="d-flex flex-column" onSubmit={this.props.handleSubmit}>
                     <CustomField
                         label="Name"
                         name="name"
                         component="input"
                         type="text"
+                    />
+                    <CustomField
+                        label="Start date"
+                        name="startDate"
+                        component="input"
+                        type="date"
+                    />
+                    <CustomField
+                        label="End date"
+                        name="endDate"
+                        component="input"
+                        type="date"
                     />
                     <CustomField
                         label="Tagline"
@@ -65,7 +78,7 @@ class EditProject extends Component {
                             <option value={org._id} key={`${org._id}-alliance`}>{org.name}</option>
                         ))}
                     </CustomSelect>
-                    <button className="mt-3 btn btn-primary" type="submit">Submit Edits</button>
+                    <button className="mt-3 btn btn-primary" type="submit">Submit</button>
                 </form>
             </div>
         );
@@ -74,21 +87,21 @@ class EditProject extends Component {
 
 const CustomField = props => {
     return (
-        <Fragment>
+        <div className="form-group">
             <label>{props.label}</label>
-            <Field {...props} className="form-control mb-2" />
-        </Fragment>
+            <Field {...props} className="form-control" />
+        </div>
     );
 };
 
 const CustomSelect = props => {
     return (
-        <Fragment>
+        <div className="form-group">
             <label>{props.label}</label>
-            <Field {...props} name={props.name} component="select" className="form-control mb-2">
+            <Field {...props} name={props.name} component="select" className="form-control">
                 {props.children}
             </Field>
-        </Fragment>
+        </div>
     );
 };
 

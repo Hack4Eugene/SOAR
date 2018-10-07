@@ -9,6 +9,7 @@ import ProjectFeed from './views/components/Feeds/ProjectFeed';
 import EventFeed from './views/components/Feeds/EventFeed';
 import Event from './views/pages/Event';
 import AddEvent from './views/pages/AddEvent';
+import AddProject from './views/pages/AddProject';
 import ExploreFeed from './views/components/Feeds/ExploreFeed';
 import AddOrganization from './views/pages/AddOrganization';
 import AddUser from './views/pages/AddUser';
@@ -33,6 +34,7 @@ class App extends Component {
                         <PrivateRoute path="/event/:id" component={Event} />
                         <PrivateRoute path="/explore" component={ExploreFeed} />
                         <PrivateRoute path="/addevent" component={AddEvent} />
+                        <PrivateRoute path="/addproject" component={AddProject} />
                         <PrivateRoute path="/addorganization" component={AddOrganization} />
                         <PrivateRoute path="/organization/:id" component={OrganizationPage} />
                         <PrivateRoute path="/profile" component={ProfilePage} />
