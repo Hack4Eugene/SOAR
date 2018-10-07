@@ -45,16 +45,13 @@ class Header extends Component {
 
     handleScroll(e) {
         const header = this.header.current;
-        const headerHeight = header.offsetHeight / 2;
-        const scrollPosition = window.pageYOffset;
 
-        const shouldFixHeader = scrollPosition >= headerHeight;
+        const shouldFixHeader = header.scrollTop > 1;
 
-        if (shouldFixHeader === this.state.shouldFixHeader) {
-            return;
+        if (shouldFixHeader !== this.state.shouldFixHeader) {
+            this.setState({ shouldFixHeader });
         }
 
-        this.setState({ shouldFixHeader });
     }
 
     render() {

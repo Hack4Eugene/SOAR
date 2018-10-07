@@ -9,6 +9,9 @@ header {
   transition: all 1s ease;
 
   &.fixed {
-    position: fixed;
+    position: sticky;
+  }
+
+  &.fixed + .site-body {
   }
 }
