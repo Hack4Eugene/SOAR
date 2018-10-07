@@ -81,7 +81,6 @@ module.exports = {
 
             res.status(200).send(eventWithAttendeeDetails)
         } catch(err) {
-            console.log(err);
             throw res.status(err.status || 500).send(err);
         }
     },
