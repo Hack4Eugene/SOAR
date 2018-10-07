@@ -4,7 +4,7 @@ const ObjectId = require('mongodb').ObjectId;
 const Schema = mongoose.Schema;
 const _ = require('lodash');
 const moment = require('moment');
-const ProjectModel = mongoose.model('ProjectModel');
+const ProjectModel = require('../models/projectModel');
 const EventService = require('./eventService');
 const RequestError = require('../lib/Errors');
 
@@ -22,7 +22,12 @@ module.exports = {
     },
 
     getByID(req, res) {
-        return ProjectModel.findOne({ _id: req.params.project_id }).exec()
+        const { project_id: projectID } = req.params;
+        if (_.isNil(projectID)) {
+            return res.status(400).send(`Invalid project ID submitted: ${projectID}`);
+        }
+
+        return ProjectModel.getById(projectID)
             // .then(projectDocument => Q.all(_.map(eventId => EventService.getByID())))
             .then(projectDocument => res.status(200).send(projectDocument))
             .catch(error => {
@@ -41,28 +46,31 @@ module.exports = {
     },
 
     createOrUpdate(req, res) {
-        if (!req.params.project_id) {
-            ProjectModel.create(req.body)
+        const { project_id: projectID } = req.params;
+
+        if (!projectID) {
+            return ProjectModel.create(req.body)
                 .then(newProjectDocument => res.status(200).send(newProjectDocument))
                 .catch(error => {
                     console.log(error);
                     res.status(error.status || 500).send(error);
                 });
-        } else {
-            ProjectModel.findOne({ _id: req.params.project_id })
-                .then(foundProjectDocument => {
-                    if (foundProjectDocument === null) {
-                        throw new RequestError(`Project ${req.params.project_id} not found`, 'NOT_FOUND');
-                    }
-                    ProjectModel.findByIdAndUpdate(ObjectId(req.params.project_id), req.body, { new: true })
-                        .then(updatedDocument => res.status(200).send(updatedDocument))
-                        .catch(err => res.status(err.status || 500).send(err));
-                })
-                .catch(error => {
-                    console.log(error);
-                    res.status(error.status || 500).send(error);
-                });
         }
+
+        ProjectModel.findOne({ _id: projectID })
+            .then(foundProjectDocument => {
+                if (foundProjectDocument === null) {
+                    throw new RequestError(`Project ${projectID} not found`, 'NOT_FOUND');
+                }
+
+                ProjectModel.findByIdAndUpdate(ObjectId(projectID), req.body, { new: true })
+                    .then(updatedDocument => res.status(200).send(updatedDocument))
+                    .catch(err => res.status(err.status || 500).send(err));
+            })
+            .catch(error => {
+                console.log(error);
+                res.status(error.status || 500).send(error);
+            });
     },
 
     deleteProject(req, res, next) {
