@@ -21,7 +21,6 @@ class EditProject extends Component {
     }
 
     render() {
-        console.log('EDIT this.props.initialValues', this.props.initialValues)
         if (this.props.organizationStatus !== SUCCESS) return <div />;
 
         return (
