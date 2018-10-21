@@ -140,42 +140,6 @@ class Project extends Component {
                             <div className="d-flex flex-row flex-wrap justify-content-center">
                                 {this.showAlliance()}
                             </div>
-                            {/* <div className="d-flex flex-row flex-wrap justify-content-center">
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h5 className="card-title mb-0">FOOD for Lane County</h5>
-                                    </div>
-
-                                    <img alt="Food for Lane County" className="card-image card-org-image" src={foodLaneImg} />
-                                    <div className="card-body org-card-body">
-                                        <Link className="btn btn-outline-success org-card-button" to="/profile">
-                                            Go to organization
-                                        </Link>
-                                    </div>
-                                </div>
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h5 className="card-title mb-0">Habitat for Humanity</h5>
-                                    </div>
-
-                                    <img alt="habitat" className="card-image card-org-image" src={habitatImg} />
-                                    <div className="card-body org-card-body">
-                                        <Link className="btn btn-outline-success org-card-button" to="/profile">Go to
-                                            organization</Link>
-                                    </div>
-                                </div>
-                                <div className="card">
-                                    <div className="card-header">
-                                        <h5 className="card-title mb-0">Peace Corps</h5>
-                                    </div>
-
-                                    <img alt="Peace" className="card-image card-org-image" src={peaceImg} />
-                                    <div className="card-body org-card-body">
-                                        <Link className="btn btn-outline-success org-card-button" to="/profile">Go to
-                                            organization</Link>
-                                    </div>
-                                </div>
-                            </div> */}
                         </div>
                     </div>
                 </div>
