@@ -8,10 +8,5 @@ header {
   top: 0;
   transition: all 1s ease;
 
-  &.fixed {
-    position: sticky;
-  }
-
-  &.fixed + .site-body {
-  }
+  position: sticky;
 }

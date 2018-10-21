@@ -29,6 +29,8 @@ class EditEvent extends Component {
 
         return (
             <div className="" style={{ margin: '0 auto', width: '75%' }}>
+                <h3>Project Details:</h3>
+
                 <form className="d-flex flex-column" onSubmit={this.props.handleSubmit}>
                     <CustomField
                         label="Name"
@@ -61,6 +63,10 @@ class EditEvent extends Component {
                     </CustomSelect>
                     <button className="mt-3 btn btn-primary" type="submit">Submit Edits</button>
                 </form>
+
+                <h3>Admin Section:</h3>
+
+
             </div>
         );
     }

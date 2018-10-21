@@ -6,37 +6,33 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import createBrowserHistory from 'history/createBrowserHistory';
+import ScrollTop from './ScrollTop';
 
-import myReducerMiddleware, { persistState } from './state/middleware/authentication';
+import persistLoggedInStateMiddleware, { persistState } from './state/middleware/authentication';
 
 import reducer from './state/reducers/rootReducer';
 
 import App from './app';
-
-const authReducer = () => myReducerMiddleware();
-// import myReducerMiddleware from './state/middleware/authentication';
 
 const history = createBrowserHistory();
 
 const initialState = { env: window.ENVIRONMENT || 'local' };
 
 const middleware = applyMiddleware(thunk);
-const enhancer = compose(middleware, authReducer());
+const enhancer = compose(middleware, persistLoggedInStateMiddleware());
 
 const store = createStore(
     reducer,
     persistState(initialState),
     composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
-    // TODO: replace this when ready
-    // initialState.env === 'production'
-    //     ? composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
-    //     : composeWithDevTools({ name: 'Emerald Compassionate Action Network' })(enhancer)
 );
 
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
-            <App />
+            <ScrollTop>
+                <App />
+            </ScrollTop>
         </Router>
     </Provider>,
     document.getElementById('root')
