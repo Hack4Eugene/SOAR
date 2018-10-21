@@ -99,7 +99,7 @@ class OrganizationPage extends Component {
                 <div>
                     <p className="lead">
                         Are you interested in joining our organization? We're looking for individuals with the following skills and interests:
-                    </p>,
+                    </p>
                     {tagList}
                 </div>
             );

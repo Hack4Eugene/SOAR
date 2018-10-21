@@ -9,7 +9,10 @@ import {
     GET_USERS_BY_IDS_REJECTED,
     POST_USER_PENDING,
     POST_USER_REJECTED,
-    POST_USER_RESOLVED
+    POST_USER_RESOLVED,
+    DELETE_USER_PENDING,
+    DELETE_USER_RESOLVED,
+    DELETE_USER_REJECTED
 } from '../types';
 import { serviceRoutes } from '../../config/routes';
 
@@ -57,4 +60,16 @@ export const getUsersByIds = () => (dispatch, getState) => {
     .then(client => client.get(endpointUrl)
         .then(result => dispatch({ type: GET_USERS_BY_IDS_RESOLVED, payload: result }))
         .catch(err => dispatch({ type: GET_USERS_BY_IDS_REJECTED, payload: err })));
+};
+
+export const deleteUser = userID => (dispatch, getState) => {
+    dispatch({ type: DELETE_USER_PENDING });
+
+    const state = getState();
+    const endpointUrl = `${loadEndpoint(state.env, serviceRoutes.DELETE_USER)}/${userID}`;
+
+    HttpClient(state)
+    .then(client => client.delete(endpointUrl)
+        .then(result => dispatch({ type: DELETE_USER_RESOLVED, payload: result }))
+        .catch(err => dispatch({ type: DELETE_USER_REJECTED, payload: err })));
 };

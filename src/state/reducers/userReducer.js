@@ -4,7 +4,10 @@ import {
     LOGIN_USER_RESOLVED,
     POST_USER_PENDING,
     POST_USER_REJECTED,
-    POST_USER_RESOLVED
+    POST_USER_RESOLVED,
+    DELETE_USER_RESOLVED,
+    DELETE_USER_REJECTED,
+    DELETE_USER_PENDING
 } from '../types';
 
 const initialState = {
@@ -50,6 +53,30 @@ const userReducer = (state = initialState, action) => {
         }
 
         case POST_USER_REJECTED: {
+            return {
+                error: {
+                    ...payload
+                },
+                status: ERROR
+            };
+        }
+
+        case DELETE_USER_RESOLVED: {
+            return {
+                data: {
+                    ...payload
+                },
+                status: SUCCESS
+            };
+        }
+
+        case DELETE_USER_PENDING: {
+            return {
+                status: LOADING
+            };
+        }
+
+        case DELETE_USER_REJECTED: {
             return {
                 error: {
                     ...payload
