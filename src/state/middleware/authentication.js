@@ -28,7 +28,7 @@ export const validation = state => {
     };
 };
 
-export default function myReducerMiddleware(config) {
+export default function persistLoggedInStateMiddleware(config) {
     const mergeState = (initialState, persistedState) => (
         persistedState
             ? { ...initialState, ...persistedState }

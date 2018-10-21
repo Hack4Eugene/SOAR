@@ -17,21 +17,18 @@ class Header extends Component {
         };
 
         this.resize = this.setWindowSize.bind(this);
-        this.scroll = this.handleScroll.bind(this);
         this.header = React.createRef();
     }
 
     componentDidMount() {
-        const { resize, scroll } = this;
+        const { resize } = this;
         window.addEventListener('resize', resize);
-        window.addEventListener('scroll', scroll);
         this.setState({ isMobile: isMobileViewport() });
     }
 
     componentWillUnmount() {
-        const { resize, scroll } = this;
+        const { resize } = this;
         window.removeEventListener('resize', resize);
-        window.removeEventListener('scroll', scroll);
     }
 
     setWindowSize() {
@@ -41,17 +38,6 @@ class Header extends Component {
         if (shouldSetWindowSize) {
             this.setState({ isMobile });
         }
-    }
-
-    handleScroll(e) {
-        const header = this.header.current;
-
-        const shouldFixHeader = header.scrollTop > 1;
-
-        if (shouldFixHeader !== this.state.shouldFixHeader) {
-            this.setState({ shouldFixHeader });
-        }
-
     }
 
     render() {
