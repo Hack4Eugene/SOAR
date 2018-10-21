@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import _, { get } from 'lodash';
 import moment from 'moment';
+import _, { get, map } from 'lodash';
 
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
 import { getOrganizations } from '../../../state/actions/organizationActions';
@@ -28,6 +28,25 @@ const mapStateToProps = (state) => ({
     organizationStatus: _.get(state, 'organizations.status', NOT_STARTED)
 });
 
+class OrganizationItem extends Component {
+    render() {
+        return (
+            <div className="card m-2" style={{ maxWidth: '250px', display: 'flex', justifyContent: 'space-between' }}>
+                <div className="card-header" style={{ minHeight: 80 }}>
+                    <h5 className="card-title mb-0">{this.props.title}</h5>
+                </div>
+
+                <img alt={this.props.title} className="card-image card-org-image" src={foodLaneImg} />
+                <div className="card-body org-card-body">
+                    <Link className="btn btn-outline-success org-card-button" to={`/organization/${this.props.id}`}>
+                        Go to organization
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+}
+
 class Project extends Component {
     constructor(props) {
         super(props);
@@ -52,6 +71,21 @@ class Project extends Component {
             this.setState({ showModal: false }); //eslint-disable-line react/no-did-update-set-state
         }
     }
+
+    showAlliance = () => {
+        const { alliance_data: allianceData } = this.props.project;
+        if (!allianceData || allianceData.length < 1) {
+            return <h3 className="display-5">This project doesn't have any allies yet.</h3>;
+        }
+
+        // console.log(allianceData)
+
+        const OrganizationList = allianceData.length
+            ? map(allianceData, (ally, i) => <OrganizationItem key={i} title={ally.name} id={ally._id} />)
+            : <div />;
+
+        return OrganizationList;
+    };
 
     submitEdits = () => {
         const updates = get(this.props.form, 'values', {});
@@ -104,6 +138,9 @@ class Project extends Component {
 
                             <h1 className="display-4 alliance-header">- Our Alliance -</h1>
                             <div className="d-flex flex-row flex-wrap justify-content-center">
+                                {this.showAlliance()}
+                            </div>
+                            {/* <div className="d-flex flex-row flex-wrap justify-content-center">
                                 <div className="card">
                                     <div className="card-header">
                                         <h5 className="card-title mb-0">FOOD for Lane County</h5>
@@ -138,7 +175,7 @@ class Project extends Component {
                                             organization</Link>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
