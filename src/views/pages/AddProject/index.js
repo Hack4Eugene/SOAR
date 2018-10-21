@@ -17,25 +17,6 @@ const mapStateToProps = (state) => ({
 });
 
 class AddProject extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            newProject: {
-                name: '',
-                tagline: '',
-                description: '',
-                createDate: Date.now(),
-                startDate: null,
-                endDate: null,
-                organization: '',
-                alliance: [],
-                status: 'not_started',
-                tags: '',
-                private: false
-            }
-        };
-    }
-
     componentDidMount() {
         this.props.getOrganizations();
     }
