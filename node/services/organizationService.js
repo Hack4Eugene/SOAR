@@ -28,7 +28,7 @@ module.exports = {
     },
 
     createOrUpdate(req, res, next) {
-        const { organizationID } = req.params.organization_id;
+        const { organization_id: organizationID } = req.params;
         if (!organizationID) {
             const newOrganization = _.omitBy(req.body, function (key, value) {
                 return key === 'userId';
