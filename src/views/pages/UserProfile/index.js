@@ -92,7 +92,7 @@ class UserProfilePage extends Component {
 
         return (
             <div className="container">
-                <div className="d-flex flex-row flex-nowrap user-profile-banner">
+                <div className="d-flex flex-row flex-nowrap align-items-center user-profile-banner">
                     <img alt="User" src={userImg} className="user-image" />
                     <div>
                         <h1>{name}</h1>
