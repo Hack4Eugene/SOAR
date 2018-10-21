@@ -23,16 +23,16 @@ module.exports = {
         }
 
         try {
-            const project = await ProjectModel.getById(projectID).exec();
+            const project = await ProjectModel.getById(projectID);
             const eventArray = await EventModel.getArrayOfEventsById(project.events);
             const result = {
-                ...project.toObject(),
+                ...project,
                 eventRecords: _.map(eventArray, event => event.toObject())
             };
 
             res.status(200).send(result);
         } catch (err) {
-            throw res.status(err.status || 500).send(err);
+            res.status(err.status || 500).send(err);
         }
     },
 
