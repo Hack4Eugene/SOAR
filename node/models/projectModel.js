@@ -16,6 +16,9 @@ const ProjectSchema = new Schema({
     description: {
         type: String
     },
+    createDate: {
+        type: Date
+    },
     startDate: {
         type: Date
     },

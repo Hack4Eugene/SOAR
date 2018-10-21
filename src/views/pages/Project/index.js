@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import _, { get, map } from 'lodash';
 
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
@@ -88,7 +89,6 @@ class Project extends Component {
 
     submitEdits = () => {
         const updates = get(this.props.form, 'values', {});
-
         this.props.updateProject(this.props.project._id, updates);
     };
 
@@ -103,13 +103,20 @@ class Project extends Component {
 
         const host = _.find(organizations, org => org._id === organization);
 
+        const project = _.mapValues(this.props.project, (value, key) => {
+            if (key === 'startDate' || key === 'endDate') {
+                return moment(value).format('YYYY-MM-DD')
+            }
+            return value
+        })
+
         if (organizationStatus !== SUCCESS || projectStatus !== SUCCESS) return <div>Loading...</div>;
 
         return (
             <div className="container pt-4">
                 <Modal show={this.state.showModal} hide={() => this.setState({ showModal: !this.state.showModal })}>
                     <EditProject
-                        initialValues={this.props.project}
+                        initialValues={project}
                         onSubmit={this.submitEdits}
                     />
                 </Modal>

@@ -69,3 +69,15 @@ export const updateProject = (projectID, updates) => (dispatch, getState) => {
         .then(() => dispatch(getProjectById(projectID)))
         .catch(err => dispatch({ type: POST_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
 };
+
+export const createProject = projectData => (dispatch, getState) => {
+    const state = getState();
+    const env = _.get(state, 'env', 'local');
+
+    dispatch({ type: POST_PROJECT_PENDING });
+
+    HttpClient(state)
+        .then(client => client.post(`${loadEndpoint(env, POST_PROJECT)}`, projectData))
+        .then(result => dispatch({ type: POST_PROJECT_RESOLVED, payload: result }))
+        .catch(err => dispatch({ type: POST_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
+};
