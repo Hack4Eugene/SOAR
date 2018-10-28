@@ -13,7 +13,8 @@ import {
 const initialState = {
     user: {
         data: {},
-        status: NOT_STARTED
+        status: NOT_STARTED,
+        deleted_status: NOT_STARTED
     }
 };
 
@@ -66,13 +67,13 @@ const userReducer = (state = initialState, action) => {
                 data: {
                     ...payload
                 },
-                status: SUCCESS
+                deleted_status: SUCCESS
             };
         }
 
         case DELETE_USER_PENDING: {
             return {
-                status: LOADING
+                deleted_status: LOADING
             };
         }
 
@@ -81,7 +82,7 @@ const userReducer = (state = initialState, action) => {
                 error: {
                     ...payload
                 },
-                status: ERROR
+                deleted_status: ERROR
             };
         }
 

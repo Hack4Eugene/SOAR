@@ -19,6 +19,7 @@ import Modal from '../../lib/Modal';
 
 const mapStateToProps = (state) => ({
     profile: get(state, 'user.data', {}),
+    deletedStatus: get(state, 'user.deleted_status', 'NOT_STARTED'),
     isLoaded: get(state, 'user.status', null) === SUCCESS
 });
 
@@ -48,7 +49,9 @@ class UserProfilePage extends Component {
                     active: false
                 }
             ],
-            showDeleteModal: false
+            showDeleteModal: false,
+            showDeletionError: false,
+            deletionErrorShown: false
         };
     }
     componentWillMount() {
@@ -89,7 +92,23 @@ class UserProfilePage extends Component {
 
     deleteUser = () => {
         this.props.deleteUser(this.props.profile._id);
-        this.props.logoutUser();
+        this.setState({ showDeleteModal: false, deletionErrorShown: false });
+        return;
+    };
+
+    closeErrorModal = () => {
+        this.setState({ showDeletionError: false, deletionErrorShown: true });
+        return;
+    }
+
+    handleDeletionResult = () => {
+        if (this.props.deletedStatus === 'SUCCESS') {
+            this.props.logoutUser();
+        } else if (this.props.deletedStatus === 'ERROR' && !this.state.deletionErrorShown) {
+            if (!this.state.showDeletionError) {
+                this.setState({ showDeletionError: true });
+            }
+        }
         return;
     };
 
@@ -108,6 +127,7 @@ class UserProfilePage extends Component {
                         <i>Member since {moment(createdAt).format('YYYY')}</i>
                     </div>
                 </div>
+                {this.handleDeletionResult()}
                 <Modal show={this.state.showDeleteModal} hide={() => this.setState({ showDeleteModal: false })} height="200px">
                     <div className="d-flex flex-column">
                         <div className="d-flex flex-row flex-nowrap align-items-center" style={{ justifyContent: 'space-evenly' }}>
@@ -116,6 +136,14 @@ class UserProfilePage extends Component {
                         <div className="d-flex flex-row flex-nowrap align-items-center" style={{ height: '100px', justifyContent: 'space-evenly' }}>
                             <button onClick={() => this.deleteUser()} className="btn btn-outline-danger" style={{ width: '90px' }}>Yes</button>
                             <button onClick={() => this.setState({ showDeleteModal: false })} className="btn btn-outline-success" style={{ width: '90px' }}>No</button>
+                        </div>
+                    </div>
+                </Modal>
+                <Modal show={this.state.showDeletionError} hide={() => this.closeErrorModal()} height="200px">
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row flex-nowrap align-items-center" style={{ justifyContent: 'space-evenly' }}>
+                            <h3>There was  an error deleting your user profile.</h3>
+                            <h4>Please contact a site administrator for assistance.</h4>
                         </div>
                     </div>
                 </Modal>
