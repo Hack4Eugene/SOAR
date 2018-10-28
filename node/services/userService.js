@@ -3,7 +3,7 @@ const moment = require('moment');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
 const UserModel = mongoose.model('UserModel');
-const { ObjectId } = mongoose;
+const { ObjectId } = mongoose.Types;
 
 const { jwtOpts } = require('../middleware/ecan-passport-strategy');
 const RequestError = require('../lib/Errors');
@@ -167,11 +167,18 @@ module.exports = {
         }
     },
 
-    deleteUser: (req, res, next) => {
-        UserModel.remove({ _id: ObjectId(req.params.user_id) })
-            .then(res.status(204).send({ msg: 'deleted' }))
-            .catch(error => {
-                return res.status(error.status || 500).send(error);
-            });
+    deleteUser: async (req, res, next) => {
+        const { user_id: userID } = req.params;
+
+        if (_.isNil(userID)) {
+            return res.status(400).send(`Invalid user_id submitted: ${userID}`);
+        }
+
+        try {
+            await UserModel.remove({ _id: ObjectId(req.params.user_id) });
+            res.status(204).send({ msg: 'deleted' });
+        } catch (err) {
+            res.status(err.status || 500).send(err);
+        }
     }
 };

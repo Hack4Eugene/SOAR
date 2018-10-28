@@ -7,16 +7,19 @@ import classnames from 'classnames';
 
 import { SUCCESS } from '../../../state/statusTypes';
 
-import { getUserByID } from '../../../state/actions/userActions';
+import { getUserByID, deleteUser } from '../../../state/actions/userActions';
+import { logoutUser } from '../../../state/actions/authenticationActions';
 import { getOrganizationsById } from '../../../state/actions/organizationActions';
 import Card from '../../lib/Card';
 import foodLaneImg from '../../../static/imgs/food-lane-county.jpg';
 import peaceImg from '../../../static/imgs/peace-corps.jpg';
 import habitatImg from '../../../static/imgs/habitat-humanity.png';
 import userImg from '../../../static/imgs/user-image.png';
+import Modal from '../../lib/Modal';
 
 const mapStateToProps = (state) => ({
     profile: get(state, 'user.data', {}),
+    deletedStatus: get(state, 'user.deleted_status', 'NOT_STARTED'),
     isLoaded: get(state, 'user.status', null) === SUCCESS
 });
 
@@ -45,7 +48,10 @@ class UserProfilePage extends Component {
                     name: 'settings',
                     active: false
                 }
-            ]
+            ],
+            showDeleteModal: false,
+            showDeletionError: false,
+            deletionErrorShown: false
         };
     }
     componentWillMount() {
@@ -84,6 +90,28 @@ class UserProfilePage extends Component {
         return tabs[this.state.activeTab];
     };
 
+    deleteUser = () => {
+        this.props.deleteUser(this.props.profile._id);
+        this.setState({ showDeleteModal: false, deletionErrorShown: false });
+        return;
+    };
+
+    closeErrorModal = () => {
+        this.setState({ showDeletionError: false, deletionErrorShown: true });
+        return;
+    }
+
+    handleDeletionResult = () => {
+        if (this.props.deletedStatus === 'SUCCESS') {
+            this.props.logoutUser();
+        } else if (this.props.deletedStatus === 'ERROR' && !this.state.deletionErrorShown) {
+            if (!this.state.showDeletionError) {
+                this.setState({ showDeletionError: true });
+            }
+        }
+        return;
+    };
+
     render() {
         const {
             name,
@@ -99,6 +127,26 @@ class UserProfilePage extends Component {
                         <i>Member since {moment(createdAt).format('YYYY')}</i>
                     </div>
                 </div>
+                {this.handleDeletionResult()}
+                <Modal show={this.state.showDeleteModal} hide={() => this.setState({ showDeleteModal: false })} height="200px">
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row flex-nowrap align-items-center" style={{ justifyContent: 'space-evenly' }}>
+                            <h3>Are you sure you want to delete your user profile?</h3>
+                        </div>
+                        <div className="d-flex flex-row flex-nowrap align-items-center" style={{ height: '100px', justifyContent: 'space-evenly' }}>
+                            <button onClick={() => this.deleteUser()} className="btn btn-outline-danger" style={{ width: '90px' }}>Yes</button>
+                            <button onClick={() => this.setState({ showDeleteModal: false })} className="btn btn-outline-success" style={{ width: '90px' }}>No</button>
+                        </div>
+                    </div>
+                </Modal>
+                <Modal show={this.state.showDeletionError} hide={() => this.closeErrorModal()} height="200px">
+                    <div className="d-flex flex-column">
+                        <div className="d-flex flex-row flex-nowrap align-items-center" style={{ justifyContent: 'space-evenly' }}>
+                            <h3>There was  an error deleting your user profile.</h3>
+                            <h4>Please contact a site administrator for assistance.</h4>
+                        </div>
+                    </div>
+                </Modal>
                 <hr className="my-4" />
                 <div className="row">
                     <div className="col-3">
@@ -139,6 +187,11 @@ className={classnames('list-group-item', {
                                     onClick={() => this.setActiveTab('settings')}
                                 >Settings</li>
                             </ul>
+                        </div>
+                        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '150px' }}>
+                            <Link className="btn btn-outline-danger" onClick={() => this.setState({ showDeleteModal: true })} to="/profile">
+                                Delete Profile
+                            </Link>
                         </div>
                     </div>
                     {this.fetchTabContent()}
@@ -189,4 +242,4 @@ className={classnames('list-group-item', {
     }
 }
 
-export default connect(mapStateToProps, { getUserByID, getOrganizationsById })(UserProfilePage);
+export default connect(mapStateToProps, { getUserByID, getOrganizationsById, deleteUser, logoutUser })(UserProfilePage);
