@@ -46,6 +46,10 @@ class LoginPage extends Component {
         this.setState({ username: this.refs.username.value });
     };
 
+    handlePasswordChange = e => {
+        this.setState({ password: this.refs.password.value });
+    };
+
     login = () => {
         const {
             username,
