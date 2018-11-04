@@ -37,13 +37,15 @@ class LoginPage extends Component {
         }
     };
 
-    handleUsernameChange = e => {
-        this.setState({ username: this.refs.username.value });
+    getErrorMessage = () => {
+        if (_.get(this.props.authentication, 'error.message', null) === null) {
+            return 'Login attempt failed.';
+        }
+        return this.props.authentication.error.message;
     };
 
-    handlePasswordChange = e => {
-        console.log(this.refs.password.value);
-        this.setState({ password: this.refs.password.value });
+    handleUsernameChange = e => {
+        this.setState({ username: this.refs.username.value });
     };
 
     handleLoginResponse = () => {
@@ -103,7 +105,7 @@ class LoginPage extends Component {
                     <div className="col-5">
                         <h2 className="ml-3">Login</h2>
                         {this.handleLoginResponse()}
-                        {this.state.loginFailed ? <h6 className="ml-3" style={{ color: 'red' }}>Login attempt failed.</h6> : <div />}
+                        {this.state.loginFailed ? <h6 className="ml-3" style={{ color: 'red' }}>{this.getErrorMessage()}</h6> : <div />}
                     </div>
                     <div className="col-3" />
                 </div>

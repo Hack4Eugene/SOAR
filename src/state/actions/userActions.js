@@ -42,7 +42,7 @@ export const createUser = profile => {
                 }
                 return;
             })
-            .catch(err => dispatch({ type: POST_USER_REJECTED, error: stripAxiosRequestFromError(err) }));
+            .catch(err => dispatch({ type: POST_USER_REJECTED, payload: stripAxiosRequestFromError(err) }));
     };
 };
 
