@@ -41,7 +41,6 @@ class AddUser extends Component {
                 description: '',
                 organizations: []
             },
-            redirect: null,
             submitted: null
         };
     }
@@ -141,7 +140,7 @@ class AddUser extends Component {
 
     submitUser = () => {
         Promise.resolve(this.props.createUser(this.state.newUser))
-            .then(res => { this.setState({ newUser: res }); });
+            .then(res => this.setState({ newUser: this.props.user, submitted: true }));
     };
 
     redirectToExplore = () => <Redirect to="/explore" />;
@@ -180,11 +179,10 @@ class AddUser extends Component {
     };
 
     render() {
-        const shouldRedirect = (_.isString(this.state.redirect) && this.state.submitted === true) && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+        const shouldRedirect = this.state.submitted === true && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+
         if (shouldRedirect) {
-            return this.state.redirect
-                ? <Redirect to={this.state.redirect} />
-                : this.redirectToExplore();
+            return this.redirectToExplore();
         }
 
         return (

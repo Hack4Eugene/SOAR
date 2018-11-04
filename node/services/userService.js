@@ -82,7 +82,7 @@ module.exports = {
                             }, { user: _.omit(userRecord, 'password') }));
                         }
 
-                        return res.status(500).send(new RequestError('Password does not match', 'ACCESS_DENIED'));
+                        return res.status(401).send(new RequestError('Password does not match', 'ACCESS_DENIED'));
                     });
             })
             .catch(error => {
@@ -101,7 +101,7 @@ module.exports = {
                 .find({ username })
                 .then(usersWithUsername => {
                     if (_.isArray(usersWithUsername) && usersWithUsername.length > 0) {
-                        return res.status(400).send(new RequestError(`Username: ${username} has been taken.`, 'BAD_REQUEST'));
+                        throw new RequestError(`Username: ${username} has been taken.`, 'BAD_REQUEST');
                     }
                 })
                 .then(() => getHash(password, SALT_ROUNDS))
@@ -110,10 +110,10 @@ module.exports = {
                 .then(newUser => UserModel.create(newUser))
                 .then(newUserDocument => {
                     newUserDocument = newUserDocument.toObject();
-                    res.status(200).send(_.omit(newUserDocument));
+                    return res.status(200).send(_.omit(newUserDocument, 'password'));
                 })
                 .catch(err => {
-                    res.status(err.status || 500).send(err);
+                    return res.status(err.status || 500).send(err);
                 });
         } else {
             /*
@@ -128,8 +128,8 @@ module.exports = {
 
                         //Lookup the username for someone with a different id so you could still pass in your current username and have it not freak out
                         UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
-                            .then(res => {
-                                if (!_.isUndefined(res) && _.isInteger(res) && res > 0) {
+                            .then(userRes => {
+                                if (!_.isUndefined(userRes) && _.isInteger(userRes) && userRes > 0) {
                                     throw new RequestError('Username has been taken', 'BAD_REQUEST');
                                 }
                             })
