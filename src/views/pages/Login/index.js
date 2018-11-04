@@ -19,13 +19,11 @@ class LoginPage extends Component {
         this.state = {
             username: '',
             password: '',
-            logout: null,
-            loginFailed: false
+            logout: null
         };
     }
 
     componentDidMount() {
-        this.setState({ loginFailed: false });
         if (this.props.expireSession && !this.state.logout) {
             this.props.logoutUser();
         }
@@ -47,14 +45,6 @@ class LoginPage extends Component {
     handleUsernameChange = e => {
         this.setState({ username: this.refs.username.value });
     };
-
-    handleLoginResponse = () => {
-        if (this.props.authentication.status === 'ERROR') {
-            if (!this.state.loginFailed) {
-                this.setState({ loginFailed: true });
-            }
-        }
-    }
 
     login = () => {
         const {
@@ -104,8 +94,7 @@ class LoginPage extends Component {
                 <div className="row justify-content-center">
                     <div className="col-5">
                         <h2 className="ml-3">Login</h2>
-                        {this.handleLoginResponse()}
-                        {this.state.loginFailed ? <h6 className="ml-3" style={{ color: 'red' }}>{this.getErrorMessage()}</h6> : <div />}
+                        {this.props.authentication.status === 'ERROR' ? <h6 className="ml-3" style={{ color: 'red' }}>{this.getErrorMessage()}</h6> : <div />}
                     </div>
                     <div className="col-3" />
                 </div>

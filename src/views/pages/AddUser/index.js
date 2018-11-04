@@ -90,6 +90,13 @@ class AddUser extends Component {
         );
     };
 
+    getErrorMessage = () => {
+        if (_.get(this.props.user, 'error.message', null) === null) {
+            return 'An error occurred during creation. Please contact and administrator.';
+        }
+        return this.props.user.error.message;
+    };
+
     handleFormInput(e) {
         const tempUser = cloneDeep(this.state.newUser);
 
@@ -148,11 +155,19 @@ class AddUser extends Component {
 
     handleFailedCreate = () => {
         const userStatus = _.get(this.props.user, 'status', NOT_STARTED);
-        if (userStatus === ERROR) {
+        if (userStatus === ERROR && this.state.submitted) {
             if (!this.state.createFailed) {
-                this.refs.fullName.value = '';
-                this.refs.userName.value = '';
-                this.refs.password.value = '';
+                if (this.refs.fullName) {
+                    this.refs.fullName.value = '';
+                }
+
+                if (this.refs.userName) {
+                    this.refs.userName.value = '';
+                }
+
+                if (this.refs.password) {
+                    this.refs.password.value = '';
+                }
 
                 const defaultNewUser = {
                     name: '',
@@ -177,13 +192,6 @@ class AddUser extends Component {
                 this.setState({ createFailed: true, newUser: defaultNewUser });
             }
         }
-    };
-
-    getErrorMessage = () => {
-        if (_.get(this.props.user, 'error.message', null) === null) {
-            return 'An error occurred during creation. Please contact and administrator.';
-        }
-        return this.props.user.error.message;
     };
 
     renderForm = () => {
