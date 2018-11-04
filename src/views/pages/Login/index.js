@@ -9,6 +9,7 @@ import { loginUser, logoutUser } from '../../../state/actions/authenticationActi
 
 const mapStateToProps = (state) => ({
     isLoggedIn: !_.get(state, 'authentication.isTokenExpired', false) && _.get(state, 'authentication.isLoggedIn', false),
+    authentication: _.get(state, 'authentication', {})
 });
 
 class LoginPage extends Component {
@@ -34,13 +35,15 @@ class LoginPage extends Component {
         }
     };
 
-    handleUsernameChange = e => {
-        this.setState({ username: this.refs.username.value });
+    getErrorMessage = () => {
+        if (_.get(this.props.authentication, 'error.message', null) === null) {
+            return 'Login attempt failed.';
+        }
+        return this.props.authentication.error.message;
     };
 
-    handlePasswordChange = e => {
-        console.log(this.refs.password.value);
-        this.setState({ password: this.refs.password.value });
+    handleUsernameChange = e => {
+        this.setState({ username: this.refs.username.value });
     };
 
     login = () => {
@@ -91,6 +94,7 @@ class LoginPage extends Component {
                 <div className="row justify-content-center">
                     <div className="col-5">
                         <h2 className="ml-3">Login</h2>
+                        {this.props.authentication.status === 'ERROR' ? <h6 className="ml-3" style={{ color: 'red' }}>{this.getErrorMessage()}</h6> : <div />}
                     </div>
                     <div className="col-3" />
                 </div>

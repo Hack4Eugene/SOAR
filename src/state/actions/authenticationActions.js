@@ -1,4 +1,5 @@
 import { HttpClient, loadEndpoint } from '../../lib/common';
+import { stripAxiosRequestFromError } from '../../lib/util';
 import { STORAGE_KEY } from '../middleware/authentication';
 import { LOGIN_USER_PENDING, LOGIN_USER_REJECTED, LOGIN_USER_RESOLVED, LOGOUT_USER } from '../types';
 import { serviceRoutes } from '../../config/routes';
@@ -22,7 +23,7 @@ export const loginUser = credentials => {
                 };
                 return dispatch({ type: LOGIN_USER_RESOLVED, payload: newState });
             })
-            .catch(err => dispatch({ type: LOGIN_USER_REJECTED, payload: err }));
+            .catch(err => dispatch({ type: LOGIN_USER_REJECTED, payload: stripAxiosRequestFromError(err) }));
     };
 };
 

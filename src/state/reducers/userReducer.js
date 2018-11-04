@@ -41,7 +41,7 @@ const userReducer = (state = initialState, action) => {
         case POST_USER_RESOLVED: {
             return {
                 data: {
-                    ...payload.user
+                    ...payload
                 },
                 status: SUCCESS
             };

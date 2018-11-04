@@ -9,7 +9,7 @@ import { createUser } from '../../../state/actions/userActions';
 import { getOrganizations } from '../../../state/actions/organizationActions';
 
 import './AddUser.scss';
-import { SUCCESS, NOT_STARTED } from '../../../state/statusTypes';
+import { SUCCESS, NOT_STARTED, ERROR } from '../../../state/statusTypes';
 
 const mapStateToProps = (state) => ({
     user: get(state, 'user', {}),
@@ -41,8 +41,8 @@ class AddUser extends Component {
                 description: '',
                 organizations: []
             },
-            redirect: null,
-            submitted: null
+            submitted: null,
+            createFailed: false
         };
     }
 
@@ -88,6 +88,13 @@ class AddUser extends Component {
             </div>
             </div>
         );
+    };
+
+    getErrorMessage = () => {
+        if (_.get(this.props.user, 'error.message', null) === null) {
+            return 'An error occurred during creation. Please contact and administrator.';
+        }
+        return this.props.user.error.message;
     };
 
     handleFormInput(e) {
@@ -141,10 +148,51 @@ class AddUser extends Component {
 
     submitUser = () => {
         Promise.resolve(this.props.createUser(this.state.newUser))
-            .then(res => { this.setState({ newUser: res }); });
+            .then(res => this.setState({ newUser: this.props.user, submitted: true, createFailed: false }));
     };
 
     redirectToExplore = () => <Redirect to="/explore" />;
+
+    handleFailedCreate = () => {
+        const userStatus = _.get(this.props.user, 'status', NOT_STARTED);
+        if (userStatus === ERROR && this.state.submitted) {
+            if (!this.state.createFailed) {
+                if (this.refs.fullName) {
+                    this.refs.fullName.value = '';
+                }
+
+                if (this.refs.userName) {
+                    this.refs.userName.value = '';
+                }
+
+                if (this.refs.password) {
+                    this.refs.password.value = '';
+                }
+
+                const defaultNewUser = {
+                    name: '',
+                    username: '',
+                    password: '',
+                    address: {
+                        street: '',
+                        city: '',
+                        state: '',
+                        zipcode: '',
+                        country: ''
+                    },
+                    contactInformation: {
+                        phoneNumber: '',
+                        email: ''
+                    },
+                    website: '',
+                    description: '',
+                    organizations: []
+                };
+
+                this.setState({ createFailed: true, newUser: defaultNewUser });
+            }
+        }
+    };
 
     renderForm = () => {
         return (
@@ -153,21 +201,21 @@ class AddUser extends Component {
                     <div className="form-group">
                         <label htmlFor="name">Full Name</label>
                         <input
-                            type="text" className="form-control" id="fullName"
+                            type="text" className="form-control" id="fullName" ref="fullName"
                             onChange={(e) => this.handleFormInput(e)}
                         />
                     </div>
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
                         <input
-                            type="text" className="form-control" id="userName"
+                            type="text" className="form-control" id="userName" ref="userName"
                             onChange={(e) => this.handleFormInput(e)}
                         />
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
                         <input
-                            type="text" className="form-control" id="password"
+                            type="text" className="form-control" id="password" ref="password"
                             onChange={(e) => this.handleFormInput(e)}
                         />
                     </div>
@@ -180,11 +228,10 @@ class AddUser extends Component {
     };
 
     render() {
-        const shouldRedirect = (_.isString(this.state.redirect) && this.state.submitted === true) && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+        const shouldRedirect = this.state.submitted === true && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+
         if (shouldRedirect) {
-            return this.state.redirect
-                ? <Redirect to={this.state.redirect} />
-                : this.redirectToExplore();
+            return this.redirectToExplore();
         }
 
         return (
@@ -192,6 +239,8 @@ class AddUser extends Component {
                 <div className="row justify-content-center">
                     <div className="col-5">
                         <h2 className="ml-3">New User Registration</h2>
+                        {this.handleFailedCreate()}
+                        {this.state.createFailed ? <h6 className="ml-3" style={{ color: 'red' }}>{this.getErrorMessage()}</h6> : <div />}
                     </div>
                     <div className="col-3" />
                 </div>

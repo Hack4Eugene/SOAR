@@ -15,6 +15,7 @@ import {
     DELETE_USER_REJECTED
 } from '../types';
 import { serviceRoutes } from '../../config/routes';
+import { loginUser } from './authenticationActions';
 
 const { POST_USER } = serviceRoutes;
 
@@ -23,15 +24,25 @@ export const createUser = profile => {
         dispatch({ type: POST_USER_PENDING });
         const state = getState();
         const url = loadEndpoint(state.env, POST_USER);
+        const credentials = {
+            username: profile.username,
+            password: profile.password
+        };
+
+        let logUserIn = false;
+        if (credentials.username && credentials.password) {
+            logUserIn = true;
+        }
+
         HttpClient(state).then(client => client.post(url, serialize(profile)))
-            .then(result => {
-                const newState = {
-                    authentication: { ...result.data.authentication, isLoggedIn: true, isTokenExpired: false },
-                    user: result.data.user
-                };
-                return dispatch({ type: POST_USER_RESOLVED, payload: newState });
+            .then(result => dispatch({ type: POST_USER_RESOLVED, payload: result.data }))
+            .then(() => {
+                if (logUserIn) {
+                    return dispatch(loginUser(credentials));
+                }
+                return;
             })
-            .catch(err => dispatch({ type: POST_USER_REJECTED, error: stripAxiosRequestFromError(err) }));
+            .catch(err => dispatch({ type: POST_USER_REJECTED, payload: stripAxiosRequestFromError(err) }));
     };
 };
 
