@@ -21,26 +21,17 @@ class AddEvent extends Component {
               eventDate: null,
               description: '',
               location: '',
-              project: {
-                id: '5ac9877976448030b88ac636',
-                name: 'Summer Hydration Series'
-              },
+              project: '5ae12bfd0d894102c483e886',
               tags: '',
-              organization: {
-                id: '5ac9877976448030b88ac636',
-                name: 'FOOD for Lane County'
-              },
+              organization: '5ac9877976448030b88ac636',
+              goals: [],
               private: false
             }
         };
     }
 
-    componentWillMount() {
-      // this.props.createEvent()
-    }
-
     submitEvent() {
-      this.props.createEvent(JSON.stringify(this.state.newEvent));
+      this.props.createEvent(this.state.newEvent);
     }
 
     handleFormInput(e) {
@@ -65,7 +56,16 @@ class AddEvent extends Component {
         // case 'eventProject':
         //   this.setState({ newEvent: {...this.state.newEvent, project: e.target.value} })
         case 'eventTags':
-          newState.tags = e.target.value;
+          newState.tags = e.target.value.split(',');
+          this.setState({ newEvent: newState });
+          break;
+        case 'eventGoals':
+          const goalArray = e.target.value.split(',');
+          newState.goals = goalArray.map(goal => ({
+              text: goal,
+              completed: false
+          }));
+
           this.setState({ newEvent: newState });
           break;
         case 'eventPrivate':
@@ -112,6 +112,16 @@ class AddEvent extends Component {
                     type="text"
                     className="form-control"
                     id="eventTags"
+                    placeholder="Enter a comma separated list..."
+                    onChange={(e) => this.handleFormInput(e)}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="eventGoals">Goals</label>
+                <input
+                    type="text"
+                    className="form-control"
+                    id="eventGoals"
                     placeholder="Enter a comma separated list..."
                     onChange={(e) => this.handleFormInput(e)}
                 />

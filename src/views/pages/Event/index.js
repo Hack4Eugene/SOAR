@@ -64,25 +64,54 @@ class EventPage extends Component {
                     <p className="lead">{eventDescription}</p>
                 </div>
                 <img className="event-page-image mb-4" src={eventImage} />
-                <Card>
-                    <div className="card-body">
-                        <h4 style={{ color: '#28a745' }}>
-                            <i className="fa fa-leaf mr-3" />
-                            Event Details
-                        </h4>
-                        <hr />
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dapibus lorem a nisl bibendum dignissim. 
-                            Morbi facilisis elit in efficitur dignissim. Quisque dignissim sit amet nulla at sollicitudin. 
-                            Etiam laoreet, elit eget sagittis interdum, lacus enim commodo neque, vel faucibus leo risus a lorem. 
-                            Praesent fermentum sed lorem a vestibulum. Morbi porttitor ipsum porta ipsum dictum, et eleifend ex imperdiet. 
-                            Cras pellentesque lobortis lorem, et placerat risus pretium sed. Phasellus iaculis quis elit congue feugiat.
-                        </p>
-                    </div>
-                </Card>
+                {this.showEventDetails()}
+                {this.showEventGoals()}
+                <button type="button" class="btn btn-outline-secondary">
+                    <i className="fas fa-check mr-2" />
+                    Close event
+                </button>
             </div>
         );
     };
+
+    showEventGoals = () => {
+        const event = get(this.props, 'selectedEvent', {});
+        if (!_.isEmpty(event.goals)) {
+            return (
+                <Card>
+                    <div className="card-body">
+                        <h4 style={{ color: '#28a745' }}>
+                            <i className="fas fa-flag-checkered mr-3" />
+                            Event Goals
+                        </h4>
+                        <hr />
+                        <ul>
+                            {_.map(event.goals, goal => <li>{goal.text}</li>)}
+                        </ul>
+                    </div>
+                </Card>
+            )
+        }
+    }
+
+    showEventDetails = () => (
+        <Card>
+            <div className="card-body">
+                <h4 style={{ color: '#28a745' }}>
+                    <i className="fa fa-leaf mr-3" />
+                    Event Details
+                </h4>
+                <hr />
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dapibus lorem a nisl bibendum dignissim. 
+                    Morbi facilisis elit in efficitur dignissim. Quisque dignissim sit amet nulla at sollicitudin. 
+                    Etiam laoreet, elit eget sagittis interdum, lacus enim commodo neque, vel faucibus leo risus a lorem. 
+                    Praesent fermentum sed lorem a vestibulum. Morbi porttitor ipsum porta ipsum dictum, et eleifend ex imperdiet. 
+                    Cras pellentesque lobortis lorem, et placerat risus pretium sed. Phasellus iaculis quis elit congue feugiat.
+                </p>
+            </div>
+        </Card>
+    )
 
     showSideContent = () => (
         <div className="col-4">

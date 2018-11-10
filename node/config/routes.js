@@ -33,6 +33,8 @@ const endpoints = {
 
     GET_EVENT_BY_ID: '/event/:event_id',
 
+    GET_EVENTS_BY_ID: '/events/:event_ids',
+
     POST_EVENT: '/event/:event_id?',
 
     DELETE_EVENT: '/event/:event_id',

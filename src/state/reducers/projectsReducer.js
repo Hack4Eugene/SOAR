@@ -5,7 +5,8 @@ import {
     GET_PROJECTS_REJECTED,
     GET_PROJECTS_RESOLVED,
     GET_PROJECTS_BY_ORG_RESOLVED,
-    GET_PROJECTS_BY_ORG_REJECTED
+    GET_PROJECTS_BY_ORG_REJECTED,
+    GET_EVENTS_BY_ID_RESOLVED, GET_EVENTS_BY_ID_REJECTED,
 } from '../types';
 
 const initialState = {
@@ -13,6 +14,11 @@ const initialState = {
     detailed: {
         status: NOT_STARTED
     },
+    selectedProject: {
+        events: [],
+        error: {},
+        status: NOT_STARTED
+    }, 
     error: {},
     status: NOT_STARTED
 };
@@ -43,6 +49,26 @@ const projectReducer = (state = initialState, action) => {
 
         case GET_PROJECTS_BY_ORG_REJECTED: {
             return { ...state, error: { ...payload }, status: ERROR };
+        }
+
+        case GET_EVENTS_BY_ID_RESOLVED: {
+            return { 
+                ...state, 
+                selectedProject: {
+                    events: payload,
+                    status: SUCCESS
+                } 
+            }
+        }
+
+        case GET_EVENTS_BY_ID_REJECTED: {
+            return { 
+                ...state, 
+                selectedProject: {
+                    error: payload,
+                    status: ERROR
+                } 
+            }
         }
 
         /**

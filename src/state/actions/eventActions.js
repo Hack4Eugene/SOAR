@@ -9,12 +9,13 @@ import {
     GET_EVENTS_RESOLVED, INCREMENT_EVENT_FINISH, SET_EVENTS_FINISHED,
     GET_EVENT_RESOLVED, GET_EVENT_REJECTED,
     UPDATE_EVENT_RESOLVED, UPDATE_EVENT_REJECTED,
-    GET_ATTENDEES_DETAILS_RESOLVED, GET_ATTENDEES_DETAILS_REJECTED
+    GET_EVENTS_BY_ID_RESOLVED, GET_EVENTS_BY_ID_REJECTED,
+    GET_ATTENDEES_DETAILS_RESOLVED, GET_ATTENDEES_DETAILS_REJECTED,
 } from '../types';
 
 import { serviceRoutes } from '../../config/routes';
 
-const { GET_EVENTS, POST_EVENT, DELETE_EVENT, GET_EVENT_BY_ID, UPDATE_EVENT, GET_USERS_BY_IDS } = serviceRoutes;
+const { GET_EVENTS, GET_EVENTS_BY_ID, POST_EVENT, DELETE_EVENT, GET_EVENT_BY_ID, UPDATE_EVENT, GET_USERS_BY_IDS } = serviceRoutes;
 
 export const getEvents = () => {
     return (dispatch, getState) => {
@@ -74,6 +75,15 @@ export const getEventById = (eventId) => {
             .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)))
             .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result.data }))
             .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err }));
+    };
+};
+
+export const getEventsById = (eventIds) => {
+    return (dispatch, getState) => {
+        HttpClient(getState(), dispatch)
+            .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENTS_BY_ID}/${eventIds}`)))
+            .then(result => dispatch({ type: GET_EVENTS_BY_ID_RESOLVED, payload: result.data }))
+            .catch(err => dispatch({ type: GET_EVENTS_BY_ID_REJECTED, payload: err }));
     };
 };
 
