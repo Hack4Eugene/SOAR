@@ -19,41 +19,42 @@ module.exports = {
                 .catch(error => {
                     res.status(error.status || 500).send(error);
                 });
-        } 
-            let newEventDocument = null;
-            return EventModel.findOne({ _id: req.params.event_id })
-                .then(foundEventDocument => {
-                    if (foundEventDocument == null) {
-                        throw new RequestError(`Event ${req.params.event_id} not found`, 'NOT_FOUND');
+        }
+        
+        let newEventDocument = null;
+        return EventModel.findOne({ _id: req.params.event_id })
+            .then(foundEventDocument => {
+                if (foundEventDocument == null) {
+                    throw new RequestError(`Event ${req.params.event_id} not found`, 'NOT_FOUND');
+                }
+
+                newEventDocument = foundEventDocument;
+            })
+            .then(() => {
+                _.forEach(req.body, (value, key) => {
+                    if (key === 'attendee') {
+                        const attendees = newEventDocument.attendees;
+                        const shouldRemoveAttendee = _.includes(attendees, value);
+                        if (shouldRemoveAttendee) return _.remove(attendees, userId => { return userId === value; });
+                        attendees.push(value);
                     }
 
-                    newEventDocument = foundEventDocument;
-                })
-                .then(() => {
-                    _.forEach(req.body, (value, key) => {
-                        if (key === 'attendee') {
-                            const attendees = newEventDocument.attendees;
-                            const shouldRemoveAttendee = _.includes(attendees, value);
-                            if (shouldRemoveAttendee) return _.remove(attendees, userId => { return userId === value; });
-                            attendees.push(value);
-                        }
-
-                        newEventDocument[key] = value;
-                    });
-
-                    return EventModel.update({ _id: req.params.event_id }, newEventDocument, { new: true });
-                })
-                .then(updatedEventDocument => {
-                    newEventDocument = updatedEventDocument;
-
-                    if (req.body.project) {
-                        return ProjectModel.addEventId(req.body.project, req.params.event_id);
-                    }
-                })
-                .then(() => { res.status(200).send(newEventDocument); })
-                .catch(error => {
-                    res.status(error.status || 500).send(error);
+                    newEventDocument[key] = value;
                 });
+
+                return EventModel.update({ _id: req.params.event_id }, newEventDocument, { new: true });
+            })
+            .then(updatedEventDocument => {
+                newEventDocument = updatedEventDocument;
+
+                if (req.body.project) {
+                    return ProjectModel.addEventId(req.body.project, req.params.event_id);
+                }
+            })
+            .then(() => { res.status(200).send(newEventDocument); })
+            .catch(error => {
+                res.status(error.status || 500).send(error);
+            });
     },
 
     getAll(req, res, next) {
