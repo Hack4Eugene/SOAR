@@ -25,8 +25,6 @@ const endpoints = {
 
     POST_PROJECT_IMAGE: '/project/:project_id/image/:image_name',
 
-    GET_PROJECT_IMAGE: '/project/:project_id/image/:image_name',
-
     DELETE_PROJECT: '/project/:project_id',
 
     GET_EVENTS_FOR_PROJECTS: '/project/:project_id/events',
