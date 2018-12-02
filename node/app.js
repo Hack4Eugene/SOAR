@@ -1,10 +1,10 @@
 const express = require('express');
 const passport = require('passport');
+
 const app = express();
 const port = process.env.PORT || 3000;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { authenticate } = require('./middleware/ecan-passport-strategy');
 
 /*
     Import DB Collection Models
@@ -18,14 +18,9 @@ require('./models/userModel');
 mongoose.Promise = global.Promise;
 const ecanDB = 'mongodb://www.ecan-db.hnavarro-api.com/ECANdb';
 
-// mongoose.connect('mongodb://localhost/ECANdb')
-mongoose.connect(ecanDB)
+mongoose.connect(ecanDB, { useNewUrlParser: true })
     .then(client => { console.log('Connected to ECANdb'); })
-    .catch(err => {
-        console.error(`Unable to connect to ECANdb. Check if MongoDB instance is running
-					   Run mongodb instance in another terminal using: mongod
-                       ${err.stack || err }`);
-    });
+    .catch(err => { console.error(`Unable to connect to ECANdb. Check if MongoDB instance is running. ${err.stack || err}`); });
 
 //Initialize and use the passport JWT strategy
 app.use(passport.initialize());
@@ -35,16 +30,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.all('*', function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
-    res.header("Content-Type", "application/json");
-    if (req.method === 'OPTIONS') {
-        res.sendStatus(200)
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Authorization');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+    res.header('Content-Type', 'application/json');
+    if (req.method === 'OPTIONS') { //Enable CORS
+        res.sendStatus(200);
     } else {
         next();
     }
 });
+
 /*
     Import API Routes
  */
@@ -55,8 +51,8 @@ require('./routes/userRoutes')(app);
 
 app.get('/health', (req, res) => res.status(200).send({ msg: 'Active' }));
 
-app.listen(port, () => console.log(`ECAN server started on: ${port}`));
+app.listen(port, () => { console.log(`ECAN server started on: ${port}`); });
 
-app.use((req, res, next) => res.status(404).send({ url: `${req.originalUrl} not found` }));
+app.use((req, res) => res.status(404).send({ url: `${req.originalUrl} not found` }));
 
 module.exports = app; //for testing

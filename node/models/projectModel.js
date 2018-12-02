@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const ObjectId = require('mongodb').ObjectId;
+
 const Schema = mongoose.Schema;
-const _ = require('lodash');
 
 const OrganizationModel = require('./organizationModel');
 
@@ -42,12 +42,9 @@ const ProjectSchema = new Schema({
         type: Boolean,
         default: false
     },
-    tags: {
-        type: [String]
-    },
-    events: {
-        type: [Schema.Types.ObjectId]
-    }
+    tags: [String],
+    events: [Schema.Types.ObjectId],
+    images: [Schema.Types.Mixed]
 });
 
 ProjectSchema.statics.addEventId = function (projectId, eventId) {

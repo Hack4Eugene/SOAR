@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const ObjectId = require('mongodb').ObjectId;
 const _ = require('lodash');
+
 const Schema = mongoose.Schema;
 
 const EventSchema = new Schema({

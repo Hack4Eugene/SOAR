@@ -1,7 +1,12 @@
 const _ = require('lodash');
+const ObjectId = require('mongodb').ObjectId;
+const AWS = require('aws-sdk');
+
 const ProjectModel = require('../models/projectModel');
 const EventModel = require('../models/eventModel');
-const ObjectId = require('mongodb').ObjectId;
+const ImageModel = require('../models/imageModel');
+const awsUtil = require('../lib/aws_management');
+
 const RequestError = require('../lib/Errors');
 
 module.exports = {
@@ -69,6 +74,37 @@ module.exports = {
                 console.log(error);
                 res.status(error.status || 500).send(error);
             });
+    },
+
+    async postImage(req, res) {
+        const { project_id: projectID } = req.params;
+        const { file } = req;
+
+        if (!projectID) {
+            return res.status(400).send({ msg: 'project_id is a required parameter' });
+        }
+
+        if (!(file && file.buffer)) {
+            return res.status(400).send({ msg: 'No file attached' });
+        }
+
+        try {
+            const image = await ImageModel.upload('Project', projectID, file);
+
+            const projectRecord = await ProjectModel.findByIdAndUpdate(projectID, {
+                $addToSet: {
+                    images: {
+                        [req.params.image_name]: ObjectId(image._id),
+                        url: image.s3Location
+                    }
+                }
+            }, { upsert: true, new: true }).exec();
+
+            return res.status(200).send(projectRecord);
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send({ error: err });
+        }
     },
 
     deleteProject(req, res, next) {

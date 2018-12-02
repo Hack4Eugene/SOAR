@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 const _ = require('lodash');
 const jwt = require('jsonwebtoken');
+
 const UserModel = mongoose.model('UserModel');
 const { ObjectId } = mongoose.Types;
 
@@ -153,11 +154,11 @@ module.exports = {
                                         res.status(200).send(_.omit(newUserRecord, 'password'));
                                     })
                                     .catch(err => {
-                                        throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                                        throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR');
                                     });
                             })
                             .catch(err => {
-                                throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                                throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR');
                             });
                     })
                     .catch(error => {

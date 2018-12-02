@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+
 const EventModel = mongoose.model('EventModel');
 const ProjectModel = mongoose.model('ProjectModel');
 const UserModel = mongoose.model('UserModel');
@@ -18,7 +19,7 @@ module.exports = {
                 .catch(error => {
                     res.status(error.status || 500).send(error);
                 });
-        } else {
+        } 
             let newEventDocument = null;
             return EventModel.findOne({ _id: req.params.event_id })
                 .then(foundEventDocument => {
@@ -53,7 +54,6 @@ module.exports = {
                 .catch(error => {
                     res.status(error.status || 500).send(error);
                 });
-        }
     },
 
     getAll(req, res, next) {
@@ -70,20 +70,20 @@ module.exports = {
             const eventDocument = await EventModel
                 .findOne({ _id: req.params.event_id })
                 .exec()
-                .then(res => res.toObject())
+                .then(res => res.toObject());
 
-            const attendeesDetails = await UserModel.getAttendeeDetails(eventDocument.attendees)
-            const eventWithAttendeeDetails = { ...eventDocument, attendeesDetails }
+            const attendeesDetails = await UserModel.getAttendeeDetails(eventDocument.attendees);
+            const eventWithAttendeeDetails = { ...eventDocument, attendeesDetails };
 
-            res.status(200).send(eventWithAttendeeDetails)
-        } catch(err) {
+            res.status(200).send(eventWithAttendeeDetails);
+        } catch (err) {
             throw res.status(err.status || 500).send(err);
         }
     },
 
     deleteEvent(req, res, next) {
         return EventModel.remove({ _id: req.params.event_id })
-            .then(res.status(204).send({ 'msg': 'deleted' }))
+            .then(res.status(204).send({ msg: 'deleted' }))
             .catch(error => {
                 res.status(error.status || 500).send(error);
             });

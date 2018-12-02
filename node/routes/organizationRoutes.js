@@ -1,4 +1,4 @@
-const {getAll, getByID, createOrUpdate, deleteOrganization} = require('../services/organizationService');
+const { getAll, getByID, createOrUpdate, deleteOrganization } = require('../services/organizationService');
 const routes = require('../config/routes.js');
 const { authenticate } = require('../middleware/ecan-passport-strategy');
 

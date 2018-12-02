@@ -23,6 +23,10 @@ const endpoints = {
 
     POST_PROJECT: '/project/:project_id?',
 
+    POST_PROJECT_IMAGE: '/project/:project_id/image/:image_name',
+
+    GET_PROJECT_IMAGE: '/project/:project_id/image/:image_name',
+
     DELETE_PROJECT: '/project/:project_id',
 
     GET_EVENTS_FOR_PROJECTS: '/project/:project_id/events',
@@ -55,6 +59,6 @@ const endpoints = {
     DELETE_USER: '/user/:user_id'
 };
 
-module.exports = _.mapValues(endpoints, 
+module.exports = _.mapValues(endpoints,
     endpointURL => `${endpointURL}`
 );

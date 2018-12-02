@@ -1,5 +1,5 @@
 const routes = require('../config/routes.js');
-const {getAll, getByID, createOrUpdate, deleteEvent} = require('../services/eventService');
+const { getAll, getByID, createOrUpdate, deleteEvent } = require('../services/eventService');
 const { authenticate } = require('../middleware/ecan-passport-strategy');
 
 module.exports = function (app) {

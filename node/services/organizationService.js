@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
+
 const OrganizationModel = mongoose.model('OrganizationModel');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
@@ -18,7 +19,7 @@ module.exports = {
     },
 
     getByID(req, res, next) {
-        OrganizationModel.find({ _id: { $in: req.params.organization_ids.split("&") } })
+        OrganizationModel.find({ _id: { $in: req.params.organization_ids.split('&') } })
             .then(organizationRecord => {
                 res.status(200).send(organizationRecord);
             })
