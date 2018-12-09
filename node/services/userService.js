@@ -90,6 +90,38 @@ module.exports = {
             });
     },
 
+    postUserRole: (req, res, next) => {
+        const { entity, entity_id: entityID } = req.body;
+        const { user_id: userID } = req.params;
+
+        if (!userID || !entity || !entityID) {
+            return res.status(400).send({ error: 'Missing required data of user, entity, or entity_id' });
+        }
+
+        return UserModel.addRole(userID, entity, entityID)
+            .then(updatedUser => {
+                updatedUser = updatedUser.toObject();
+                return res.status(200).send(_.omit(updatedUser, 'password'));
+            })
+            .catch(error => res.status(error.status || 500).send({ error }));
+    },
+
+    deleteUserRole: (req, res, next) => {
+        const { role_id: roleID } = req.params;
+        const { _id: userID } = req.user;
+
+        if (!userID || !roleID) {
+            return res.status(400).send({ error: 'Missing required data of user or role_id' });
+        }
+
+        return UserModel.findOneAndUpdate({ _id: userID }, { $pull: { roles: { _id: roleID } } }, { new: true })
+            .then(updatedUser => {
+                updatedUser = updatedUser.toObject();
+                return res.status(200).send(_.omit(updatedUser, 'password'));
+            })
+            .catch(error => res.status(error.status || 500).send({ error }));
+    },
+
     createOrUpdate: (req, res, next) => {
         const { username, password } = req.body;
         if (!req.params.user_id) {
@@ -127,19 +159,21 @@ module.exports = {
                         }
 
                         //Lookup the username for someone with a different id so you could still pass in your current username and have it not freak out
-                        UserModel.find({ username, _id: { $ne: req.params.user_id } }).count()
-                            .then(userRes => {
-                                if (!_.isUndefined(userRes) && _.isInteger(userRes) && userRes > 0) {
-                                    throw new RequestError('Username has been taken', 'BAD_REQUEST');
-                                }
-                            })
-                            .catch(err => res.status(err.status || 500).send(err));
+                        return UserModel.find({ username, _id: { $ne: req.params.user_id } }).count();
+                    })
+                    .then(userRes => {
+                        if (!_.isUndefined(userRes) && _.isInteger(userRes) && userRes > 0) {
+                            throw new RequestError('Username has been taken', 'BAD_REQUEST');
+                        }
 
                         const updatedRecord = req.body;
                         if (!updatedRecord.password) {
-                            UserModel.update({ _id: req.params.user_id }, updatedRecord)
-                                .then(result => res.status(200).send(result))
-                                .catch(err => res.status(500).send(err));
+                            return UserModel.update({ _id: req.params.user_id }, updatedRecord)
+                                .then(result => {
+                                    result = result.toObject();
+                                    return res.status(200).send(_.omit(result, 'password'));
+                                })
+                                .catch(err => res.status(err.status || 500).send(err));
                         }
                         //User is updating password
                         getHash(password, SALT_ROUNDS)

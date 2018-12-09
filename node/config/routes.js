@@ -52,7 +52,11 @@ const endpoints = {
 
     POST_USER: '/user/:user_id?',
 
-    DELETE_USER: '/user/:user_id'
+    DELETE_USER: '/user/:user_id',
+
+    CREATE_USER_ROLE: '/user/:user_id/role',
+
+    DELETE_USER_ROLE: '/user/:user_id/role/:role_id'
 };
 
 module.exports = _.mapValues(endpoints, 
