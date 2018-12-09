@@ -90,7 +90,7 @@ module.exports = {
             });
     },
 
-    createRole: (req, res, next) => {
+    postUserRole: (req, res, next) => {
         const { entity, entity_id: entityID } = req.body;
         const { user_id: userID } = req.params;
 
@@ -106,7 +106,7 @@ module.exports = {
             .catch(error => res.status(error.status || 500).send({ error }));
     },
 
-    deleteRole: (req, res, next) => {
+    deleteUserRole: (req, res, next) => {
         const { role_id: roleID } = req.params;
         const { _id: userID } = req.user;
 

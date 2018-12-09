@@ -35,7 +35,7 @@ const UserSchema = new Schema({
             },
             entity: {
                 type: String,
-                enum: ['project', 'organization', 'event'],
+                enum: ['project', 'organization', 'event', 'site'],
                 required: 'Please specify an entity. One of: project, organization, or event'
             },
             entity_id: {
