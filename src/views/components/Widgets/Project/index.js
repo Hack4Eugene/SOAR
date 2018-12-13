@@ -1,11 +1,13 @@
+import moment from 'moment';
 import React, { Component } from 'react';
 
 class ProjectCard extends Component {
+    getDate = () => moment(this.props.startDate).utc().format('MMM D, YYYY');
     render() {
         return (
-            <div className="card text-center m-4">
+            <div className="card text-center mb-4 ml-3 mr-3 w-100">
             <div className="card-header text-left">
-            This Project was created {this.props.startDate}
+                Start date: {this.getDate()}
             </div>
                 <div className="card-body">
                     <h5 className="card-title text-left">{this.props.title}</h5>
@@ -13,8 +15,8 @@ class ProjectCard extends Component {
                     {this.props.link}
                 </div>
             </div>
-        )
+        );
     }
 }
 
-export default ProjectCard
+export default ProjectCard;

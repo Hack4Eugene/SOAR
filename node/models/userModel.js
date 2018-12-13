@@ -1,15 +1,18 @@
 const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
+mongoose.set('runValidators', true);
+
 const UserSchema = new Schema({
-    name : {
+    name: {
         type: String,
         required: 'User\'s require names, kindly enter your name.'
     },
     username: {
         type: String
     },
-    password:{
+    password: {
         type: String
     },
     createdAt: {
@@ -17,19 +20,44 @@ const UserSchema = new Schema({
     },
     organizations: [
         {
-            id:{
-                type: Schema.Types.ObjectId,
+            _id: {
+                type: Schema.Types.ObjectId
             },
-            name:{
+            name: {
                 type: String
+            }
+        }
+    ],
+    roles: [
+        {
+            role_id: {
+                type: Schema.Types.ObjectId
             },
-            role:{
+            entity: {
                 type: String,
-                enum : ['super_user', 'organization_owner', 'project_owner', 'event_owner', 'user', 'read_only'],
-                default : 'read_only'
+                enum: ['project', 'organization', 'event', 'site'],
+                required: 'Please specify an entity. One of: project, organization, or event'
+            },
+            entity_id: {
+                type: String,
+                required: 'Please submit the ID of the entity for access'
             }
         }
     ]
 });
 
+UserSchema.statics.getAttendeeDetails = function (attendeeIds) {
+    return this.find({ _id: { $in: attendeeIds } }, { name: 1 }).exec();
+};
+
+UserSchema.statics.addRole = function (userID, entity, entityID) {
+    const newRole = {
+        entity,
+        entity_id: entityID
+    };
+
+    return this.findOneAndUpdate({ _id: userID }, { $push: { roles: newRole } }, { new: true });
+};
+
 module.exports = mongoose.model('UserModel', UserSchema);
+

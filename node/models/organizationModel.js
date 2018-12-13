@@ -1,8 +1,9 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+
 const Schema = mongoose.Schema;
 
 const OrganizationSchema = new Schema({
-    name : {
+    name: {
         type: String,
         required: 'Kindly enter the organization name'
     },
@@ -24,7 +25,7 @@ const OrganizationSchema = new Schema({
 			required: 'Kindly enter your country'
 		}
     },
-    contactInformation :{
+    contactInformation: {
         phoneNumber: {
             type: String
         },
@@ -33,6 +34,9 @@ const OrganizationSchema = new Schema({
         }
     },
     website: {
+        type: String
+    },
+    tagline: {
         type: String
     },
     description: {
@@ -44,6 +48,10 @@ const OrganizationSchema = new Schema({
     deleted_at: {
         type: Date,
         default: null
+    },
+    tags: {
+        type: [String],
+        default: []
     }
 });
 

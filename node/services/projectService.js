@@ -1,121 +1,81 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 const _ = require('lodash');
-const moment = require('moment');
-const ProjectModel = mongoose.model('ProjectModel');
-const EventModel = mongoose.model('EventModel');
+const ProjectModel = require('../models/projectModel');
+const EventModel = require('../models/eventModel');
+const ObjectId = require('mongodb').ObjectId;
 const RequestError = require('../lib/Errors');
 
 module.exports = {
-    getAll: (req, res) => {
+    getAll(req, res) {
         return ProjectModel.find().lean()
             .then(projectDocuments => {
-                return EventModel.find().then(eventDocuments => [projectDocuments, eventDocuments]);
-            })
-            .then(([projectDocuments, eventDocuments]) => {
-                const projectIds = _.flatMap(projectDocuments, projectDocument => {
-                    return projectDocument._id;
-                });
-
-                const finishedEventsByProject = {};
-
-                _.forEach(projectIds, projectId => {
-                    finishedEventsByProject[projectId] = 0;
-                });
-
-                const now = moment();
-                _.forEach(eventDocuments, eventDocument => {
-                    if (now > eventDocument.eventDate) {
-                        finishedEventsByProject[eventDocument.project.id] += 1;
-                    }
-                });
-
-                _.forEach(projectDocuments, project => {
-                    project.totalEvents = project.events.length;
-                    project.numFinishedEvents = finishedEventsByProject[project._id];
-                });
-
+                //TODO: Replace the finished event logic
                 res.status(200).send(projectDocuments);
             })
             .catch(error => {
-                console.log(error);
-                res.status(error.status || 500).send(error);
-            })
-    },
-
-    getByID: (req, res) => {
-        return ProjectModel.findOne({ _id: req.params.project_id })
-            .then(projectDocument => res.status(200).send(projectDocument))
-            .catch(error => {
-                console.log(error);
-                res.status(error.status || 500).send(error);
-            })
-    },
-
-    getProjectsByOrganization: (req, res) => {
-        return ProjectModel.find({ 'organization.id': req.params.organization_id })
-            .then(projectDocuments => res.status(200).send(projectDocuments))
-            .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
 
-    createOrUpdate: (req, res) => {
-        if (!req.params.project_id) {
+    async getByID(req, res) {
+        const { project_id: projectID } = req.params;
+        if (_.isNil(projectID)) {
+            return res.status(400).send(`Invalid project ID submitted: ${projectID}`);
+        }
+
+        try {
+            const project = await ProjectModel.getById(projectID);
+            const eventArray = await EventModel.getArrayOfEventsById(project.events);
+            const result = {
+                ...project,
+                eventRecords: _.map(eventArray, event => event.toObject())
+            };
+
+            res.status(200).send(result);
+        } catch (err) {
+            res.status(err.status || 500).send(err);
+        }
+    },
+
+    getProjectsByOrganization(req, res) {
+        return ProjectModel.find({ 'organization.id': ObjectId(req.params.organization_id) })
+            .then(projectDocuments => res.status(200).send(projectDocuments))
+            .catch(error => {
+                res.status(error.status || 500).send(error);
+            });
+    },
+
+    createOrUpdate(req, res) {
+        const { project_id: projectID } = req.params;
+
+        if (!projectID) {
             return ProjectModel.create(req.body)
                 .then(newProjectDocument => res.status(200).send(newProjectDocument))
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         }
-        else {
-            return ProjectModel.findOne({ _id: req.params.project_id })
-                .then(foundProjectDocument => {
-                    if (foundProjectDocument == null) {
-                        throw new RequestError(`Project ${req.params.project_id} not found`, 'NOT_FOUND');
-                    }
-                    const updateProjectDocument = foundProjectDocument;
-                    _.forEach(req.body, (value, key) => {
-                        updateProjectDocument[key] = value;
-                    });
 
-                    return ProjectModel.update({ _id: req.params.project_id }, updateProjectDocument)
-                        .then(result => {
-                            res.status(200).send(result);
-                        })
-                })
-                .catch(error => {
-                    console.log(error);
-                    res.status(error.status || 500).send(error);
-                });
-        }
-    },
+        ProjectModel.findOne({ _id: projectID })
+            .then(foundProjectDocument => {
+                if (foundProjectDocument === null) {
+                    throw new RequestError(`Project ${projectID} not found`, 'NOT_FOUND');
+                }
 
-    deleteProject: (req, res, next) => {
-        return ProjectModel.remove({ _id: req.params.project_id })
-            .then(res.status(204).send({ 'msg': 'deleted' }))
-            .catch(error => {
-                console.log(error);
-                return res.status(error.status || 500).send(error);
-            });
-    },
-
-    getEventsForProject: (req, res, next) => {
-        return ProjectModel.findOne({ _id: req.params.project_id })
-            .then(projectDocument => {
-                return Promise.all(projectDocument.events.map(event_id => {
-                    return EventModel.findById(event_id)
-                        .then(eventDocument => {
-                            return eventDocument
-                        })
-                }))
-                .then(newEventDocuments => res.status(200).send(newEventDocuments))
+                ProjectModel.findByIdAndUpdate(ObjectId(projectID), req.body, { new: true })
+                    .then(updatedDocument => res.status(200).send(updatedDocument))
+                    .catch(err => res.status(err.status || 500).send(err));
             })
             .catch(error => {
                 console.log(error);
+                res.status(error.status || 500).send(error);
+            });
+    },
+
+    deleteProject(req, res, next) {
+        return ProjectModel.remove({ _id: req.params.project_id })
+            .then(res.status(204).send({ msg: 'deleted' }))
+            .catch(error => {
                 return res.status(error.status || 500).send(error);
             });
     }
-}
+};

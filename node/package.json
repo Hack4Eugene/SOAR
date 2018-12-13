@@ -10,11 +10,14 @@
     "start": "nodemon app.js"
   },
   "dependencies": {
-    "avatars.io": "^0.1.6",
-    "bcrypt": "^2.0.1",
+    "bcrypt": "^3.0.1",
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.5",
+    "macaddress": "^0.2.9",
     "moment": "^2.22.1",
+    "mongodb": "^3.1.4",
     "mongoose": "^5.0.13",
     "nodemon": "^1.17.3",
     "passport": "^0.4.0",

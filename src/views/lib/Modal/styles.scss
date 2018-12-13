@@ -1,0 +1,34 @@
+.modal-container {
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0,0,0,.62);
+  z-index: 1500;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+
+  &.show {
+    position: fixed;
+    .modal {
+      z-index: 1501;
+      background-color: whitesmoke;
+      display: flex;
+      height: 800px;
+      max-width: 750px;
+      margin: 20px auto;
+      flex-direction: column;
+      overflow: auto;
+      position: relative;
+
+      .close-container {
+        i {
+          font-size: 24px;
+          color: #222222;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

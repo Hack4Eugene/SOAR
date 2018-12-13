@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import _ from 'lodash';
 
-import { SUCCESS } from '../../../state/statusTypes';
-
 import Card from '../../lib/Card';
 
-import { loginUser, logoutUser } from '../../../state/actions/index.js'
+import { loginUser, logoutUser } from '../../../state/actions/authenticationActions';
 
 const mapStateToProps = (state) => ({
     isLoggedIn: !_.get(state, 'authentication.isTokenExpired', false) && _.get(state, 'authentication.isLoggedIn', false),
+    authentication: _.get(state, 'authentication', {})
 });
 
 class LoginPage extends Component {
@@ -21,17 +20,8 @@ class LoginPage extends Component {
             username: '',
             password: '',
             logout: null
-        }
+        };
     }
-
-    login = () => {
-        const {
-            username,
-            password
-        } = this.state;
-
-        this.props.loginUser({ username, password })
-    };
 
     componentDidMount() {
         if (this.props.expireSession && !this.state.logout) {
@@ -39,19 +29,34 @@ class LoginPage extends Component {
         }
     }
 
+    onKeyPress = e => {
+        if (e.key === 'Enter') {
+            this.login();
+        }
+    };
+
+    getErrorMessage = () => {
+        if (_.get(this.props.authentication, 'error.message', null) === null) {
+            return 'Login attempt failed.';
+        }
+        return this.props.authentication.error.message;
+    };
+
     handleUsernameChange = e => {
         this.setState({ username: this.refs.username.value });
     };
 
     handlePasswordChange = e => {
-        console.log(this.refs.password.value);
         this.setState({ password: this.refs.password.value });
     };
 
-    onKeyPress = e => {
-        if (e.key === 'Enter') {
-            this.login();
-        }
+    login = () => {
+        const {
+            username,
+            password
+        } = this.state;
+
+        this.props.loginUser({ username, password });
     };
 
     renderForm() {
@@ -81,7 +86,7 @@ class LoginPage extends Component {
                     <button className="btn btn-primary" onClick={this.login}>Submit</button>
                 </div>
             </Card>
-        )
+        );
     }
 
     render() {
@@ -93,9 +98,9 @@ class LoginPage extends Component {
                 <div className="row justify-content-center">
                     <div className="col-5">
                         <h2 className="ml-3">Login</h2>
+                        {this.props.authentication.status === 'ERROR' ? <h6 className="ml-3" style={{ color: 'red' }}>{this.getErrorMessage()}</h6> : <div />}
                     </div>
-                    <div className="col-3">
-                    </div>
+                    <div className="col-3" />
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-8">
@@ -103,7 +108,7 @@ class LoginPage extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

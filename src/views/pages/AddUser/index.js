@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import _, { get, filter, cloneDeep } from 'lodash';
+import _, { get, cloneDeep } from 'lodash';
 
 import Card from '../../lib/Card';
 
-import { createUser, getOrganizations } from '../../../state/actions/index'
+import { createUser } from '../../../state/actions/userActions';
+import { getOrganizations } from '../../../state/actions/organizationActions';
 
 import './AddUser.scss';
-import { SUCCESS, NOT_STARTED } from '../../../state/statusTypes';
+import { SUCCESS, NOT_STARTED, ERROR } from '../../../state/statusTypes';
 
 const mapStateToProps = (state) => ({
     user: get(state, 'user', {}),
@@ -40,70 +41,17 @@ class AddUser extends Component {
                 description: '',
                 organizations: []
             },
-            redirect: null,
-            submitted: null
-        }
+            submitted: null,
+            createFailed: false
+        };
     }
 
     componentWillMount() {
-        this.props.getOrganizations()
-    }
-
-    submitUser = () => {
-        Promise.resolve(this.props.createUser(this.state.newUser))
-            .then(res => { this.setState({ newUser: res })})
-    };
-
-    removeAssociatedOrganization = i => {
-        const tempUser = cloneDeep(this.state.newUser);
-        tempUser.organizations = _.reduce(tempUser.organizations, (orgs, value, key) => {
-            console.log({ i, value, key });
-            if (key === i) {
-                return orgs;
-            }
-            orgs.push(value);
-            return orgs;
-        }, []);
-        console.log(tempUser);
-        this.setState({ newUser: tempUser })
-    };
-
-    handleFormInput(e) {
-        const tempUser = cloneDeep(this.state.newUser);
-        switch (e.target.id) {
-            case 'fullName':
-                e.target.value = _.get(tempUser, 'name', '');
-                this.setState({ newUser: tempUser });
-                break;
-            case 'userName':
-                e.target.value = _.get(tempUser, 'username');
-                this.setState({ newUser: tempUser });
-                break;
-            case 'password':
-                e.target.value = _.get(tempUser, 'password');
-                this.setState({ newUser: tempUser });
-                break;
-            case 'organizations':
-                const orgs = _.get(tempUser, 'organizations');
-                if (_.includes(_.map(orgs, 'name'), e.target.value)) {
-                    return;
-                }
-
-                const org = _.find(this.props.organizations.data, org => org.name === e.target.value);
-
-                const orgObj = {
-                    id: org._id,
-                    name: e.target.value
-                };
-
-                tempUser.organizations.push(orgObj);
-                this.setState({ newUser: tempUser });
-                break;
-        }
+        this.props.getOrganizations();
     }
 
     getOrganizationBox = () => {
-        if (this.props.organizations.Status !== SUCCESS) {
+        if (this.props.organizations.status !== SUCCESS) {
             return;
         }
 
@@ -120,7 +68,7 @@ class AddUser extends Component {
                 onChange={(e) => this.handleFormInput(e)}
             >
                 {
-                    this.props.organizations.Status === SUCCESS && _.map(this.props.organizations.data, (org, i) => (
+                    _.map(this.props.organizations.data, (org, i) => (
                         <option value={org.name} key={i}>{org.name}</option>
                     ))
                 }
@@ -135,51 +83,155 @@ class AddUser extends Component {
                                 onClick={() => this.removeAssociatedOrganization(i)}
                             />
                         </div>
-                    )
+                    );
                 })}
             </div>
             </div>
-        )
+        );
+    };
+
+    getErrorMessage = () => {
+        if (_.get(this.props.user, 'error.message', null) === null) {
+            return 'An error occurred during creation. Please contact and administrator.';
+        }
+        return this.props.user.error.message;
+    };
+
+    handleFormInput(e) {
+        const tempUser = cloneDeep(this.state.newUser);
+
+        switch (e.target.id) {
+            case 'fullName':
+                tempUser.name = e.target.value;
+                this.setState({ newUser: tempUser });
+                break;
+            case 'userName':
+                tempUser.username = e.target.value;
+                this.setState({ newUser: tempUser });
+                break;
+            case 'password':
+                tempUser.password = e.target.value;
+                this.setState({ newUser: tempUser });
+                break;
+            case 'organizations': //eslint-disable-line no-case-declarations
+                const orgs = _.get(tempUser, 'organizations');
+                if (_.includes(_.map(orgs, 'name'), e.target.value)) {
+                    return;
+                }
+
+                const org = _.find(this.props.organizations.data, organization => organization.name === e.target.value);
+
+                const orgObj = {
+                    id: org._id,
+                    name: e.target.value
+                };
+
+                tempUser.organizations.push(orgObj);
+                this.setState({ newUser: tempUser });
+                break;
+            default:
+                break;
+        }
+    }
+
+    removeAssociatedOrganization = i => {
+        const tempUser = cloneDeep(this.state.newUser);
+        tempUser.organizations = _.reduce(tempUser.organizations, (orgs, value, key) => {
+            if (key === i) {
+                return orgs;
+            }
+            orgs.push(value);
+            return orgs;
+        }, []);
+        this.setState({ newUser: tempUser });
+    };
+
+    submitUser = () => {
+        Promise.resolve(this.props.createUser(this.state.newUser))
+            .then(res => this.setState({ newUser: this.props.user, submitted: true, createFailed: false }));
+    };
+
+    redirectToExplore = () => <Redirect to="/explore" />;
+
+    handleFailedCreate = () => {
+        const userStatus = _.get(this.props.user, 'status', NOT_STARTED);
+        if (userStatus === ERROR && this.state.submitted) {
+            if (!this.state.createFailed) {
+                if (this.refs.fullName) {
+                    this.refs.fullName.value = '';
+                }
+
+                if (this.refs.userName) {
+                    this.refs.userName.value = '';
+                }
+
+                if (this.refs.password) {
+                    this.refs.password.value = '';
+                }
+
+                const defaultNewUser = {
+                    name: '',
+                    username: '',
+                    password: '',
+                    address: {
+                        street: '',
+                        city: '',
+                        state: '',
+                        zipcode: '',
+                        country: ''
+                    },
+                    contactInformation: {
+                        phoneNumber: '',
+                        email: ''
+                    },
+                    website: '',
+                    description: '',
+                    organizations: []
+                };
+
+                this.setState({ createFailed: true, newUser: defaultNewUser });
+            }
+        }
     };
 
     renderForm = () => {
         return (
             <Card>
-                {/* <div className="card-header">{date}</div> */}
-                {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
                 <div className="card-body">
                     <div className="form-group">
                         <label htmlFor="name">Full Name</label>
-                        <input type="text" className="form-control" id="fullName"
-                               onChange={(e) => this.handleFormInput(e)}/>
+                        <input
+                            type="text" className="form-control" id="fullName" ref="fullName"
+                            onChange={(e) => this.handleFormInput(e)}
+                        />
                     </div>
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
-                        <input type="text" className="form-control" id="userName"
-                               onChange={(e) => this.handleFormInput(e)}/>
+                        <input
+                            type="text" className="form-control" id="userName" ref="userName"
+                            onChange={(e) => this.handleFormInput(e)}
+                        />
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-                        <input type="text" className="form-control" id="password"
-                               onChange={(e) => this.handleFormInput(e)}/>
+                        <input
+                            type="text" className="form-control" id="password" ref="password"
+                            onChange={(e) => this.handleFormInput(e)}
+                        />
                     </div>
                     {this.getOrganizationBox()}
 
                     <button className="btn btn-primary" onClick={this.submitUser}>Submit</button>
                 </div>
             </Card>
-        )
+        );
     };
 
-    redirectToExplore = () => <Redirect to="/explore" />;
-
     render() {
-        console.log(this.props, this.state);
-        const shouldRedirect = (_.isString(this.state.redirect) && this.state.submitted === true) && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+        const shouldRedirect = this.state.submitted === true && _.get(this.props.user, 'status', NOT_STARTED) === SUCCESS;
+
         if (shouldRedirect) {
-            return this.state.redirect
-                ? <Redirect to={this.state.redirect} />
-                : this.redirectToExplore()
+            return this.redirectToExplore();
         }
 
         return (
@@ -187,9 +239,10 @@ class AddUser extends Component {
                 <div className="row justify-content-center">
                     <div className="col-5">
                         <h2 className="ml-3">New User Registration</h2>
+                        {this.handleFailedCreate()}
+                        {this.state.createFailed ? <h6 className="ml-3" style={{ color: 'red' }}>{this.getErrorMessage()}</h6> : <div />}
                     </div>
-                    <div className="col-3">
-                    </div>
+                    <div className="col-3" />
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-8">
@@ -197,7 +250,7 @@ class AddUser extends Component {
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

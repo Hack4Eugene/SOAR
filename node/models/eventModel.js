@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongodb').ObjectId;
+const _ = require('lodash');
 const Schema = mongoose.Schema;
 
 const EventSchema = new Schema({
-    name : {
+    name: {
         type: String,
         required: 'Kindly enter the event name'
     },
@@ -12,26 +14,16 @@ const EventSchema = new Schema({
     location: {
         type: String
     },
-    eventDate:{
+    eventDate: {
         type: Date
     },
     project: {
-        id:{
-            type: Schema.Types.ObjectId,
-            required: 'Kindly enter the project.id'
-        },
-        name:{
-            type: String
-        }
+        type: Schema.Types.ObjectId,
+        required: 'Kindly enter the project.id'
     },
     organization: {
-        id:{
-            type: Schema.Types.ObjectId,
-            required: 'objectId of the organization (that owns the event) is needed'
-        },
-        name:{
-            type: String
-        }
+        type: Schema.Types.ObjectId,
+        required: 'objectId of the organization (that owns the event) is needed'
     },
     private: {
         type: Boolean,
@@ -39,7 +31,16 @@ const EventSchema = new Schema({
     },
     tags: {
         type: [String]
+    },
+    attendees: {
+        type: [String]
     }
 });
 
-module.exports = mongoose.model('EventModel', EventSchema)
+EventSchema.statics.getArrayOfEventsById = function (eventIdStringArray) {
+    const eventIdObjectIdArray = _.map(eventIdStringArray, ObjectId);
+    return this.find({ _id: { $in: eventIdObjectIdArray } }).exec();
+};
+
+module.exports = mongoose.model('EventModel', EventSchema);
+

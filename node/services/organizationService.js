@@ -7,55 +7,55 @@ const RequestError = require('../lib/Errors');
 const { ObjectId } = mongoose;
 
 module.exports = {
-    getAll: (req, res, next) => {
+    getAll(req, res, next) {
         return OrganizationModel.find()
             .then(organizationRecords => {
                 res.status(200).send(organizationRecords);
             })
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
 
-    getByID: (req, res, next) => {
+    getByID(req, res, next) {
         OrganizationModel.find({ _id: { $in: req.params.organization_ids.split("&") } })
             .then(organizationRecord => {
                 res.status(200).send(organizationRecord);
             })
             .catch(error => {
-                console.log(error);
                 res.status(error.status || 500).send(error);
             });
     },
 
-    createOrUpdate: (req, res, next) => {
-        if (!req.params.organization_id) {
+    createOrUpdate(req, res, next) {
+        const { organization_id: organizationID } = req.params;
+        if (!organizationID) {
             const newOrganization = _.omitBy(req.body, function (key, value) {
                 return key === 'userId';
             });
 
             newOrganization.created_at = new Date();
 
-            return OrganizationModel.create(newOrganization)
+            OrganizationModel.create(newOrganization)
                 .then(savedRecord => {
-                    return UserModel.findOneAndUpdate({ _id: req.body.userId }, { $set: { 'organization.id': savedRecord._id, 'organization.name': savedRecord.name, 'organization.role': 'admin' }})
+                    return UserModel.findOneAndUpdate({ _id: req.body.userId },
+                        { $set: { 'organization.id': savedRecord._id, 'organization.name': savedRecord.name, 'organization.role': 'admin' } })
                         .then(userRecord => {
                             res.status(201).send(savedRecord);
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            res.status(error.status || 500).send(error);
                         });
                 })
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         } else {
-            console.log(`Updating organization: ${req.params.organization_id}`);
-
-
-            return OrganizationModel.findOne({ _id: req.params.organization_id })
+            return OrganizationModel.findOne({ _id: organizationID })
                 .then(organizationRecord => {
                     if (_.isEmpty(organizationRecord)) {
-                        throw new RequestError(`Organization ${req.params.organization_id} not found`, 'NOT_FOUND');
+                        throw new RequestError(`Organization ${organizationID} not found`, 'NOT_FOUND');
                     }
 
                     const updatedRecord = organizationRecord;
@@ -63,27 +63,17 @@ module.exports = {
                         updatedRecord[key] = value;
                     });
 
-                    return OrganizationModel.update({ _id: ObjectId(req.params.organization_id) }, updatedRecord)
+                    return OrganizationModel.update({ _id: organizationID }, updatedRecord)
                         .then(result => res.status(200).send(result));
                 })
                 .catch(error => {
-                    console.log(error);
                     res.status(error.status || 500).send(error);
                 });
         }
-
-        return OrganizationModel.create(req.body)
-            .then(savedRecord => {
-                res.status(201).send(savedRecord);
-            })
-            .catch(error => {
-                console.log(error);
-                res.status(error.status || 500).send(error);
-            });
     },
 
-    deleteOrganization: (id) => {
+    deleteOrganization(id) {
         return OrganizationModel.deleteOne({ _id: id })
-            .then(() => ({ 'msg': 'deleted' }));
+            .then(() => ({ msg: 'deleted' }));
     }
 };

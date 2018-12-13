@@ -1,4 +1,4 @@
-function RequestError (message, code, uri, status) {
+function RequestError(message, code, uri, status) {
     if (!status) {
         switch (code) {
             case 'NOT_FOUND':

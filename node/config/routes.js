@@ -37,6 +37,8 @@ const endpoints = {
 
     DELETE_EVENT: '/event/:event_id',
 
+    UPDATE_EVENT: '/event/:event_id',
+
     /*
      * User endpoints
      */
@@ -44,11 +46,17 @@ const endpoints = {
 
     GET_USER_BY_ID: '/user/:user_id',
 
+    GET_USERS_BY_IDS: '/users/:user_ids',
+
     LOGIN: '/login',
 
     POST_USER: '/user/:user_id?',
 
-    DELETE_USER: '/user/:user_id'
+    DELETE_USER: '/user/:user_id',
+
+    CREATE_USER_ROLE: '/user/:user_id/role',
+
+    DELETE_USER_ROLE: '/user/:user_id/role/:role_id'
 };
 
 module.exports = _.mapValues(endpoints, 
