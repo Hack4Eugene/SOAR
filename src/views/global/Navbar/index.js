@@ -7,7 +7,7 @@ import _ from 'lodash';
 import HamburgerMenu from '../HamburgerMenu';
 import Sidebar from '../Sidebar';
 
-import logo from '../../../static/imgs/ecan_logo.png';
+import logo from '../../../static/imgs/ecan_logo.jpg';
 import avatar from '../../../static/imgs/user-image.png';
 import './styles.scss';
 
