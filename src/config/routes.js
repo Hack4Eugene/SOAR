@@ -33,6 +33,8 @@ module.exports = {
 
         GET_EVENT_BY_ID: '/event',
 
+        GET_EVENTS_BY_ID: '/events',
+
         POST_EVENT: '/event',
 
         DELETE_EVENT: '/event',

@@ -23,7 +23,7 @@ const EventItem = ({ event, filtered }) => {
             </div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
-                <span className="badge badge-secondary">{event.project || 'Unknown'}</span>
+                {/* <span className="badge badge-secondary">{event.project || 'Unknown'}</span> */}
                 <h4 className="card-title mb-1 mt-1">{event.name}</h4>
                 <p className="font-italic font-weight-light">{event.location}</p>
                 <p className="card-text">{event.description}</p>

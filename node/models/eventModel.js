@@ -34,6 +34,12 @@ const EventSchema = new Schema({
     },
     attendees: {
         type: [String]
+    },
+    goals: {
+        type: [{
+            text: String,
+            completed: Boolean
+        }]
     }
 });
 

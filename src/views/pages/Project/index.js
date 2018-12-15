@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
-import _, { get, map } from 'lodash';
+import _ from 'lodash';
 
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
 import { getOrganizations } from '../../../state/actions/organizationActions';
+import { getEventsById } from '../../../state/actions/eventActions';
 import { NOT_STARTED, SUCCESS } from '../../../state/statusTypes';
 
 import ToolBar from '../../lib/ToolBar';
@@ -21,35 +22,42 @@ import './ProjectPage.scss';
 import Timeline from './timeline';
 
 const mapStateToProps = (state) => ({
-    project: get(state, 'projects.detailed.data', {}),
-    projectStatus: get(state, 'projects.detailed.status', NOT_STARTED),
-    form: get(state, 'form.EditProject'),
+    project: _.get(state, 'projects.detailed.data', {}),
+    projectStatus: _.get(state, 'projects.detailed.status', NOT_STARTED),
+    form: _.get(state, 'form.EditProject'),
     organizations: _.get(state, 'organizations.data', {}),
-    organizationStatus: _.get(state, 'organizations.status', NOT_STARTED)
+    organizationStatus: _.get(state, 'organizations.status', NOT_STARTED),
+    projectEventsDetailed: _.get(state, 'projects.detailed.data.eventRecords', [])
 });
 
-class OrganizationItem extends Component {
-    render() {
-        return (
-            <div className="card m-2" style={{ maxWidth: '250px', display: 'flex', justifyContent: 'space-between' }}>
-                <div className="card-header" style={{ minHeight: 80 }}>
-                    <h5 className="card-title mb-0">{this.props.title}</h5>
-                </div>
+const mapDispatchToProps = {
+    getProjectById, 
+    updateProject, 
+    getOrganizations, 
+    getEventsById
+};
 
-                <img alt={this.props.title} className="card-image card-org-image" src={foodLaneImg} />
-                <div className="card-body org-card-body">
-                    <Link className="btn btn-outline-success org-card-button" to={`/organization/${this.props.id}`}>
-                        Go to organization
-                    </Link>
-                </div>
+const OrganizationItem = props => {
+    return (
+        <div className="card m-2" style={{ maxWidth: '250px', display: 'flex', justifyContent: 'space-between' }}>
+            <div className="card-header" style={{ minHeight: 80 }}>
+                <h5 className="card-title mb-0">{props.title}</h5>
             </div>
-        );
-    }
+
+            <img alt={props.title} className="card-image card-org-image" src={foodLaneImg} />
+            <div className="card-body org-card-body">
+                <Link className="btn btn-outline-success org-card-button" to={`/organization/${props.id}`}>
+                    Go to organization
+                </Link>
+            </div>
+        </div>
+    );
 }
 
 class Project extends Component {
     constructor(props) {
         super(props);
+        this.lastRender = moment()
         this.state = {
             filteredEvents: props.events,
             showModal: false
@@ -57,7 +65,7 @@ class Project extends Component {
     }
 
     componentDidMount() {
-        const projectID = get(this.props, 'computedMatch.params.id', 'projectID');
+        const projectID = _.get(this.props, 'computedMatch.params.id', 'projectID');
         this.props.getProjectById(projectID);
         this.props.getOrganizations();
     }
@@ -70,6 +78,12 @@ class Project extends Component {
         if (isModalShown && isNewProjectData && isNewDataFinal) {
             this.setState({ showModal: false }); //eslint-disable-line react/no-did-update-set-state
         }
+
+        if (this.props.projectStatus === SUCCESS) {
+            if (!_.isEmpty(this.props.project.events)) {
+                this.props.getEventsById(this.props.project.events)
+            }
+        }
     }
 
     showAlliance = () => {
@@ -78,10 +92,8 @@ class Project extends Component {
             return <h3 className="display-5">This project doesn't have any allies yet.</h3>;
         }
 
-        // console.log(allianceData)
-
         const OrganizationList = allianceData.length
-            ? map(allianceData, (ally, i) => <OrganizationItem key={i} title={ally.name} id={ally._id} />)
+            ? _.map(allianceData, (ally, i) => <OrganizationItem key={i} title={ally.name} id={ally._id} />)
             : <div />;
 
         return OrganizationList;
@@ -91,6 +103,46 @@ class Project extends Component {
         const updates = get(this.props.form, 'values', {});
         this.props.updateProject(this.props.project._id, updates);
     };
+
+    showAccomplishments() {
+        const eventRecords = this.props.projectEventsDetailed;
+        let eventsWithGoals = [];
+
+        _.map(eventRecords, event => {
+            if (!_.isEmpty(event.goals)) {
+                eventsWithGoals.push({
+                    name: event.name,
+                    goals: event.goals
+                })
+            }
+        });
+
+        const renderGoalsList = events => (
+            _.map(events, event => (
+                <div style={{ marginBottom: '20px' }}>
+                    <p style={{ textDecoration: 'underline' }}>{event.name}</p>
+                    {_.map(event.goals, goal => (
+                        <li style={{ marginLeft: '20px' }}>{goal.text}</li>
+                    ))}
+                </div>
+            ))
+        );
+
+        return (
+            <div className="card" style={{ margin: '50px 0' }}>
+                <div className="card-header"><h2>Our Accomplishments</h2></div>
+                <div className="card-body">
+                    <ul className="list-group list-group-flush">
+                        {
+                            !_.isEmpty(eventsWithGoals) 
+                            ? renderGoalsList(eventsWithGoals)
+                            : <p>There are no goals for this project.</p>
+                        }
+                    </ul>
+                </div>
+            </div>
+        )
+    }
 
     render() {
         const { organizations, organizationStatus, projectStatus } = this.props;
@@ -147,20 +199,10 @@ class Project extends Component {
                 <section className="timeline">
                     <Timeline events={this.props.project.eventRecords} />
                 </section>
-                <div className="card" style={{ marginTop: '50px' }}>
-                    <div className="card-header"><h2>Our Accomplishments</h2></div>
-                    <div className="card-body">
-                        <ul className="list-group list-group-flush">
-                            <li className="list-group-item">✓ 300 Canned food items</li>
-                            <li className="list-group-item">✓ 50 Rain jackets</li>
-                            <li className="list-group-item">✓ 80 Volunteer hours</li>
-                            <li className="list-group-item">✓ 300 Meals distributed</li>
-                        </ul>
-                    </div>
-                </div>
+                {this.showAccomplishments()}
             </div>
         );
     }
 }
 
-export default connect(mapStateToProps, { getProjectById, updateProject, getOrganizations })(Project);
+export default connect(mapStateToProps, mapDispatchToProps)(Project);

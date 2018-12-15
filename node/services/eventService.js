@@ -81,6 +81,18 @@ module.exports = {
         }
     },
 
+    async getMultipleByID(req, res) {
+        try {
+            const detailedEvents = await EventModel.getArrayOfEventsById(_.split(req.params.event_ids, ','))
+            // const attendeesDetails = await UserModel.getAttendeeDetails(eventDocument.attendees)
+            // const eventWithAttendeeDetails = { ...eventDocument, attendeesDetails }
+
+            res.status(200).send(detailedEvents)
+        } catch(err) {
+            throw res.status(err.status || 500).send(err);
+        }
+    },
+
     deleteEvent(req, res, next) {
         return EventModel.remove({ _id: req.params.event_id })
             .then(res.status(204).send({ 'msg': 'deleted' }))
