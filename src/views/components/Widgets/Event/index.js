@@ -10,8 +10,8 @@ import './Event.scss';
 
 const EventItem = ({ event, filtered }) => {
     const date = filtered 
-        ? moment(event.eventDate).utc().format('h:mm a')
-        : moment(event.eventDate).utc().format('dddd MMM D, YYYY - h:mm a');
+        ? moment(event.date).format('h:mm a')
+        : moment(event.date).format('dddd MMM D, YYYY - h:mm a');
 
     return (
         <Card>

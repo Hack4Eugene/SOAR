@@ -8,12 +8,13 @@ import {
     GET_PROJECTS_BY_ORG_REJECTED,
     GET_PROJECTS_BY_ORG_RESOLVED,
     GET_PROJECTS_REJECTED, GET_PROJECTS_RESOLVED,
-    POST_PROJECT_RESOLVED, POST_PROJECT_REJECTED, POST_PROJECT_PENDING
+    UPDATE_PROJECT_RESOLVED, UPDATE_PROJECT_REJECTED, UPDATE_PROJECT_PENDING,
+    CREATE_PROJECT_RESOLVED, CREATE_PROJECT_REJECTED, CREATE_PROJECT_PENDING
 } from '../types';
 
 import { serviceRoutes } from '../../config/routes';
 
-const { GET_PROJECTS_BY_ORGANIZATION, GET_PROJECTS, DELETE_PROJECT, GET_PROJECT_BY_ID, POST_PROJECT } = serviceRoutes;
+const { GET_PROJECTS_BY_ORGANIZATION, GET_PROJECTS, DELETE_PROJECT, GET_PROJECT_BY_ID, POST_PROJECT, UPDATE_PROJECT } = serviceRoutes;
 
 export const getProjectsByOrganization = projectID => {
     return (dispatch, getState) => {
@@ -61,23 +62,23 @@ export const updateProject = (projectID, updates) => (dispatch, getState) => {
     const state = getState();
     const env = _.get(state, 'env', 'local');
 
-    dispatch({ type: POST_PROJECT_PENDING });
+    dispatch({ type: UPDATE_PROJECT_PENDING });
 
     HttpClient(state)
-        .then(client => client.post(`${loadEndpoint(env, POST_PROJECT)}/${projectID}`, updates))
-        .then(result => dispatch({ type: POST_PROJECT_RESOLVED, payload: result }))
+        .then(client => client.post(`${loadEndpoint(env, UPDATE_PROJECT)}/${projectID}`, updates))
+        .then(result => dispatch({ type: UPDATE_PROJECT_RESOLVED, payload: result }))
         .then(() => dispatch(getProjectById(projectID)))
-        .catch(err => dispatch({ type: POST_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
+        .catch(err => dispatch({ type: UPDATE_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
 };
 
 export const createProject = projectData => (dispatch, getState) => {
     const state = getState();
     const env = _.get(state, 'env', 'local');
 
-    dispatch({ type: POST_PROJECT_PENDING });
+    dispatch({ type: CREATE_PROJECT_PENDING });
 
     HttpClient(state)
         .then(client => client.post(`${loadEndpoint(env, POST_PROJECT)}`, projectData))
-        .then(result => dispatch({ type: POST_PROJECT_RESOLVED, payload: result }))
-        .catch(err => dispatch({ type: POST_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
+        .then(result => dispatch({ type: CREATE_PROJECT_RESOLVED, payload: result }))
+        .catch(err => dispatch({ type: CREATE_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
 };

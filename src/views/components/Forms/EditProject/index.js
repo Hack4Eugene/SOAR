@@ -4,12 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { getOrganizations } from '../../../../state/actions/organizationActions';
-import { SUCCESS } from '../../../../state/statusTypes';
-
-const mapStateToProps = state => ({
-    organizations: _.get(state, 'organizations.data'),
-    organizationStatus: _.get(state, 'organizations.status')
-});
+import { SUCCESS, ERROR } from '../../../../state/statusTypes';
 
 class EditProject extends Component {
     constructor(props) {
@@ -20,8 +15,22 @@ class EditProject extends Component {
         };
     }
 
+    showError() {
+        const { updateProjectStatus, createProjectStatus, selectedProject } = this.props;
+
+        if (updateProjectStatus === ERROR || createProjectStatus === ERROR) {
+            const errorMessage = _.get(selectedProject, 'error.res.data.message', '');
+
+            return (
+                <p className="mt-3 mb-0 text-danger">
+                    {errorMessage}
+                </p>
+            );
+        }
+    }
+
     render() {
-        if (this.props.organizationStatus !== SUCCESS) return <div />;
+        if (this.props.organizationStatus !== SUCCESS) return <div>Loading...</div>;
 
         return (
             <div>
@@ -45,18 +54,18 @@ class EditProject extends Component {
                         type="date"
                     />
                     <CustomField
-                        label="Tagline"
-                        name="tagline"
-                        component="textarea"
-                        type="text"
-                        rows={2}
-                    />
-                    <CustomField
-                        label="Description"
+                        label="Short description"
                         name="description"
                         component="textarea"
                         type="text"
-                        rows={5}
+                        rows={3}
+                    />
+                    <CustomField
+                        label="Additional details"
+                        name="details"
+                        component="textarea"
+                        type="text"
+                        rows={4}
                     />
                     <CustomSelect
                         label="Organization"
@@ -78,6 +87,7 @@ class EditProject extends Component {
                         ))}
                     </CustomSelect>
                     <button className="mt-3 btn btn-primary" type="submit">Submit</button>
+                    {this.showError()}
                 </form>
             </div>
         );
@@ -104,10 +114,15 @@ const CustomSelect = props => {
     );
 };
 
-EditProject = connect( //eslint-disable-line no-class-assign
-    mapStateToProps,
-    { getOrganizations }
-)(EditProject);
+const mapStateToProps = state => ({
+    organizations: _.get(state, 'organizations.data'),
+    organizationStatus: _.get(state, 'organizations.status'),
+    selectedProject: _.get(state, 'projects.selectedProject'),
+    createProjectStatus: _.get(state, 'projects.selectedProject.status.create'),
+    updateProjectStatus: _.get(state, 'projects.selectedProject.status.update')
+});
+
+EditProject = connect(mapStateToProps, { getOrganizations })(EditProject);
 
 export default reduxForm({
     form: 'EditProject',

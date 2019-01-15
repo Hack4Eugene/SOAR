@@ -1,26 +1,24 @@
 import { ERROR, LOADING, NOT_STARTED, SUCCESS } from '../statusTypes';
 import {
-    DELETE_PROJECT_REJECTED,
-    DELETE_PROJECT_RESOLVED, GET_PROJECT_BY_ID_PENDING, GET_PROJECT_BY_ID_REJECTED, GET_PROJECT_BY_ID_RESOLVED,
-    GET_PROJECTS_REJECTED,
-    GET_PROJECTS_RESOLVED,
-    GET_PROJECTS_BY_ORG_RESOLVED,
-    GET_PROJECTS_BY_ORG_REJECTED,
-    GET_EVENTS_BY_ID_RESOLVED, GET_EVENTS_BY_ID_REJECTED,
+    GET_PROJECT_BY_ID_PENDING, GET_PROJECT_BY_ID_REJECTED, GET_PROJECT_BY_ID_RESOLVED,
+    DELETE_PROJECT_REJECTED, DELETE_PROJECT_RESOLVED, 
+    GET_PROJECTS_REJECTED, GET_PROJECTS_RESOLVED,
+    GET_PROJECTS_BY_ORG_RESOLVED, GET_PROJECTS_BY_ORG_REJECTED,
+    UPDATE_PROJECT_RESOLVED, UPDATE_PROJECT_PENDING, UPDATE_PROJECT_REJECTED,
+    CREATE_PROJECT_RESOLVED, CREATE_PROJECT_PENDING, CREATE_PROJECT_REJECTED
 } from '../types';
 
 const initialState = {
-    data: [],
-    detailed: {
-        status: NOT_STARTED
-    },
+    data: {},
+    status: NOT_STARTED,
     selectedProject: {
-        events: [],
-        error: {},
-        status: NOT_STARTED
+        data: {},
+        status: {
+            get: NOT_STARTED,
+            create: NOT_STARTED,
+            update: NOT_STARTED
+        }
     }, 
-    error: {},
-    status: NOT_STARTED
 };
 
 const projectReducer = (state = initialState, action) => {
@@ -28,7 +26,11 @@ const projectReducer = (state = initialState, action) => {
 
     switch (type) {
         case GET_PROJECTS_RESOLVED: {
-            return { ...state, data: payload.data, status: SUCCESS };
+            return { 
+                ...state, 
+                data: payload.data, 
+                status: SUCCESS 
+            };
         }
 
         case GET_PROJECTS_REJECTED: {
@@ -40,35 +42,27 @@ const projectReducer = (state = initialState, action) => {
         }
 
         case DELETE_PROJECT_REJECTED: {
-            return { ...state, error: { ...payload }, status: ERROR };
+            return { 
+                ...state, 
+                error: { ...payload }, 
+                status: ERROR 
+            };
         }
 
         case GET_PROJECTS_BY_ORG_RESOLVED: {
-            return { ...state, projectsForOrganization: payload, status: SUCCESS };
+            return { 
+                ...state, 
+                projectsForOrganization: payload, 
+                status: SUCCESS 
+            };
         }
 
         case GET_PROJECTS_BY_ORG_REJECTED: {
-            return { ...state, error: { ...payload }, status: ERROR };
-        }
-
-        case GET_EVENTS_BY_ID_RESOLVED: {
             return { 
                 ...state, 
-                selectedProject: {
-                    events: payload,
-                    status: SUCCESS
-                } 
-            }
-        }
-
-        case GET_EVENTS_BY_ID_REJECTED: {
-            return { 
-                ...state, 
-                selectedProject: {
-                    error: payload,
-                    status: ERROR
-                } 
-            }
+                error: { ...payload }, 
+                status: ERROR 
+            };
         }
 
         /**
@@ -79,9 +73,9 @@ const projectReducer = (state = initialState, action) => {
         case GET_PROJECT_BY_ID_RESOLVED: {
             return {
                 ...state,
-                detailed: {
+                selectedProject: {
                     data: payload.data,
-                    status: SUCCESS
+                    status: { get: SUCCESS }
                 }
             };
         }
@@ -89,8 +83,8 @@ const projectReducer = (state = initialState, action) => {
         case GET_PROJECT_BY_ID_PENDING: {
             return {
                 ...state,
-                detailed: {
-                    status: LOADING
+                selectedProject: {
+                    status: { get: LOADING }
                 }
             };
         }
@@ -98,9 +92,67 @@ const projectReducer = (state = initialState, action) => {
         case GET_PROJECT_BY_ID_REJECTED: {
             return {
                 ...state,
-                detailed: {
+                selectedProject: {
                     error: payload.error,
-                    status: ERROR
+                    status: { get: ERROR }
+                }
+            };
+        }
+
+        case UPDATE_PROJECT_RESOLVED: {
+            return {
+                ...state,
+                selectedProject: {
+                    data: payload.data,
+                    status: { update: SUCCESS }
+                }
+            };
+        }
+
+        case CREATE_PROJECT_PENDING: {
+            return {
+                ...state,
+                selectedProject: {
+                    status: { create: LOADING }
+                }
+            };
+        }
+
+        case CREATE_PROJECT_REJECTED: {
+            return {
+                ...state,
+                selectedProject: {
+                    error: payload,
+                    status: { create: ERROR }
+                }
+            };
+        }
+
+        case CREATE_PROJECT_RESOLVED: {
+            return {
+                ...state,
+                selectedProject: {
+                    data: payload.data,
+                    status: { create: SUCCESS }
+                }
+            };
+        }
+
+        case UPDATE_PROJECT_PENDING: {
+            return {
+                ...state,
+                selectedProject: {
+                    status: { update: LOADING }
+                }
+            };
+        }
+
+        case UPDATE_PROJECT_REJECTED: {
+            return {
+                ...state,
+                selectedProject: {
+                    error: payload.error,
+                    status: { update: ERROR }
                 }
             };
         }

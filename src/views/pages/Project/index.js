@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
 import { getOrganizations } from '../../../state/actions/organizationActions';
 import { getEventsById } from '../../../state/actions/eventActions';
-import { NOT_STARTED, SUCCESS } from '../../../state/statusTypes';
+import { NOT_STARTED, SUCCESS, ERROR } from '../../../state/statusTypes';
 
 import ToolBar from '../../lib/ToolBar';
 import Modal from '../../lib/Modal';
@@ -21,46 +21,13 @@ import habitatImg from '../../../static/imgs/habitat-humanity.png';
 import './ProjectPage.scss';
 import Timeline from './timeline';
 
-const mapStateToProps = (state) => ({
-    project: _.get(state, 'projects.detailed.data', {}),
-    projectStatus: _.get(state, 'projects.detailed.status', NOT_STARTED),
-    form: _.get(state, 'form.EditProject'),
-    organizations: _.get(state, 'organizations.data', {}),
-    organizationStatus: _.get(state, 'organizations.status', NOT_STARTED),
-    projectEventsDetailed: _.get(state, 'projects.detailed.data.eventRecords', [])
-});
-
-const mapDispatchToProps = {
-    getProjectById, 
-    updateProject, 
-    getOrganizations, 
-    getEventsById
-};
-
-const OrganizationItem = props => {
-    return (
-        <div className="card m-2" style={{ maxWidth: '250px', display: 'flex', justifyContent: 'space-between' }}>
-            <div className="card-header" style={{ minHeight: 80 }}>
-                <h5 className="card-title mb-0">{props.title}</h5>
-            </div>
-
-            <img alt={props.title} className="card-image card-org-image" src={foodLaneImg} />
-            <div className="card-body org-card-body">
-                <Link className="btn btn-outline-success org-card-button" to={`/organization/${props.id}`}>
-                    Go to organization
-                </Link>
-            </div>
-        </div>
-    );
-}
-
 class Project extends Component {
     constructor(props) {
         super(props);
         this.lastRender = moment()
         this.state = {
             filteredEvents: props.events,
-            showModal: false
+            showEditProjectModal: false
         };
     }
 
@@ -71,18 +38,12 @@ class Project extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const isModalShown = this.state.showModal;
+        const isModalShown = this.state.showEditProjectModal;
         const isNewProjectData = prevProps.project !== this.props.project;
-        const isNewDataFinal = this.props.projectStatus === SUCCESS;
+        const isNewDataFinal = this.props.updateProjectStatus === SUCCESS;
 
         if (isModalShown && isNewProjectData && isNewDataFinal) {
-            this.setState({ showModal: false }); //eslint-disable-line react/no-did-update-set-state
-        }
-
-        if (this.props.projectStatus === SUCCESS) {
-            if (!_.isEmpty(this.props.project.events)) {
-                this.props.getEventsById(this.props.project.events)
-            }
+            this.setState({ showEditProjectModal: false });
         }
     }
 
@@ -100,12 +61,12 @@ class Project extends Component {
     };
 
     submitEdits = () => {
-        const updates = get(this.props.form, 'values', {});
+        const updates = _.get(this.props.form, 'values', {});
         this.props.updateProject(this.props.project._id, updates);
     };
 
     showAccomplishments() {
-        const eventRecords = this.props.projectEventsDetailed;
+        const eventRecords = this.props.projectEvents;
         let eventsWithGoals = [];
 
         _.map(eventRecords, event => {
@@ -118,11 +79,11 @@ class Project extends Component {
         });
 
         const renderGoalsList = events => (
-            _.map(events, event => (
-                <div style={{ marginBottom: '20px' }}>
+            _.map(events, (event, i) => (
+                <div key={i} style={{ marginBottom: '20px' }}>
                     <p style={{ textDecoration: 'underline' }}>{event.name}</p>
-                    {_.map(event.goals, goal => (
-                        <li style={{ marginLeft: '20px' }}>{goal.text}</li>
+                    {_.map(event.goals, (goal, i) => (
+                        <li key={i} style={{ marginLeft: '20px' }}>{goal.text}</li>
                     ))}
                 </div>
             ))
@@ -145,11 +106,11 @@ class Project extends Component {
     }
 
     render() {
-        const { organizations, organizationStatus, projectStatus } = this.props;
+        const { organizations, organizationStatus, getProjectStatus } = this.props;
         const {
             name,
-            tagline,
             description,
+            details,
             organization
         } = this.props.project;
 
@@ -162,11 +123,11 @@ class Project extends Component {
             return value
         })
 
-        if (organizationStatus !== SUCCESS || projectStatus !== SUCCESS) return <div>Loading...</div>;
+        if (organizationStatus !== SUCCESS || getProjectStatus !== SUCCESS) return <div>Loading...</div>;
 
         return (
             <div className="container pt-4">
-                <Modal show={this.state.showModal} hide={() => this.setState({ showModal: !this.state.showModal })}>
+                <Modal show={this.state.showEditProjectModal} hide={() => this.setState({ showEditProjectModal: !this.state.showEditProjectModal })}>
                     <EditProject
                         initialValues={project}
                         onSubmit={this.submitEdits}
@@ -175,18 +136,18 @@ class Project extends Component {
                 <div className="row">
                     <div className="col">
                         <div className="jumbotron p-4 project-jumbo">
-                            <ToolBar onEdit={() => this.setState({ showModal: !this.state.showModal })}>
+                            <ToolBar onEdit={() => this.setState({ showEditProjectModal: !this.state.showEditProjectModal })}>
                                 <h1 className="display-4">{name}</h1>
                             </ToolBar>
                             <p><i>Hosted By: {host && host.name}</i></p>
 
-                            <p className="lead">{tagline}</p>
+                            <p className="lead">{description}</p>
                             <hr className="my-4" />
 
                             <img alt="park" src={parkImg} className="project-header-img" />
                             <hr className="my-4" />
 
-                            <p>{description}</p>
+                            <p>{details}</p>
 
                             <h1 className="display-4 alliance-header">- Our Alliance -</h1>
                             <div className="d-flex flex-row flex-wrap justify-content-center">
@@ -204,5 +165,40 @@ class Project extends Component {
         );
     }
 }
+
+const OrganizationItem = props => {
+    return (
+        <div className="card m-2" style={{ maxWidth: '250px', display: 'flex', justifyContent: 'space-between' }}>
+            <div className="card-header" style={{ minHeight: 80 }}>
+                <h5 className="card-title mb-0">{props.title}</h5>
+            </div>
+
+            <img alt={props.title} className="card-image card-org-image" src={foodLaneImg} />
+            <div className="card-body org-card-body">
+                <Link className="btn btn-outline-success org-card-button" to={`/organization/${props.id}`}>
+                    Go to organization
+                </Link>
+            </div>
+        </div>
+    );
+}
+
+const mapStateToProps = (state) => ({
+    project: _.get(state, 'projects.selectedProject.data', {}),
+    getProjectStatus: _.get(state, 'projects.selectedProject.status.get'),
+    createProjectStatus: _.get(state, 'projects.selectedProject.status.create'),
+    updateProjectStatus: _.get(state, 'projects.selectedProject.status.update'),
+    organizations: _.get(state, 'organizations.data', {}),
+    organizationStatus: _.get(state, 'organizations.status', NOT_STARTED),
+    projectEvents: _.get(state, 'projects.selectedProject.data.eventRecords', []),
+    form: _.get(state, 'form.EditProject')
+});
+
+const mapDispatchToProps = {
+    getProjectById, 
+    updateProject, 
+    getOrganizations, 
+    getEventsById
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Project);

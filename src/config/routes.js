@@ -23,6 +23,8 @@ module.exports = {
 
         POST_PROJECT: '/project',
 
+        UPDATE_PROJECT: '/project',
+
         DELETE_PROJECT: '/project',
 
         GET_EVENTS_FOR_PROJECTS: '/project/events',

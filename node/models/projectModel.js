@@ -10,10 +10,10 @@ const ProjectSchema = new Schema({
         type: String,
         required: 'Kindly enter the project name'
     },
-    tagline: {
+    description: {
         type: String
     },
-    description: {
+    details: {
         type: String
     },
     createDate: {

@@ -4,6 +4,7 @@ const RequestError = require('./Errors');
 const roleValidation = async (req, res, next) => {
     let requestArray = req.url.split('/');
     requestArray = _.pullAll(requestArray, ['']);
+
     if (requestArray.length !== 2) {
         return next();
     }

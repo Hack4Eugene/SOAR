@@ -30,7 +30,7 @@ class EventFeed extends Component {
         const selectedDate = moment(date);
 
         const tempFilteredEvents = filter(this.props.events, event => {
-            const eventDate = moment(event.eventDate);
+            const eventDate = moment(event.date);
             return eventDate.isSame(selectedDate, 'day');
         });
 

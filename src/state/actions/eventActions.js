@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import { HttpClient, loadEndpoint } from '../../lib/common';
 import {
-    ADD_EVENT_REJECTED, ADD_EVENT_RESOLVED,
+    CREATE_EVENT_REJECTED, CREATE_EVENT_RESOLVED,
     DELETE_EVENT_REJECTED,
     DELETE_EVENT_RESOLVED,
     GET_EVENTS_REJECTED,
@@ -28,13 +28,10 @@ export const getEvents = () => {
 
 export const createEvent = (event) => {
     return (dispatch, getState) => {
-        HttpClient(getState()).then(client => client.post(
-            loadEndpoint(_.get(getState(), 'env'), POST_EVENT), event
-            ))
-            .then(result => {
-                dispatch({ type: ADD_EVENT_RESOLVED, payload: result });
-            })
-            .catch(err => dispatch({ type: ADD_EVENT_REJECTED, payload: err }));
+        HttpClient(getState())
+            .then(client => client.post(loadEndpoint(_.get(getState(), 'env'), POST_EVENT), event))
+            .then(result => dispatch({ type: CREATE_EVENT_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: CREATE_EVENT_REJECTED, payload: err }));
     };
 };
 
@@ -75,15 +72,6 @@ export const getEventById = (eventId) => {
             .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)))
             .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result.data }))
             .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err }));
-    };
-};
-
-export const getEventsById = (eventIds) => {
-    return (dispatch, getState) => {
-        HttpClient(getState(), dispatch)
-            .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENTS_BY_ID}/${eventIds}`)))
-            .then(result => dispatch({ type: GET_EVENTS_BY_ID_RESOLVED, payload: result.data }))
-            .catch(err => dispatch({ type: GET_EVENTS_BY_ID_REJECTED, payload: err }));
     };
 };
 
