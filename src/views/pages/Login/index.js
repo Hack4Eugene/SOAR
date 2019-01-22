@@ -91,7 +91,7 @@ class LoginPage extends Component {
 
     render() {
         if (this.props.returnURL && this.props.isLoggedIn) return <Redirect to={this.props.returnURL} />;
-        if (this.props.isLoggedIn) return <Redirect to="/" />;
+        if (this.props.isLoggedIn) return <Redirect to="/explore" />;
 
         return (
             <div className="container">

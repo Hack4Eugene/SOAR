@@ -42,7 +42,7 @@ class Navbar extends Component {
     getNavigationLinks = () => (
         <div className="navbar mr-5">
             <div className="navbar-nav">
-                <Link className="text-success mr-4" to="/">
+                <Link className="text-success mr-4" to="/projects">
                     <button type="button" className="btn btn-light">Projects</button>
                 </Link>
                 <Link className="text-success mr-4" to="/events">
@@ -129,20 +129,21 @@ class Navbar extends Component {
                 />
                 <nav
                     className={
-                        classNames('navbar navbar-white border-bottom p-0',
+                        classNames('navbar navbar-white border-bottom',
                             {
-                                [mobileNavClasses]: isMobile,
                                 'justify-content-center': !isMobile
                             }
                         )
                     }
                 >
                     <HamburgerMenu open={isSidebarOpen} isMobile={isMobile} ref={this.hamburgerMenu} />
-                    <img
-                        src={logo} alt="ECAN Logo"
-                        style={{ flex: '0 0 100px', maxWidth: '100px' }}
-                        className={classNames({ [mobileImgClasses]: isMobile })}
-                    />
+                    <Link to="/">
+                        <img
+                            src={logo} alt="ECAN Logo"
+                            style={{ maxWidth: '85px' }}
+                            className={classNames({ [mobileImgClasses]: isMobile })}
+                        />
+                    </Link>
                     {!isMobile && (
                         <div className="d-flex align-items-center">
                             {this.getNavigationLinks()}
