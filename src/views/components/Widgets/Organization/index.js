@@ -1,13 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { map } from 'lodash';
+import { map, get } from 'lodash';
+import moment from 'moment';
 
 import Card from '../../../lib/Card';
 
-const OrganizationItem = ({ organization }) => {
+export const OrganizationItem = ({ organization }) => {
+    const creationDate = get(organization, 'created_at');
+    const formattedDate = creationDate 
+        ? `Joined ${moment(creationDate).format('MMMM D, YYYY')}`
+        : 'No creation date';
+
     return (
         <Card>
-            <div className="card-header">{organization.created_at || <i>No creation date</i>}</div>
+            <div className="card-header">{formattedDate}</div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
                 <h4 className="card-title mb-0">{organization.name}</h4>
