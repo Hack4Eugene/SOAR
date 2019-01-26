@@ -1,13 +1,12 @@
 .sidebar {
-  background: #222222;
-  box-shadow: 1px 3px 22px -8px rgba(0,0,0,0.75);
+  background: rgba(0, 0, 0, 0.85);
   position: fixed;
-  height: 100%;
-  width: calc(100% / 2.8);
+  height: max-content;
+  width: 50%;
   top: 0;
   bottom: 0;
   z-index: 1000;
-  color: white;
+  color: #f1f1f1;
   left: -100%;
   transition: left .25s ease;
 
@@ -17,7 +16,7 @@
 
   ul {
     padding: 0;
-    margin: 80px 0;
+    margin: 80px 10px 20px 10px;
     text-align: left;
 
     hr {
@@ -32,6 +31,8 @@
       align-items: center;
       text-decoration: none;
       list-style-type: none;
+      font-weight: bold;
+      letter-spacing: 1px;
       padding-left: 15px;
       height: 42px;
       -webkit-transition: all .15s ease;

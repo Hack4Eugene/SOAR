@@ -18,6 +18,7 @@ import ProfilePage from './views/pages/UserProfile';
 import ProjectPage from './views/pages/Project';
 import PrivateRoute from './views/hoc/requireAuth';
 import OrganizationPage from './views/pages/Organization';
+import Lander from './views/pages/Lander';
 
 class App extends Component {
     render() {
@@ -26,10 +27,11 @@ class App extends Component {
                 <Header />
                 <div className="mr-3 ml-3 mt-4 site-body">
                     <Switch>
+                        <Route path="/" exact component={Lander} />
                         <Route path="/login" component={LoginPage} />
                         <Route path="/adduser" component={AddUser} />
                         <PrivateRoute path="/logout" component={() => <LoginPage expireSession />} />
-                        <PrivateRoute path="/" exact component={ProjectFeed} />
+                        <PrivateRoute path="/projects" component={ProjectFeed} />
                         <PrivateRoute path="/events" component={EventFeed} />
                         <PrivateRoute path="/event/:id" component={Event} />
                         <PrivateRoute path="/explore" component={ExploreFeed} />

@@ -50,7 +50,7 @@ class AddProject extends Component {
                         <h2 className="ml-3">Add Project</h2>
                     </div>
                     <div className="col-3">
-                        <Link to="/">
+                        <Link to="/projects">
                             <button
                                 type="button" 
                                 className="btn btn-success float-right" 
