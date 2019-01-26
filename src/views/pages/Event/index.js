@@ -7,6 +7,7 @@ import {
     Marker,
 } from 'react-static-google-map';
 
+import { NOT_STARTED, SUCCESS, ERROR } from '../../../state/statusTypes';
 import { getEventById, updateEvent } from '../../../state/actions/eventActions.js';
 import EditEvent from '../../components/Forms/EditEvent';
 import Card from '../../lib/Card';
@@ -32,6 +33,21 @@ class EventPage extends Component {
         const eventId = get(this.props, 'computedMatch.params.id', '');
         this.props.getEventById(eventId);
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        const isModalShown = this.state.showEditEventModal;
+        const isNewEventData = prevProps.event !== this.props.selectedEvent;
+        const isNewDataFinal = this.props.updateEventStatus === SUCCESS;
+
+        if (isModalShown && isNewEventData && isNewDataFinal) {
+            this.setState({ showEditEventModal: false }); //eslint-disable-line react/no-did-update-set-state
+        }
+    }
+
+    submitEdits = () => {
+        const updates = _.get(this.props.form, 'values', {});
+        this.props.updateEvent(this.props.selectedEvent._id, updates)
+    };
 
     showEventMap = () => (
         <div className="fill">
@@ -66,7 +82,7 @@ class EventPage extends Component {
                 <img className="event-page-image mb-4" src={eventImage} />
                 {this.showEventDetails()}
                 {this.showEventGoals()}
-                <button type="button" class="btn btn-outline-secondary">
+                <button type="button" className="btn btn-outline-secondary">
                     <i className="fas fa-check mr-2" />
                     Close event
                 </button>
@@ -94,24 +110,23 @@ class EventPage extends Component {
         }
     }
 
-    showEventDetails = () => (
-        <Card>
-            <div className="card-body">
-                <h4 style={{ color: '#28a745' }}>
-                    <i className="fa fa-leaf mr-3" />
-                    Event Details
-                </h4>
-                <hr />
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dapibus lorem a nisl bibendum dignissim. 
-                    Morbi facilisis elit in efficitur dignissim. Quisque dignissim sit amet nulla at sollicitudin. 
-                    Etiam laoreet, elit eget sagittis interdum, lacus enim commodo neque, vel faucibus leo risus a lorem. 
-                    Praesent fermentum sed lorem a vestibulum. Morbi porttitor ipsum porta ipsum dictum, et eleifend ex imperdiet. 
-                    Cras pellentesque lobortis lorem, et placerat risus pretium sed. Phasellus iaculis quis elit congue feugiat.
-                </p>
-            </div>
-        </Card>
-    )
+    showEventDetails = () => {
+        const event = get(this.props, 'selectedEvent', {});
+        const eventDetails = get(event, 'details', '');
+
+        return (
+            <Card>
+                <div className="card-body">
+                    <h4 style={{ color: '#28a745' }}>
+                        <i className="fa fa-leaf mr-3" />
+                        Event Details
+                    </h4>
+                    <hr />
+                    <p>{eventDetails}</p>
+                </div>
+            </Card> 
+        );
+    };
 
     showSideContent = () => (
         <div className="col-4">
@@ -171,7 +186,7 @@ class EventPage extends Component {
 
     showEventDetailsBox = () => {
         const event = get(this.props, 'selectedEvent', {});
-        const eventDate = get(event, 'eventDate', '');
+        const eventDate = get(event, 'date', '');
         const eventLocation = get(event, 'location', '');
 
         return (
@@ -181,14 +196,14 @@ class EventPage extends Component {
                         <div className="flex-row">
                             <p>
                                 <i className="fa fa-calendar mr-3 event-page-icon" />
-                                {moment(eventDate).utc().format('dddd, MMMM D, YYYY')}
+                                {moment(eventDate).format('dddd, MMMM D, YYYY')}
                             </p>
                         </div>
                         <hr />
                         <div className="flex-row">
                             <p>
                                 <i className="fa fa-clock mr-3 event-page-icon" />
-                                {moment(eventDate).utc().format('h:mm a')}
+                                {moment(eventDate).format('h:mm a')}
                             </p>
                         </div>
                         <hr />
@@ -251,13 +266,20 @@ class EventPage extends Component {
     };
     
     render() {
+        const event = _.mapValues(this.props.selectedEvent, (value, key) => {
+            if (key === 'date') {
+                return moment(value).format('YYYY-MM-DDTHH:mm')
+            }
+            return value
+        })
+
         return (
             <div className="container pb-4">
                 <div className="row">
                     <Modal show={this.state.showEditEventModal} hide={() => this.setState({ showEditEventModal: false })}>
                         <EditEvent
-                              onSubmit={updates => this.props.updateEvent(this.props.selectedEvent._id, updates)}
-                              initialValues={this.props.selectedEvent}
+                            initialValues={event}
+                            onSubmit={this.submitEdits}
                         />
                     </Modal>
                     {this.showMainContent()}
@@ -272,10 +294,12 @@ const mapStateToProps = (state) => {
     return ({
         events: get(state, 'events.data', {}),
         selectedEvent: get(state, 'events.selectedEvent.data', {}),
-        selectedEventStatus: get(state, 'events.selectedEvent.status'),
+        createEventStatus: _.get(state, 'events.selectedEvent.status.create'),
+        updateEventStatus: _.get(state, 'events.selectedEvent.status.update'),
         userId: get(state, 'user.data._id', ''),
         attendees: get(state, 'events.selectedEvent.data.attendees', []),
-        attendeesDetails: get(state, 'events.selectedEvent.data.attendeesDetails', [])
+        attendeesDetails: get(state, 'events.selectedEvent.data.attendeesDetails', []),
+        form: _.get(state, 'form.EditEvent'),
     });
 };
 

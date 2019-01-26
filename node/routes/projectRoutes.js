@@ -10,7 +10,7 @@ module.exports = (app) => {
 
     app.get(routes.GET_PROJECTS_BY_ORGANIZATION, authenticate, getProjectsByOrganization);
     
-    app.post(routes.POST_PROJECT, authenticate, roleValidation, createOrUpdate);
+    app.post(routes.POST_PROJECT, authenticate, /*roleValidation,*/ createOrUpdate);
 
     app.delete(routes.DELETE_PROJECT, authenticate, deleteProject);
 };
