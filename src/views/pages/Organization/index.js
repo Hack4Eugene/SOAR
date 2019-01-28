@@ -2,19 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import _, { get, map } from 'lodash';
 
+import ToolBar from '../../lib/ToolBar';
+import Modal from '../../lib/Modal';
+import EditOrganization from '../../components/Forms/EditOrganization';
+
 import { getOrganizationsById } from '../../../state/actions/organizationActions';
 import { getProjectsByOrganization } from '../../../state/actions/projectActions';
 
 import '../UserProfile/UserProfilePage.scss';
-
-const mapStateToProps = (state) => ({
-    events: get(state, 'events', {}),
-    posts: get(state, 'posts', {}),
-    user: get(state, 'user', {}),
-    organization: get(state, 'organizations.organizationsById[0]', {}),
-    projects: get(state, 'projects.projectsForOrganization.data', []),
-    projectsStatus: get(state, 'projects.projectsForOrganization.statusText', 'NOT_STARTED')
-});
 
 class ProjectItem extends Component {
     render() {
@@ -40,7 +35,8 @@ class OrganizationPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            organizationID: this.props.computedMatch.params.id
+            organizationID: this.props.computedMatch.params.id,
+            showEditOrgModal: false
         };
     }
 
@@ -109,18 +105,32 @@ class OrganizationPage extends Component {
         );
     }
 
+    submitEdits = () => {
+        const updates = _.get(this.props.form, 'values', {});
+        this.props.updateProject(this.props.project._id, updates);
+    };
+
     render() {
         return (
             <div className="container">
+                <Modal 
+                    show={this.state.showEditOrgModal} 
+                    hide={() => this.setState({ showEditOrgModal: !this.state.showEditOrgModal })}
+                >
+                    <EditOrganization
+                        initialValues={this.props.organization}
+                        onSubmit={this.submitEdits}
+                    />
+                </Modal>
                 <div className="jumbotron p-4">
-                    <h1 className="display-4">{this.props.organization.name}</h1>
+                    <ToolBar onEdit={() => this.setState({ showEditOrgModal: !this.state.showEditOrgModal })}>
+                        <h1 className="display-4">{this.props.organization.name}</h1>
+                    </ToolBar>
                     <p className="lead">{this.props.organization.tagline || ''}</p>
                     <hr className="my-4" />
                     <p>{this.props.organization.description || ''}</p>
-                    {/* <p class="lead"> */}
                     <hr className="my-4" />
                     <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..." />
-                    {/* </p> */}
                 </div>
                 <div className="container">
                     <h2 className="display-4">Projects</h2>
@@ -141,5 +151,15 @@ class OrganizationPage extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    events: get(state, 'events', {}),
+    posts: get(state, 'posts', {}),
+    user: get(state, 'user', {}),
+    organization: get(state, 'organizations.organizationsById[0]', {}),
+    projects: get(state, 'projects.projectsForOrganization.data', []),
+    projectsStatus: get(state, 'projects.projectsForOrganization.statusText', 'NOT_STARTED'),
+    form: _.get(state, 'form.EditOrganization')
+});
 
 export default connect(mapStateToProps, { getOrganizationsById, getProjectsByOrganization })(OrganizationPage);

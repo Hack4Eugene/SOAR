@@ -127,7 +127,10 @@ class Project extends Component {
 
         return (
             <div className="container pt-4">
-                <Modal show={this.state.showEditProjectModal} hide={() => this.setState({ showEditProjectModal: !this.state.showEditProjectModal })}>
+                <Modal 
+                    show={this.state.showEditProjectModal} 
+                    hide={() => this.setState({ showEditProjectModal: !this.state.showEditProjectModal })}
+                >
                     <EditProject
                         initialValues={project}
                         onSubmit={this.submitEdits}

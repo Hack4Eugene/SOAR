@@ -21,8 +21,7 @@ const OrganizationSchema = new Schema({
             type: String
         },
 		country: {
-			type: String,
-			required: 'Kindly enter your country'
+			type: String
 		}
     },
     contactInformation: {

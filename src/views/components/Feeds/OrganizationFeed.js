@@ -58,7 +58,7 @@ class OrganizationFeed extends Component {
             <div className="container">
                 <div className="row mb-2">
                     {this.showFeedHeader()}
-                    {/* {this.showAddOrganizationButton()} */}
+                    {this.showAddOrganizationButton()}
                 </div>
                 <div className="row">
                     {this.mapOrganizations()}
