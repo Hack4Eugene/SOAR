@@ -11,7 +11,10 @@ import {
     GET_ORGS_RESOLVED,
     GET_ORGS_BY_ID_PENDING,
     GET_ORGS_BY_ID_RESOLVED,
-    GET_ORGS_BY_ID_REJECTED
+    GET_ORGS_BY_ID_REJECTED,
+    GET_ORG_BY_ID_PENDING,
+    GET_ORG_BY_ID_RESOLVED,
+    GET_ORG_BY_ID_REJECTED
 } from '../types';
 
 const initialState = {
@@ -132,6 +135,35 @@ const organizationReducer = (state = initialState, action) => {
             return { 
                 ...state, 
                 status: LOADING 
+            };
+        }
+
+        case GET_ORG_BY_ID_RESOLVED: {
+            return { 
+                ...state, 
+                selectedOrg: {
+                    data: payload.data,
+                    status: { get: SUCCESS }
+                }
+            };
+        }
+
+        case GET_ORG_BY_ID_REJECTED: {
+            return { 
+                ...state, 
+                selectedOrg: {
+                    error: payload,
+                    status: { get: ERROR }
+                }
+            };
+        }
+
+        case GET_ORG_BY_ID_PENDING: {
+            return { 
+                ...state, 
+                selectedOrg: {
+                    status: { get: LOADING }
+                } 
             };
         }
 

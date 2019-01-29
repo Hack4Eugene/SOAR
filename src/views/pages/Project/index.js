@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
 import { getOrganizations } from '../../../state/actions/organizationActions';
 import { getEventsById } from '../../../state/actions/eventActions';
-import { NOT_STARTED, SUCCESS, ERROR } from '../../../state/statusTypes';
+import { NOT_STARTED, SUCCESS } from '../../../state/statusTypes';
 
 import ToolBar from '../../lib/ToolBar';
 import Modal from '../../lib/Modal';
@@ -189,7 +189,6 @@ const OrganizationItem = props => {
 const mapStateToProps = (state) => ({
     project: _.get(state, 'projects.selectedProject.data', {}),
     getProjectStatus: _.get(state, 'projects.selectedProject.status.get'),
-    createProjectStatus: _.get(state, 'projects.selectedProject.status.create'),
     updateProjectStatus: _.get(state, 'projects.selectedProject.status.update'),
     organizations: _.get(state, 'organizations.data', {}),
     organizationStatus: _.get(state, 'organizations.status', NOT_STARTED),

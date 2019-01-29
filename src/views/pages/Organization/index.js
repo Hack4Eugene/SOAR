@@ -6,7 +6,8 @@ import ToolBar from '../../lib/ToolBar';
 import Modal from '../../lib/Modal';
 import EditOrganization from '../../components/Forms/EditOrganization';
 
-import { getOrganizationsById } from '../../../state/actions/organizationActions';
+import { SUCCESS } from '../../../state/statusTypes';
+import { getOrganizationById, getOrganizationsById, updateOrganization } from '../../../state/actions/organizationActions';
 import { getProjectsByOrganization } from '../../../state/actions/projectActions';
 
 import '../UserProfile/UserProfilePage.scss';
@@ -41,8 +42,18 @@ class OrganizationPage extends Component {
     }
 
     componentDidMount() {
-        this.props.getOrganizationsById([this.state.organizationID]);
+        this.props.getOrganizationById(this.state.organizationID);
         this.props.getProjectsByOrganization(this.state.organizationID);
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        const isModalShown = this.state.showEditOrgModal;
+        const isNewOrgData = prevProps.organization !== this.props.organization;
+        const isNewDataFinal = this.props.updateOrgStatus === SUCCESS;
+
+        if (isModalShown && isNewOrgData && isNewDataFinal) {
+            this.setState({ showEditOrgModal: false });
+        }
     }
 
     accessToEntity(entity) {
@@ -107,7 +118,7 @@ class OrganizationPage extends Component {
 
     submitEdits = () => {
         const updates = _.get(this.props.form, 'values', {});
-        this.props.updateProject(this.props.project._id, updates);
+        this.props.updateOrganization(this.props.organization._id, updates);
     };
 
     render() {
@@ -156,10 +167,18 @@ const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
     posts: get(state, 'posts', {}),
     user: get(state, 'user', {}),
-    organization: get(state, 'organizations.organizationsById[0]', {}),
+    organization: get(state, 'organizations.selectedOrg.data.0', {}),
     projects: get(state, 'projects.projectsForOrganization.data', []),
     projectsStatus: get(state, 'projects.projectsForOrganization.statusText', 'NOT_STARTED'),
+    updateOrgStatus: _.get(state, 'projects.selectedOrganization.status.update'),
     form: _.get(state, 'form.EditOrganization')
 });
 
-export default connect(mapStateToProps, { getOrganizationsById, getProjectsByOrganization })(OrganizationPage);
+const mapDispatchToProps = { 
+    getOrganizationById, 
+    getOrganizationsById, 
+    getProjectsByOrganization,
+    updateOrganization
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizationPage);

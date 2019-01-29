@@ -14,23 +14,21 @@ class EditOrganization extends Component {
         };
     }
 
-    // showError() {
-    //     const { updateProjectStatus, createProjectStatus, selectedProject } = this.props;
+    showError() {
+        const { updateOrgStatus, createOrgStatus, selectedOrg } = this.props;
 
-    //     if (updateProjectStatus === ERROR || createProjectStatus === ERROR) {
-    //         const errorMessage = _.get(selectedProject, 'error.res.data.message', '');
+        if (updateOrgStatus === ERROR || createOrgStatus === ERROR) {
+            const errorMessage = _.get(selectedOrg, 'error.response.data.message', '');
 
-    //         return (
-    //             <p className="mt-3 mb-0 text-danger">
-    //                 {errorMessage}
-    //             </p>
-    //         );
-    //     }
-    // }
+            return (
+                <p className="mt-3 mb-0 text-danger">
+                    {errorMessage}
+                </p>
+            );
+        }
+    }
 
     render() {
-        // if (this.props.organizationStatus !== SUCCESS) return <div>Loading...</div>;
-
         return (
             <div>
                 <form className="d-flex flex-column" onSubmit={this.props.handleSubmit}>
@@ -96,7 +94,7 @@ class EditOrganization extends Component {
                         rows={3}
                     />
                     <button className="mt-3 btn btn-primary" type="submit">Submit</button>
-                    {/* {this.showError()} */}
+                    {this.showError()}
                 </form>
             </div>
         );
@@ -115,9 +113,9 @@ const CustomField = props => {
 const mapStateToProps = state => ({
     organizations: _.get(state, 'organizations.data'),
     organizationStatus: _.get(state, 'organizations.status'),
-    selectedProject: _.get(state, 'projects.selectedProject'),
-    createProjectStatus: _.get(state, 'projects.selectedProject.status.create'),
-    updateProjectStatus: _.get(state, 'projects.selectedProject.status.update')
+    selectedOrg: _.get(state, 'organizations.selectedOrg'),
+    createOrgStatus: _.get(state, 'organizations.selectedOrg.status.create'),
+    updateOrgStatus: _.get(state, 'organizations.selectedOrg.status.update')
 });
 
 EditOrganization = connect(mapStateToProps)(EditOrganization);

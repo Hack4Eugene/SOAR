@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const OrganizationSchema = new Schema({
     name: {
         type: String,
-        required: 'Kindly enter the organization name'
+        required: 'Please enter the organization name'
     },
     address: {
         street: {

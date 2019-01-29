@@ -4,9 +4,13 @@ const endpoints = {
     /*
      * Organization endpoints
      */
+    GET_ORGANIZATION_BY_ID: '/organization/:organization_id',
+
     GET_ORGANIZATIONS_BY_ID: '/organization/:organization_ids',
 
     POST_ORGANIZATION: '/organization/:organization_id?',
+
+    UPDATE_ORGANIZATION: '/organization/:organization_id',
 
     DELETE_ORGANIZATION: '/organization/:organization_id',
 
