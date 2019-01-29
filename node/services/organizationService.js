@@ -4,7 +4,8 @@ const OrganizationModel = mongoose.model('OrganizationModel');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 
-const { ObjectId } = mongoose;
+// const { ObjectId } = mongoose;
+const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
     getAll(req, res, next) {
@@ -18,6 +19,16 @@ module.exports = {
     },
 
     getByID(req, res, next) {
+        OrganizationModel.find({ _id: req.params.organization_id })
+            .then(organizationRecord => {
+                res.status(200).send(organizationRecord);
+            })
+            .catch(error => {
+                res.status(error.status || 500).send(error);
+            });
+    },
+
+    getMultipleByID(req, res, next) {
         OrganizationModel.find({ _id: { $in: req.params.organization_ids.split("&") } })
             .then(organizationRecord => {
                 res.status(200).send(organizationRecord);
@@ -58,13 +69,9 @@ module.exports = {
                         throw new RequestError(`Organization ${organizationID} not found`, 'NOT_FOUND');
                     }
 
-                    const updatedRecord = organizationRecord;
-                    _.forEach(req.body, function (value, key) {
-                        updatedRecord[key] = value;
-                    });
-
-                    return OrganizationModel.update({ _id: organizationID }, updatedRecord)
-                        .then(result => res.status(200).send(result));
+                    OrganizationModel.findByIdAndUpdate(ObjectId(organizationID), req.body, { new: true })
+                        .then(updatedDocument => res.status(200).send(updatedDocument))
+                        .catch(err => res.status(err.status || 500).send(err));
                 })
                 .catch(error => {
                     res.status(error.status || 500).send(error);

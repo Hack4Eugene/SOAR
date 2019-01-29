@@ -42,6 +42,9 @@ class Navbar extends Component {
     getNavigationLinks = () => (
         <div className="navbar mr-5">
             <div className="navbar-nav">
+                <Link className="text-success mr-4" to="/organizations">
+                    <button type="button" className="btn btn-light">Organizations</button>
+                </Link>
                 <Link className="text-success mr-4" to="/projects">
                     <button type="button" className="btn btn-light">Projects</button>
                 </Link>

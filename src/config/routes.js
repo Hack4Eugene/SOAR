@@ -4,13 +4,20 @@ module.exports = {
         production: 'https://www.ecan-service.hnavarro-api.com'
     },
     serviceRoutes: {
+        /*
+         * Organization endpoints
+         */
         GET_ORGANIZATION_BY_ID: '/organization',
+
+        GET_ORGANIZATIONS_BY_ID: '/organization',
 
         POST_ORGANIZATION: '/organization',
 
         DELETE_ORGANIZATION: '/organization',
 
         GET_ORGANIZATIONS: '/organizations',
+
+        UPDATE_ORGANIZATION: '/organization',
 
         /*
          * Project endpoints

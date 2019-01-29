@@ -99,16 +99,6 @@ const projectReducer = (state = initialState, action) => {
             };
         }
 
-        case UPDATE_PROJECT_RESOLVED: {
-            return {
-                ...state,
-                selectedProject: {
-                    data: payload.data,
-                    status: { update: SUCCESS }
-                }
-            };
-        }
-
         case CREATE_PROJECT_PENDING: {
             return {
                 ...state,
@@ -143,6 +133,16 @@ const projectReducer = (state = initialState, action) => {
                 ...state,
                 selectedProject: {
                     status: { update: LOADING }
+                }
+            };
+        }
+
+        case UPDATE_PROJECT_RESOLVED: {
+            return {
+                ...state,
+                selectedProject: {
+                    data: payload.data,
+                    status: { update: SUCCESS }
                 }
             };
         }
