@@ -4,12 +4,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { getProjects } from '../../../../state/actions/projectActions';
-import { SUCCESS } from '../../../../state/statusTypes';
-
-const mapStateToProps = state => ({
-    projects: _.orderBy(_.get(state, 'projects.data', []), 'name'),
-    projectStatus: _.get(state, 'projects.status')
-});
+import { SUCCESS, ERROR } from '../../../../state/statusTypes';
 
 class EditEvent extends Component {
     constructor(props) {
@@ -24,13 +19,25 @@ class EditEvent extends Component {
         this.props.getProjects();
     }
 
+    showError() {
+        const { updateEventStatus, createEventStatus, selectedEvent } = this.props;
+
+        if (updateEventStatus === ERROR || createEventStatus === ERROR) {
+            const errorMessage = _.get(selectedEvent, 'error.response.data.message', '');
+
+            return (
+                <p className="mt-3 mb-0 text-danger">
+                    {errorMessage}
+                </p>
+            );
+        }
+    }
+
     render() {
         if (this.props.projectStatus !== SUCCESS) return <div>Loading...</div>;
 
         return (
-            <div className="" style={{ margin: '0 auto', width: '75%' }}>
-                <h3>Project Details:</h3>
-
+            <div>
                 <form className="d-flex flex-column" onSubmit={this.props.handleSubmit}>
                     <CustomField
                         label="Name"
@@ -39,18 +46,30 @@ class EditEvent extends Component {
                         type="text"
                     />
                     <CustomField
-                        label="Tagline"
-                        name="tagline"
-                        component="textarea"
-                        type="text"
-                        rows={2}
+                        label="Date"
+                        name="date"
+                        component="input"
+                        type="datetime-local"
                     />
                     <CustomField
-                        label="Description"
+                        label="Location"
+                        name="location"
+                        component="input"
+                        type="text"
+                    />
+                    <CustomField
+                        label="Short description"
                         name="description"
                         component="textarea"
                         type="text"
-                        rows={5}
+                        rows={3}
+                    />
+                    <CustomField
+                        label="Additional details"
+                        name="details"
+                        component="textarea"
+                        type="text"
+                        rows={4}
                     />
                     <CustomSelect
                         label="Project"
@@ -61,12 +80,21 @@ class EditEvent extends Component {
                             <option value={project._id} key={project._id}>{project.name}</option>
                         ))}
                     </CustomSelect>
-                    <button className="mt-3 btn btn-primary" type="submit">Submit Edits</button>
+                    <CustomField
+                        label="Tags"
+                        name="tags"
+                        component="input"
+                        type="text"
+                    />
+                    {/* <CustomField
+                        label="Goals"
+                        name="goals"
+                        component="input"
+                        type="text"
+                    /> */}
+                    <button className="mt-3 btn btn-primary" type="submit">Submit</button>
+                    {this.showError()}
                 </form>
-
-                <h3>Admin Section:</h3>
-
-
             </div>
         );
     }
@@ -74,28 +102,33 @@ class EditEvent extends Component {
 
 const CustomField = props => {
     return (
-        <Fragment>
+        <div className="form-group">
             <label>{props.label}</label>
-            <Field {...props} className="form-control mb-2" />
-        </Fragment>
+            <Field {...props} className="form-control" />
+        </div>
     );
 };
 
 const CustomSelect = props => {
     return (
-        <Fragment>
+        <div className="form-group">
             <label>{props.label}</label>
-            <Field {...props} name={props.name} component="select" className="form-control mb-2">
+            <Field {...props} name={props.name} component="select" className="form-control">
                 {props.children}
             </Field>
-        </Fragment>
+        </div>
     );
 };
 
-EditEvent = connect( //eslint-disable-line no-class-assign
-    mapStateToProps,
-    { getProjects }
-)(EditEvent);
+const mapStateToProps = state => ({
+    projects: _.orderBy(_.get(state, 'projects.data', []), 'name'),
+    projectStatus: _.get(state, 'projects.status'),
+    selectedEvent: _.get(state, 'events.selectedEvent'),
+    createEventStatus: _.get(state, 'events.selectedEvent.status.create'),
+    updateEventStatus: _.get(state, 'events.selectedEvent.status.update')
+});
+
+EditEvent = connect(mapStateToProps, { getProjects })(EditEvent);
 
 export default reduxForm({
     form: 'EditEvent',

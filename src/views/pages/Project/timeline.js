@@ -7,7 +7,7 @@ class Timeline extends Component {
         return (
             <ul>
                 {_.map(this.props.events, (event, i) =>
-                    <TimelineCard {...event} position={i % 2 === 0 ? 'right' : 'left'} />
+                    <TimelineCard {...event} key={i} position={i % 2 === 0 ? 'right' : 'left'} />
                 )}
             </ul>
         );

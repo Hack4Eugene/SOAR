@@ -2,19 +2,20 @@ import _ from 'lodash';
 
 import { HttpClient, loadEndpoint } from '../../lib/common';
 import {
-    ADD_EVENT_REJECTED, ADD_EVENT_RESOLVED,
+    CREATE_EVENT_REJECTED, CREATE_EVENT_RESOLVED,
     DELETE_EVENT_REJECTED,
     DELETE_EVENT_RESOLVED,
     GET_EVENTS_REJECTED,
     GET_EVENTS_RESOLVED, INCREMENT_EVENT_FINISH, SET_EVENTS_FINISHED,
     GET_EVENT_RESOLVED, GET_EVENT_REJECTED,
     UPDATE_EVENT_RESOLVED, UPDATE_EVENT_REJECTED,
-    GET_ATTENDEES_DETAILS_RESOLVED, GET_ATTENDEES_DETAILS_REJECTED
+    GET_EVENTS_BY_ID_RESOLVED, GET_EVENTS_BY_ID_REJECTED,
+    GET_ATTENDEES_DETAILS_RESOLVED, GET_ATTENDEES_DETAILS_REJECTED,
 } from '../types';
 
 import { serviceRoutes } from '../../config/routes';
 
-const { GET_EVENTS, POST_EVENT, DELETE_EVENT, GET_EVENT_BY_ID, UPDATE_EVENT, GET_USERS_BY_IDS } = serviceRoutes;
+const { GET_EVENTS, GET_EVENTS_BY_ID, POST_EVENT, DELETE_EVENT, GET_EVENT_BY_ID, UPDATE_EVENT, GET_USERS_BY_IDS } = serviceRoutes;
 
 export const getEvents = () => {
     return (dispatch, getState) => {
@@ -27,13 +28,10 @@ export const getEvents = () => {
 
 export const createEvent = (event) => {
     return (dispatch, getState) => {
-        HttpClient(getState()).then(client => client.post(
-            loadEndpoint(_.get(getState(), 'env'), POST_EVENT), event
-            ))
-            .then(result => {
-                dispatch({ type: ADD_EVENT_RESOLVED, payload: result });
-            })
-            .catch(err => dispatch({ type: ADD_EVENT_REJECTED, payload: err }));
+        HttpClient(getState())
+            .then(client => client.post(loadEndpoint(_.get(getState(), 'env'), POST_EVENT), event))
+            .then(result => dispatch({ type: CREATE_EVENT_RESOLVED, payload: result }))
+            .catch(err => dispatch({ type: CREATE_EVENT_REJECTED, payload: err }));
     };
 };
 

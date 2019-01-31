@@ -3,3 +3,4 @@
 .DS_Store
 node/config/keys.js
 yarn-error.log
+dist

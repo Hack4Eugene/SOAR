@@ -5,6 +5,7 @@ import './global.scss';
 
 import Header from './views/global/Header';
 
+import OrganizationFeed from './views/components/Feeds/OrganizationFeed';
 import ProjectFeed from './views/components/Feeds/ProjectFeed';
 import EventFeed from './views/components/Feeds/EventFeed';
 import Event from './views/pages/Event';
@@ -18,6 +19,7 @@ import ProfilePage from './views/pages/UserProfile';
 import ProjectPage from './views/pages/Project';
 import PrivateRoute from './views/hoc/requireAuth';
 import OrganizationPage from './views/pages/Organization';
+import Lander from './views/pages/Lander';
 
 class App extends Component {
     render() {
@@ -26,11 +28,13 @@ class App extends Component {
                 <Header />
                 <div className="mr-3 ml-3 mt-4 site-body">
                     <Switch>
+                        <Route path="/" exact component={Lander} />
                         <Route path="/login" component={LoginPage} />
                         <Route path="/adduser" component={AddUser} />
                         <PrivateRoute path="/logout" component={() => <LoginPage expireSession />} />
-                        <PrivateRoute path="/" exact component={ProjectFeed} />
+                        <PrivateRoute path="/projects" component={ProjectFeed} />
                         <PrivateRoute path="/events" component={EventFeed} />
+                        <PrivateRoute path="/organizations" component={OrganizationFeed} />
                         <PrivateRoute path="/event/:id" component={Event} />
                         <PrivateRoute path="/explore" component={ExploreFeed} />
                         <PrivateRoute path="/addevent" component={AddEvent} />

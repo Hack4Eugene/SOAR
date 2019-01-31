@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 import {
     LOGIN_USER_RESOLVED, LOGIN_USER_REJECTED,
-    GET_ORGANIZATIONS_RESOLVED, GET_ORGANIZATIONS_REJECTED,
-    ADD_ORG_RESOLVED,
-    GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, ADD_EVENT_RESOLVED,
+    GET_ORGS_RESOLVED, GET_ORGS_REJECTED,
+    CREATE_ORG_RESOLVED,
+    GET_EVENTS_RESOLVED, DELETE_EVENT_RESOLVED, DELETE_EVENT_REJECTED, CREATE_EVENT_RESOLVED,
     SET_EVENTS_FINISHED, INCREMENT_EVENT_FINISH,
     GET_PROJECTS_RESOLVED, GET_PROJECTS_REJECTED, GET_PROJECTS_BY_ORG_RESOLVED, GET_PROJECTS_BY_ORG_REJECTED, 
     DELETE_PROJECT_RESOLVED, DELETE_PROJECT_REJECTED,
-    GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORG_ID_RESOLVED, GET_ORG_ID_REJECTED,
+    GET_EVENTS_REJECTED, LOGOUT_USER, GET_ORGS_BY_ID_RESOLVED, GET_ORGS_BY_ID_REJECTED,
     POST_USER_RESOLVED, POST_USER_PENDING, POST_USER_REJECTED,
     GET_EVENT_RESOLVED, GET_EVENT_REJECTED
 } from '../types';
@@ -34,7 +34,7 @@ const DEPRECATED_REDUCER = (state = initialState, action) => {
             return _.assign({}, state, { events: { ...state.events, animationVal: payload } });
         }
 
-        case ADD_EVENT_RESOLVED: {
+        case CREATE_EVENT_RESOLVED: {
             return _.assign({}, state, { events: [...state.events, payload] });
         }
 
@@ -46,11 +46,11 @@ const DEPRECATED_REDUCER = (state = initialState, action) => {
             return _.assign({}, state, { events: { ...state.events, error: { ...payload }, status: ERROR } });
         }
 
-        case ADD_ORG_RESOLVED: {
+        case CREATE_ORG_RESOLVED: {
             return _.assign({}, state, { organizations: [...state.organizations, payload] });
         }
 
-        case GET_ORG_ID_RESOLVED: {
+        case GET_ORGS_BY_ID_RESOLVED: {
             return _.assign({}, state, { profile: { ...state.profile,
 organizations: {
                 ..._.get(state.profile, 'organizations', []),
@@ -59,7 +59,7 @@ organizations: {
             } } });
         }
 
-        case GET_ORG_ID_REJECTED: {
+        case GET_ORGS_BY_ID_REJECTED: {
             return _.assign({}, state, { profile: { ...state.profile, error: { ...payload }, status: ERROR } });
         }
 
@@ -148,11 +148,11 @@ organizations: {
             return _.assign({}, state, { projects: { ...state.projects, error: { ...payload }, status: ERROR } });
         }
 
-        case GET_ORGANIZATIONS_RESOLVED: {
+        case GET_ORGS_RESOLVED: {
             return _.assign({}, state, { organizations: { ...state.organizations, data: [...payload.data], status: SUCCESS } });
         }
 
-        case GET_ORGANIZATIONS_REJECTED: {
+        case GET_ORGS_REJECTED: {
             return _.assign({}, state, { organizations: { ...state.organizations, error: { ...payload }, status: ERROR } });
         }
 

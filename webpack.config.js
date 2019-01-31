@@ -27,6 +27,17 @@ module.exports = {
                 test: /\.(png|jpg|jpeg|ttf|gif)$/,
                 exclude: /node_modules/,
                 use: 'url-loader?limit=100&name=[hash].[ext]'
+            },
+            {
+                test: /\.(mov|mp4)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[name].[ext]'
+                        }  
+                    }
+                ]
             }
         ]
     },

@@ -10,8 +10,8 @@ import './Event.scss';
 
 const EventItem = ({ event, filtered }) => {
     const date = filtered 
-        ? moment(event.eventDate).utc().format('h:mm a')
-        : moment(event.eventDate).utc().format('dddd MMM D, YYYY - h:mm a');
+        ? moment(event.date).format('h:mm a')
+        : moment(event.date).format('dddd MMM D, YYYY - h:mm a');
 
     return (
         <Card>
@@ -23,7 +23,7 @@ const EventItem = ({ event, filtered }) => {
             </div>
             {/* <img className="card-img-top" src={eventImg1} alt="Card image cap" /> */}
             <div className="card-body">
-                <span className="badge badge-secondary">{event.project || 'Unknown'}</span>
+                {/* <span className="badge badge-secondary">{event.project || 'Unknown'}</span> */}
                 <h4 className="card-title mb-1 mt-1">{event.name}</h4>
                 <p className="font-italic font-weight-light">{event.location}</p>
                 <p className="card-text">{event.description}</p>

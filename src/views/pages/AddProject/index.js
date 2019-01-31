@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { get, cloneDeep } from 'lodash';
 
 import Card from '../../lib/Card';
@@ -9,19 +9,12 @@ import { getProjectById, createProject } from '../../../state/actions/projectAct
 import { getOrganizations } from '../../../state/actions/organizationActions';
 import EditProject from '../../components/Forms/EditProject';
 
-const mapStateToProps = (state) => ({
-    events: get(state, 'events', {}),
-    organizations: _.get(state, 'organizations.data'),
-    organizationStatus: _.get(state, 'organizations.status'),
-    form: get(state, 'form.EditProject')
-});
-
 class AddProject extends Component {
     componentDidMount() {
         this.props.getOrganizations();
     }
 
-    submitEvent = () => {
+    submitProject = () => {
         const values = get(this.props.form, 'values', {});
         this.props.createProject(values);
     }
@@ -30,13 +23,26 @@ class AddProject extends Component {
         return (
             <Card>
                 <div className="card-body">
-                    <EditProject onSubmit={this.submitEvent} />
+                    <EditProject onSubmit={this.submitProject} />
                 </div>
             </Card>
         );
     }
 
+    redirectToCreatedProject = () => {
+        const { selectedProject } = this.props;
+        const projectId = _.get(selectedProject, 'data._id', '');
+
+        return <Redirect to={`/project/${projectId}`} />
+    };
+
     render() {
+        const shouldRedirect = this.props.createProjectStatus === SUCCESS
+
+        if (shouldRedirect) {
+            return this.redirectToCreatedProject();
+        }
+
         return (
             <div className="container">                    
                 <div className="row justify-content-center">
@@ -44,15 +50,15 @@ class AddProject extends Component {
                         <h2 className="ml-3">Add Project</h2>
                     </div>
                     <div className="col-3">
-                        <Link to="/">
-                        <button
-                            type="button" 
-                            className="btn btn-success float-right" 
-                            data-toggle="modal" 
-                            data-target="#exampleModal"
-                        >
-                            Back to Projects
-                        </button>
+                        <Link to="/projects">
+                            <button
+                                type="button" 
+                                className="btn btn-success float-right" 
+                                data-toggle="modal" 
+                                data-target="#exampleModal"
+                            >
+                                Back to Projects
+                            </button>
                         </Link>
                     </div>
                 </div>
@@ -65,5 +71,14 @@ class AddProject extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    events: get(state, 'events', {}),
+    organizations: _.get(state, 'organizations.data'),
+    organizationStatus: _.get(state, 'organizations.status'),
+    selectedProject: _.get(state, 'projects.selectedProject'),
+    createProjectStatus: _.get(state, 'projects.selectedProject.status.create'),
+    form: get(state, 'form.EditProject')
+});
 
 export default connect(mapStateToProps, { createProject, getOrganizations })(AddProject);

@@ -8,12 +8,12 @@ const OrganizationModel = require('./organizationModel');
 const ProjectSchema = new Schema({
     name: {
         type: String,
-        required: 'Kindly enter the project name'
-    },
-    tagline: {
-        type: String
+        required: 'Please enter the project name'
     },
     description: {
+        type: String
+    },
+    details: {
         type: String
     },
     createDate: {

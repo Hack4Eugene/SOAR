@@ -4,9 +4,13 @@ const endpoints = {
     /*
      * Organization endpoints
      */
+    GET_ORGANIZATION_BY_ID: '/organization/:organization_id',
+
     GET_ORGANIZATIONS_BY_ID: '/organization/:organization_ids',
 
     POST_ORGANIZATION: '/organization/:organization_id?',
+
+    UPDATE_ORGANIZATION: '/organization/:organization_id',
 
     DELETE_ORGANIZATION: '/organization/:organization_id',
 
@@ -32,6 +36,8 @@ const endpoints = {
     GET_EVENTS: '/events',
 
     GET_EVENT_BY_ID: '/event/:event_id',
+
+    GET_EVENTS_BY_ID: '/events/:event_ids',
 
     POST_EVENT: '/event/:event_id?',
 
