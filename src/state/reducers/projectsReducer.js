@@ -27,24 +27,31 @@ const projectReducer = (state = initialState, action) => {
     switch (type) {
         case GET_PROJECTS_RESOLVED: {
             return { 
-                ...state, 
+                ...state,
                 data: payload.data, 
                 status: SUCCESS 
             };
         }
 
         case GET_PROJECTS_REJECTED: {
-            return { error: { ...payload }, status: ERROR };
+            return { 
+                ...state,
+                error: payload, 
+                status: ERROR 
+            };
         }
 
         case DELETE_PROJECT_RESOLVED: {
-            return { ...state, status: SUCCESS };
+            return { 
+                ...state, 
+                status: SUCCESS 
+            };
         }
 
         case DELETE_PROJECT_REJECTED: {
             return { 
                 ...state, 
-                error: { ...payload }, 
+                error: payload, 
                 status: ERROR 
             };
         }

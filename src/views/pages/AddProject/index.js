@@ -1,19 +1,14 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import { get, cloneDeep } from 'lodash';
+import { get } from 'lodash';
 
 import Card from '../../lib/Card';
 import { SUCCESS } from '../../../state/statusTypes';
-import { getProjectById, createProject } from '../../../state/actions/projectActions';
-import { getOrganizations } from '../../../state/actions/organizationActions';
+import { createProject } from '../../../state/actions/projectActions';
 import EditProject from '../../components/Forms/EditProject';
 
 class AddProject extends Component {
-    componentDidMount() {
-        this.props.getOrganizations();
-    }
-
     submitProject = () => {
         const values = get(this.props.form, 'values', {});
         this.props.createProject(values);
@@ -74,11 +69,9 @@ class AddProject extends Component {
 
 const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
-    organizations: _.get(state, 'organizations.data'),
-    organizationStatus: _.get(state, 'organizations.status'),
     selectedProject: _.get(state, 'projects.selectedProject'),
     createProjectStatus: _.get(state, 'projects.selectedProject.status.create'),
     form: get(state, 'form.EditProject')
 });
 
-export default connect(mapStateToProps, { createProject, getOrganizations })(AddProject);
+export default connect(mapStateToProps, { createProject })(AddProject);

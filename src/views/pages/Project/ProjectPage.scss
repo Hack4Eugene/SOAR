@@ -126,11 +126,179 @@
 
 
 
+.project-page {
+    .edit-project-button {
+        border-radius: 0;
+        border-top-right-radius: 0.3rem;
+        border-bottom-left-radius: 0.3rem;
+        float: right;
+    }
+    .project-jumbotron {
+        padding: 2rem;
+    }
+    .project-image {
+        width: 100%;
+        border-radius: 0.3rem;
+        margin-bottom: 2rem;
+    }
+    .project-details-card {
+        margin-bottom: 2rem;
+        // border-color: #28a745;
+    }
+    .journey-card {
+        margin-bottom: 2rem;
+        border-color: #28a745;
 
+        .header {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
 
-.project-header-img {
-  width: 100%;
+            i {
+                color: #4f9c58;
+                margin: 0 0.5rem 0 1rem;
+            }
+        }
+
+        .event-timeline {
+            display: flex;
+            flex-flow: column nowrap;
+            margin-top: 2rem;
+
+            .event-row {
+                display: flex;
+                flex-flow: row nowrap;
+                justify-content: center;
+                align-items: center;
+
+                &:first-child {
+                    .event-node {
+                        &:before {
+                            height: 0;
+                        }
+                    }
+                }
+
+                &:last-child {
+                    .event-node {
+                        &:after {
+                            height: 0;
+                        }
+                    }
+                }
+
+                .event-date {
+                    margin: 0;
+                    display: flex;
+                    flex-flow: column nowrap;
+                    align-items: center;
+                    width: 5rem;
+                    min-width: 5rem;
+                    position: relative;
+
+                    &:after {
+                        content: '';
+                        position: absolute;
+                        bottom: 50%;
+                        left: 100%;
+                        border: 1rem solid transparent;
+                        border-top-color: #e2e3e5;
+                        border-right: 0;
+                        transform: rotate(45deg);
+                        margin-left: -0.9rem;
+                        margin-bottom: -20px;
+                    }
+                    
+                    .week-day {
+                        font-variant: small-caps;
+                        font-weight: bold;
+                        font-size: 1.1rem;
+                    }
+                }
+
+                .event-node {
+                    display: flex;
+                    position: relative;
+                    flex-flow: row nowrap;
+                    justify-content: center;
+                    color: #4f9c58;
+                    margin: 0 4rem;
+
+                    &:before {
+                        content: '';
+                        width: 1px;
+                        height: 6.5rem;
+                        background: #74b077;
+                        position: absolute;
+                        bottom: 100%;
+                        left: 50%;
+                        margin-left: -1px;
+                    }
+
+                    &:after {
+                        content: '';
+                        width: 1px;
+                        height: 6.5rem;
+                        background: #74b077;
+                        position: absolute;
+                        top: 100%;
+                        left: 50%;
+                        margin-left: -1px;
+                    }
+                }
+
+                .event-description {
+                    width: 500px;
+                    margin-bottom: 2rem;
+                    
+                    .event-card-body {
+                        display: flex;
+                        flex-flow: column nowrap;
+                        align-items: flex-end;
+                    }
+                }
+            }
+        }
+
+        hr {
+            margin-bottom: 2rem;
+        }
+
+        .event-card {
+            margin-bottom: 1rem;
+
+            .event-view-button {
+                margin-top: 1rem;
+            }
+        }
+    }
+    .alliance-card {
+        margin-bottom: 2rem;
+
+        .alliance-card-body {
+            display: flex;
+            flex-flow: row wrap;
+            padding-right: 0.25rem;
+    
+            .organization-card {
+                flex: 1 30%;
+                margin: 0 1rem 1rem 0;
+    
+                .organization-card-body {
+                    display: flex;
+                    flex-flow: column nowrap;
+                    justify-content: space-between;
+
+                    .org-view-button {
+                        width: 100%;
+                        margin-top: 1rem;
+                    }
+                }
+            }
+        }
+    }
 }
+
 
 .card-org-image {
   width: 90%;
@@ -153,6 +321,3 @@
   justify-content: center;
 }
 
-.project-jumbo {
-  margin-bottom: 0;
-}
