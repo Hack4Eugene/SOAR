@@ -73,7 +73,7 @@ class EditEvent extends Component {
                     />
                     <CustomSelect
                         label="Project"
-                        name="project"
+                        name="projectId"
                     >
                         <option>Project...</option>
                         {_.map(this.props.projects, project => (
@@ -85,13 +85,15 @@ class EditEvent extends Component {
                         name="tags"
                         component="input"
                         type="text"
+                        normalize={value => value.split(',')}
                     />
-                    {/* <CustomField
+                    <CustomField
                         label="Goals"
                         name="goals"
                         component="input"
                         type="text"
-                    /> */}
+                        normalize={value => value.split(',')}
+                    />
                     <button className="mt-3 btn btn-primary" type="submit">Submit</button>
                     {this.showError()}
                 </form>

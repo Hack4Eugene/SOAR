@@ -10,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
-import { getOrganizations, getOrganizationById } from '../../../state/actions/organizationActions';
+import { getOrganizationById } from '../../../state/actions/organizationActions';
 import { getEventsById } from '../../../state/actions/eventActions';
 import { NOT_STARTED, SUCCESS } from '../../../state/statusTypes';
 
@@ -95,7 +95,7 @@ class Project extends Component {
                     <hr />
                     <p style={{ margin: 0 }}>{tagline}</p>
                 </Jumbotron>
-                <img alt="project-image" src={parkImg} className="project-image" />
+                <img className="project-image" src={parkImg} alt="project image" />
             </Fragment>
         );
     }
@@ -292,10 +292,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     getProjectById, 
+    getOrganizationById,
     updateProject, 
-    getOrganizations, 
     getEventsById,
-    getOrganizationById
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Project);

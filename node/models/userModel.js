@@ -46,7 +46,7 @@ const UserSchema = new Schema({
     ]
 });
 
-UserSchema.statics.getAttendeeDetails = function (attendeeIds) {
+UserSchema.statics.getAttendees = function (attendeeIds) {
     return this.find({ _id: { $in: attendeeIds } }, { name: 1 }).exec();
 };
 
