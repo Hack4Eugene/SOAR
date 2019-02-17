@@ -15,6 +15,10 @@ class EditProject extends Component {
         };
     }
 
+    componentDidMount() {
+        this.props.getOrganizations();
+    }
+
     showError() {
         const { updateProjectStatus, createProjectStatus, selectedProject } = this.props;
 
@@ -69,7 +73,7 @@ class EditProject extends Component {
                     />
                     <CustomSelect
                         label="Organization"
-                        name="organization"
+                        name="organizationId"
                     >
                         <option>Organization...</option>
                         {_.map(this.props.organizations, org => (

@@ -25,8 +25,12 @@ const ProjectSchema = new Schema({
     endDate: {
         type: Date
     },
+    organizationId: {
+        type: Schema.Types.String,
+        required: 'objectId of the organization is needed'
+    },
     organization: {
-        type: Schema.Types.ObjectId,
+        type: Object,
         required: 'objectId of the organization is needed'
     },
     alliance: {

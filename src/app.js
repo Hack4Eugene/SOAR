@@ -26,7 +26,7 @@ class App extends Component {
         return (
             <div>
                 <Header />
-                <div className="mr-3 ml-3 mt-4 site-body">
+                <div className="site-content">
                     <Switch>
                         <Route path="/" exact component={Lander} />
                         <Route path="/login" component={LoginPage} />

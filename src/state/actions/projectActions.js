@@ -80,5 +80,8 @@ export const createProject = projectData => (dispatch, getState) => {
     HttpClient(state)
         .then(client => client.post(`${loadEndpoint(env, POST_PROJECT)}`, projectData))
         .then(result => dispatch({ type: CREATE_PROJECT_RESOLVED, payload: result }))
-        .catch(err => dispatch({ type: CREATE_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) }));
+        .catch(err => {
+            console.log('err', err)
+            dispatch({ type: CREATE_PROJECT_REJECTED, payload: stripAxiosRequestFromError(err) })
+        });
 };
