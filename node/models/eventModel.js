@@ -20,9 +20,12 @@ const EventSchema = new Schema({
     date: {
         type: Date
     },
-    project: {
-        type: Schema.Types.ObjectId,
+    projectId: {
+        type: String,
         required: 'Please enter the project.id'
+    },
+    project: {
+        type: Object
     },
     // organization: {
     //     type: Schema.Types.ObjectId,
@@ -35,15 +38,15 @@ const EventSchema = new Schema({
     tags: {
         type: [String]
     },
-    attendees: {
+    attendeeIds: {
         type: [String]
     },
-    // goals: {
-    //     type: [{
-    //         text: String,
-    //         completed: Boolean
-    //     }]
-    // }
+    attendees: {
+        type: [Object]
+    },
+    goals: {
+        type: [String]
+    }
 });
 
 EventSchema.statics.getArrayOfEventsById = function (eventIdStringArray) {

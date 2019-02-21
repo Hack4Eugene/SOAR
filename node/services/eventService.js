@@ -6,14 +6,20 @@ const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
 
 module.exports = {
-    createOrUpdate(req, res) {
+    async createOrUpdate(req, res) {
         if (!req.params.event_id) {
-            return EventModel.create(req.body)
+            const project = await ProjectModel.getById(req.body.projectId)
+            const eventWithProject = { ...req.body, project };
+
+            return EventModel.create(eventWithProject)
                 .then(newEventDocument => {
-                    return ProjectModel.findOneAndUpdate({ _id: req.body.project_id }, { $push: { events: newEventDocument._id } })
-                        .then(projectDocument => {
-                            res.status(200).send(newEventDocument);
-                        });
+                    return ProjectModel.findOneAndUpdate({ 
+                        _id: req.body.project_id },
+                        { $push: { events: newEventDocument._id } 
+                    })
+                    .then(projectDocument => {
+                        res.status(200).send(newEventDocument);
+                    });
                 })
                 .catch(error => {
                     res.status(error.status || 500).send(error);
@@ -30,11 +36,11 @@ module.exports = {
                 })
                 .then(() => {
                     _.forEach(req.body, (value, key) => {
-                        if (key === 'attendee') {
-                            const attendees = newEventDocument.attendees;
-                            const shouldRemoveAttendee = _.includes(attendees, value);
-                            if (shouldRemoveAttendee) return _.remove(attendees, userId => { return userId === value; });
-                            attendees.push(value);
+                        if (key === 'attendeeId') {
+                            const attendeeIds = newEventDocument.attendeeIds;
+                            const shouldRemoveAttendee = _.includes(attendeeIds, value);
+                            if (shouldRemoveAttendee) return _.remove(attendeeIds, userId => { return userId === value; });
+                            attendeeIds.push(value);
                         }
 
                         newEventDocument[key] = value;
@@ -46,10 +52,12 @@ module.exports = {
                     newEventDocument = updatedEventDocument;
 
                     if (req.body.project) {
-                        return ProjectModel.addEventId(req.body.project, req.params.event_id);
+                        return ProjectModel.addEventId(req.body.projectId, req.params.event_id);
                     }
                 })
-                .then(() => { res.status(200).send(newEventDocument); })
+                .then(() => { 
+                    res.status(200).send(newEventDocument); 
+                })
                 .catch(error => {
                     res.status(error.status || 500).send(error);
                 });
@@ -72,10 +80,10 @@ module.exports = {
                 .exec()
                 .then(res => res.toObject())
 
-            const attendeesDetails = await UserModel.getAttendeeDetails(eventDocument.attendees)
-            const eventWithAttendeeDetails = { ...eventDocument, attendeesDetails }
+            const attendees = await UserModel.getAttendees(eventDocument.attendeeIds)
+            const eventWithAttendees = { ...eventDocument, attendees }
 
-            res.status(200).send(eventWithAttendeeDetails)
+            res.status(200).send(eventWithAttendees)
         } catch(err) {
             throw res.status(err.status || 500).send(err);
         }
@@ -84,9 +92,6 @@ module.exports = {
     async getMultipleByID(req, res) {
         try {
             const detailedEvents = await EventModel.getArrayOfEventsById(_.split(req.params.event_ids, ','))
-            // const attendeesDetails = await UserModel.getAttendeeDetails(eventDocument.attendees)
-            // const eventWithAttendeeDetails = { ...eventDocument, attendeesDetails }
-
             res.status(200).send(detailedEvents)
         } catch(err) {
             throw res.status(err.status || 500).send(err);
