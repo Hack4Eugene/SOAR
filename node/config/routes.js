@@ -16,6 +16,8 @@ const endpoints = {
 
     GET_ORGANIZATIONS: '/organizations',
 
+    GET_ORG_PROJECTS_BY_ID: '/organization/projectIds/:project_ids',
+
     /*
      * Project endpoints
      */
@@ -23,7 +25,7 @@ const endpoints = {
 
     GET_PROJECT_BY_ID: '/project/:project_id',
 
-    GET_PROJECTS_BY_ORGANIZATION: '/projects/by/organization/:organization_id',
+    GET_PROJECTS_BY_ID: '/project/:project_ids',
 
     POST_PROJECT: '/project/:project_id?',
 

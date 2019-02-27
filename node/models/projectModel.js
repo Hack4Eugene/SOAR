@@ -69,4 +69,13 @@ ProjectSchema.statics.getById = function (projectId) {
         });
 };
 
+ProjectSchema.statics.getMultipleById = function (projectIds) {
+    const projectIdObjectIdArray = _.map(projectIds, ObjectId);
+    return this.find({ _id: { $in: projectIdObjectIdArray } }).exec()
+        .then(projects => {
+            return projects
+        })
+        .catch(err => console.log(err));
+};
+
 module.exports = mongoose.model('ProjectModel', ProjectSchema);

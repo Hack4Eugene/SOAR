@@ -50,6 +50,10 @@ UserSchema.statics.getAttendees = function (attendeeIds) {
     return this.find({ _id: { $in: attendeeIds } }, { name: 1 }).exec();
 };
 
+UserSchema.statics.getOrgMembers = function (memberIds) {
+    return this.find({ _id: { $in: memberIds } }, { name: 1 }).exec();
+};
+
 UserSchema.statics.addRole = function (userID, entity, entityID) {
     const newRole = {
         entity,

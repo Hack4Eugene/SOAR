@@ -127,6 +127,10 @@
                         display: flex;
                         flex-flow: column nowrap;
                         align-items: flex-end;
+
+                        .top {
+                            width: 100%;
+                        }
                     }
                 }
             }

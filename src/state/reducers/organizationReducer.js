@@ -14,14 +14,21 @@ import {
     GET_ORGS_BY_ID_REJECTED,
     GET_ORG_BY_ID_PENDING,
     GET_ORG_BY_ID_RESOLVED,
-    GET_ORG_BY_ID_REJECTED
+    GET_ORG_BY_ID_REJECTED,
+    GET_ORG_PROJECTS_BY_ID_PENDING,
+    GET_ORG_PROJECTS_BY_ID_RESOLVED,
+    GET_ORG_PROJECTS_BY_ID_REJECTED
 } from '../types';
 
 const initialState = {
     data: [],
     status: NOT_STARTED,
     selectedOrg: {
-        data: {},
+        data: {
+            projects: {
+                status: NOT_STARTED
+            }
+        },
         status: {
             get: NOT_STARTED,
             create: NOT_STARTED,
@@ -139,11 +146,22 @@ const organizationReducer = (state = initialState, action) => {
         }
 
         case GET_ORG_BY_ID_RESOLVED: {
+            console.log('GET_ORG_BY_ID_RESOLVED', payload)
+            const orgProjects = {
+                data: payload.data.projects,
+                status: NOT_STARTED
+            }
+
+            payload.data.projects = orgProjects;
+
             return { 
                 ...state, 
                 selectedOrg: {
                     data: payload.data,
-                    status: { get: SUCCESS }
+                    status: { 
+                        ...state.selectedOrg.status,
+                        get: SUCCESS 
+                    }
                 }
             };
         }
@@ -153,7 +171,10 @@ const organizationReducer = (state = initialState, action) => {
                 ...state, 
                 selectedOrg: {
                     error: payload,
-                    status: { get: ERROR }
+                    status: { 
+                        ...state.selectedOrg.status,
+                        get: ERROR 
+                    }
                 }
             };
         }
@@ -162,9 +183,62 @@ const organizationReducer = (state = initialState, action) => {
             return { 
                 ...state, 
                 selectedOrg: {
-                    status: { get: LOADING }
+                    status: { 
+                        ...state.selectedOrg.status,
+                        get: LOADING 
+                    }
                 } 
             };
+        }
+
+        case GET_ORG_PROJECTS_BY_ID_PENDING: {
+            // const orgProjects = { status: LOADING }
+            // payload.data[0].projects = orgProjects;
+
+            // return {
+            //     ...state,
+            //     selectedOrg: {
+            //         data: payload.data
+            //     } 
+            // }
+        }
+
+        case GET_ORG_PROJECTS_BY_ID_RESOLVED: {
+            const orgProjects = { 
+                data: payload.data,
+                status: SUCCESS 
+            }
+
+            // payload.data[0].projects = orgProjects;
+
+            return {
+                ...state,
+                selectedOrg: {
+                    data: {
+                        ...state.selectedOrg.data,
+                        projects: orgProjects
+                    },
+                    status: {
+                        ...state.selectedOrg.status
+                    }
+                } 
+            }
+        }
+
+        case GET_ORG_PROJECTS_BY_ID_REJECTED: {
+            const orgProjects = { 
+                error: payload,
+                status: ERROR 
+            }
+
+            // payload.data[0].projects = orgProjects;
+
+            // return {
+            //     ...state,
+            //     selectedOrg: {
+            //         data: payload.data
+            //     } 
+            // }
         }
 
         default: return state;

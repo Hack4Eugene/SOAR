@@ -5,8 +5,6 @@ import { stripAxiosRequestFromError } from '../../lib/util';
 import {
     DELETE_PROJECT_REJECTED,
     DELETE_PROJECT_RESOLVED, GET_PROJECT_BY_ID_PENDING, GET_PROJECT_BY_ID_REJECTED, GET_PROJECT_BY_ID_RESOLVED,
-    GET_PROJECTS_BY_ORG_REJECTED,
-    GET_PROJECTS_BY_ORG_RESOLVED,
     GET_PROJECTS_REJECTED, GET_PROJECTS_RESOLVED,
     UPDATE_PROJECT_RESOLVED, UPDATE_PROJECT_REJECTED, UPDATE_PROJECT_PENDING,
     CREATE_PROJECT_RESOLVED, CREATE_PROJECT_REJECTED, CREATE_PROJECT_PENDING
@@ -14,18 +12,7 @@ import {
 
 import { serviceRoutes } from '../../config/routes';
 
-const { GET_PROJECTS_BY_ORGANIZATION, GET_PROJECTS, DELETE_PROJECT, GET_PROJECT_BY_ID, POST_PROJECT, UPDATE_PROJECT } = serviceRoutes;
-
-export const getProjectsByOrganization = projectID => {
-    return (dispatch, getState) => {
-        HttpClient(getState()).then(client => client.get(
-            `${loadEndpoint(
-                _.get(getState(), 'env'), GET_PROJECTS_BY_ORGANIZATION)}/${projectID}`
-            ))
-            .then(result => dispatch({ type: GET_PROJECTS_BY_ORG_RESOLVED, payload: result }))
-            .catch(err => dispatch({ type: GET_PROJECTS_BY_ORG_REJECTED, payload: err }));
-    };
-};
+const { GET_PROJECTS, DELETE_PROJECT, GET_PROJECT_BY_ID, POST_PROJECT, UPDATE_PROJECT } = serviceRoutes;
 
 export const getProjects = () => {
     return (dispatch, getState) => {

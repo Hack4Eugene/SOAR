@@ -1,36 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import _, { get, map } from 'lodash';
 
 import ToolBar from '../../lib/ToolBar';
 import Modal from '../../lib/Modal';
 import EditOrganization from '../../components/Forms/EditOrganization';
 
-import { SUCCESS } from '../../../state/statusTypes';
-import { getOrganizationById, getOrganizationsById, updateOrganization } from '../../../state/actions/organizationActions';
-import { getProjectsByOrganization } from '../../../state/actions/projectActions';
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
+import Jumbotron from 'react-bootstrap/Jumbotron';
+import defaultProfilePic from '../../../static/imgs/default-profile-pic.jpeg';
 
-import '../UserProfile/UserProfilePage.scss';
+import { SUCCESS, NOT_STARTED } from '../../../state/statusTypes';
+import { getOrganizationById, getOrganizationsById, updateOrganization, getOrgProjectsById } from '../../../state/actions/organizationActions';
 
-class ProjectItem extends Component {
-    render() {
-        const truncatedDescription = _.truncate(this.props.description, {
-            length: 200,
-            separator: /,? +/
-        });
-        return (
-            <div className="card m-3" style={{ maxWidth: '300px' }}>
-                <div className="card-header">
-                    <h5 className="card-title mb-0">{this.props.title}</h5>
-                </div>
-                <div className="card-body" style={{ maxHeight: '250px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                    <p className="card-text">{truncatedDescription}</p>
-                    <a href={`/project/${this.props.id}`} className="btn btn-outline-success d-flex" style={{ marginLeft: 'auto', maxWidth: '99px' }}>More Info</a>
-                </div>
-            </div>
-        );
-    }
-}
+import './Organization.scss';
 
 class OrganizationPage extends Component {
     constructor(props) {
@@ -39,14 +26,22 @@ class OrganizationPage extends Component {
             organizationID: this.props.computedMatch.params.id,
             showEditOrgModal: false
         };
+        this.once = 0;
     }
 
     componentDidMount() {
         this.props.getOrganizationById(this.state.organizationID);
-        this.props.getProjectsByOrganization(this.state.organizationID);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
+        if (
+            this.props.getOrgStatus === SUCCESS
+            && this.props.getOrgProjectsStatus === NOT_STARTED
+            && !_.isEmpty(this.props.organization.projectIds)
+        ) {
+            this.props.getOrgProjectsById(this.props.organization.projectIds)
+        }
+
         const isModalShown = this.state.showEditOrgModal;
         const isNewOrgData = prevProps.organization !== this.props.organization;
         const isNewDataFinal = this.props.updateOrgStatus === SUCCESS;
@@ -56,106 +51,234 @@ class OrganizationPage extends Component {
         }
     }
 
-    accessToEntity(entity) {
-        const userOrganizations = _.get(this.props.user, 'organizations', []);
-        const organizationsByIDs = _.map(userOrganizations, 'id');
-
-        return _.includes(organizationsByIDs, entity);
+    toggleModal = () => {
+        this.setState({ 
+            showEditOrgModal: !this.state.showEditOrgModal 
+        })
     }
 
-    showProjects() {
-        if (this.props.projectsStatus === 'OK') {
-            if (this.props.projects.length === 0) {
-                const userHasAccess = this.accessToEntity(this.state.organizationID);
-                return (
-                    <div className="jumbotron jumbotron-fluid p-4">
-                        <div className="container">
-                            <h3 className="display-5">This organization doesn't have any projects yet.</h3>
-                            {userHasAccess ? <a href="#" className="btn btn-outline-success d-flex" style={{ margin: 'auto', width: '160px' }}>Create New Project</a> : null}
-                        </div>
-                    </div>
-                );
-            }
+    addUserToOrganization = () => {
+        const { _id, memberIds } = this.props.organization;
+        const newMemberIds = [ ...memberIds, this.props.userId ]
+        this.props.updateOrganization(_id, { memberIds: newMemberIds });
+    };
 
-            const ProjectList = this.props.projects.length
-                ? map(this.props.projects, (project, i) => <ProjectItem key={i} title={project.name} description={project.description} id={project._id} />)
-                : <div />;
+    submitEdits = () => {
+        const updates = _.get(this.props, 'form.values', {});
+        this.props.updateOrganization(this.props.organization._id, updates);
+    };
 
-            return ProjectList;
-        }
+    renderModal() {
+        return (
+            <Modal 
+                show={this.state.showEditOrgModal} 
+                hide={() => this.setState({ showEditOrgModal: !this.state.showEditOrgModal })}
+            >
+                <EditOrganization
+                    initialValues={this.props.organization}
+                    onSubmit={this.submitEdits}
+                />
+            </Modal>
+        );
+    }
+
+    renderHeader(name) {
+        return (
+            <div className="org-header">
+                <h1 className="org-name">{name}</h1>
+            </div>
+        )
+    }
+
+    renderContactInfo(address, website, contactInformation) {
+        const { city, state } = address;
+        const { email, phoneNumber } = contactInformation;
 
         return (
-            <div className="col-8">
-                <h4>Loading...</h4>
+            <div className="contact">
+                <Card>
+                    <Card.Body>
+                        <ListGroup variant="flush">
+                            <ListGroup.Item>
+                                <div>{`${city}, ${state}`}</div>
+                            </ListGroup.Item>
+                            {
+                                email && 
+                                <ListGroup.Item>
+                                    <div>{email}</div>
+                                </ListGroup.Item>
+                            }
+                            {
+                                website && 
+                                <ListGroup.Item>
+                                    <a href={`https://${website}`}>{website}</a>
+                                </ListGroup.Item>
+                            }
+                            {
+                                phoneNumber && 
+                                <ListGroup.Item>
+                                    <div>{phoneNumber}</div>
+                                </ListGroup.Item>
+                            }
+                        </ListGroup>
+                    </Card.Body>
+                </Card>
             </div>
         );
     }
 
-    showTags() {
-        const tagList = [];
-        const badgeList = ['badge-success', 'badge-warning', 'badge-primary', 'badge-danger'];
-
-        _.forEach(this.props.organization.tags, tag => {
-            const randomIndex = Math.floor(Math.random() * badgeList.length);
-            const dynamicClassName = `align-self-center badge badge-pill ${badgeList[randomIndex]} mr-2`;
-            tagList.push(<span className={dynamicClassName} key={tag}>{tag}</span>);
-        });
-
-        if (tagList.length > 0) {
-            return (
-                <div>
-                    <p className="lead">
-                        Are you interested in joining our organization? We're looking for individuals with the following skills and interests:
-                    </p>
-                    {tagList}
-                </div>
-            );
-        }
-        return (
-            <p className="lead">Are you interested in joining our organization?</p>
+    renderJoinButton(userIsMember) {
+        return userIsMember ? (
+            <Button 
+                variant="outline-success"
+                className="join-project-button"
+            >
+                You're a member!
+            </Button>
+        ) : (
+            <Button 
+                variant="outline-success"
+                className="join-project-button"
+                onClick={this.addUserToOrganization}
+            >
+                Request to join
+            </Button>
         );
     }
 
-    submitEdits = () => {
-        const updates = _.get(this.props.form, 'values', {});
-        this.props.updateOrganization(this.props.organization._id, updates);
-    };
+    renderEditButton() {
+        return (
+            <Button 
+                variant="outline-success"
+                className="edit-org-button"
+                onClick={this.toggleModal}
+            >
+                Edit organization
+            </Button>
+        )
+    }
+
+    renderDescription(description) {
+        return (
+            <div className="description">
+                <Card>
+                    <Card.Header>
+                        <h5>Mission Statement</h5>
+                    </Card.Header>
+                    <Card.Body>
+                        {description}
+                    </Card.Body>
+                </Card>
+            </div>
+        );
+    }
+
+    renderProjects(projects) {
+        const projectsOrMsg = !_.isEmpty(projects)
+            ? _.map(projects, (project, index) => this.renderProjectCard(project, index))
+            : <i>No projects yet!</i>
+
+        return (
+            <div className="org-projects">
+                <Card>
+                    <Card.Header>
+                        <h5>Projects</h5>
+                    </Card.Header>
+                    <Card.Body className="org-projects-body">
+                        {projectsOrMsg}
+                    </Card.Body>
+                </Card>
+            </div>
+        );
+    }
+
+    renderProjectCard(project, index) {
+        const { name, _id, description } = project;
+
+        return (
+            <Card key={index} className="project-card">
+                {/* <Card.Img variant="top" src="holder.js/100px180" /> */}
+                <Card.Body className="project-card-body">
+                    <div className="top">
+                        <Card.Title>{name}</Card.Title>
+                        <Card.Text>
+                            {_.truncate(description, { 'length': 250 })}
+                        </Card.Text>
+                    </div>
+                    <Link to={`/project/${_id}`}>
+                        <Button 
+                            variant="outline-success"
+                            className="project-view-button"
+                        >
+                            View
+                        </Button>
+                    </Link>
+                </Card.Body>
+            </Card>
+        );
+    }
+
+    renderMembers(members) {
+        const membersOrMsg = !_.isEmpty(members) 
+            ? _.map(members, (member, index) => this.renderMember(member, index))
+            : <i>No members yet!</i>
+
+        return (
+            <div className="org-members">
+                <Card>
+                    <Card.Header>
+                        <h5>Members</h5>
+                    </Card.Header>
+                    <Card.Body className="org-members-body">
+                        {membersOrMsg}
+                    </Card.Body>
+                </Card>
+            </div>
+        );
+    }
+
+    renderMember(member, index) {
+        return (
+            <div key={`member-${index}`} className="org-member">
+                <img src={defaultProfilePic} />
+                <div>{member.name}</div>
+            </div>
+        )
+    }
 
     render() {
+        const { 
+            name, 
+            address, 
+            contactInformation, 
+            description, 
+            projects, 
+            members, 
+            memberIds, 
+            website 
+        } = this.props.organization;
+
+        const userIsMember = _.includes(memberIds, this.props.userId);
+
+        if (this.props.getOrgStatus !== SUCCESS) {
+            return <div>Loading</div>
+        }
+
         return (
-            <div className="container">
-                <Modal 
-                    show={this.state.showEditOrgModal} 
-                    hide={() => this.setState({ showEditOrgModal: !this.state.showEditOrgModal })}
-                >
-                    <EditOrganization
-                        initialValues={this.props.organization}
-                        onSubmit={this.submitEdits}
-                    />
-                </Modal>
-                <div className="jumbotron p-4">
-                    <ToolBar onEdit={() => this.setState({ showEditOrgModal: !this.state.showEditOrgModal })}>
-                        <h1 className="display-4">{this.props.organization.name}</h1>
-                    </ToolBar>
-                    <p className="lead">{this.props.organization.tagline || ''}</p>
-                    <hr className="my-4" />
-                    <p>{this.props.organization.description || ''}</p>
-                    <hr className="my-4" />
-                    <input className="form-control form-control-lg" type="text" placeholder="Filter projects by tag..." />
-                </div>
-                <div className="container">
-                    <h2 className="display-4">Projects</h2>
-                    <div className="d-flex flex-row flex-wrap justify-content-start">
-                        {this.showProjects()}
+            <div className="org-page">
+                {this.renderModal()}
+                {this.renderHeader(name, address, contactInformation, description)}
+                <hr />
+                <div className="org-content">
+                    <div className="side">
+                        {this.renderJoinButton(userIsMember)}
+                        {this.renderEditButton()}
+                        {this.renderContactInfo(address, website, contactInformation)}
+                        {this.renderMembers(members)}
                     </div>
-                </div>
-                <div className="jumbotron jumbotron-fluid p-4" style={{ marginTop: '2rem' }}>
-                    <div className="container">
-                        <h1 className="display-4">Lend a hand! ✋</h1>
-                        <div className="d-flex flex-wrap justify-content-between">
-                            {this.showTags()}
-                            <button type="button" className="btn btn-outline-success float-right align-self-center">Join Now</button>
-                        </div>
+                    <div className="main">
+                        {this.renderDescription(description)}
+                        {this.renderProjects(projects.data)}
                     </div>
                 </div>
             </div>
@@ -167,18 +290,22 @@ const mapStateToProps = (state) => ({
     events: get(state, 'events', {}),
     posts: get(state, 'posts', {}),
     user: get(state, 'user', {}),
-    organization: get(state, 'organizations.selectedOrg.data.0', {}),
-    projects: get(state, 'projects.projectsForOrganization.data', []),
-    projectsStatus: get(state, 'projects.projectsForOrganization.statusText', 'NOT_STARTED'),
-    updateOrgStatus: _.get(state, 'projects.selectedOrganization.status.update'),
-    form: _.get(state, 'form.EditOrganization')
+    organization: get(state, 'organizations.selectedOrg.data', {}),
+    projects: get(state, 'organizations.selectedOrg.data.projects.data', []),
+    projectsStatus: get(state, 'projects.projectsForOrganization.statusText', NOT_STARTED),
+    updateOrgStatus: _.get(state, 'organizations.selectedOrg.status.update'),
+    getOrgStatus: _.get(state, 'organizations.selectedOrg.status.get'),
+    getOrgProjectsStatus: _.get(state, 'organizations.selectedOrg.data.projects.status', NOT_STARTED),
+    projectIds: _.get(state, 'organizations.selectedOrg.data.0.projectIds'),
+    form: _.get(state, 'form.EditOrganization'),
+    userId: _.get(state, 'user.data._id', ''),
 });
 
 const mapDispatchToProps = { 
     getOrganizationById, 
     getOrganizationsById, 
-    getProjectsByOrganization,
-    updateOrganization
+    updateOrganization,
+    getOrgProjectsById
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrganizationPage);

@@ -3,7 +3,6 @@ import {
     GET_PROJECT_BY_ID_PENDING, GET_PROJECT_BY_ID_REJECTED, GET_PROJECT_BY_ID_RESOLVED,
     DELETE_PROJECT_REJECTED, DELETE_PROJECT_RESOLVED, 
     GET_PROJECTS_REJECTED, GET_PROJECTS_RESOLVED,
-    GET_PROJECTS_BY_ORG_RESOLVED, GET_PROJECTS_BY_ORG_REJECTED,
     UPDATE_PROJECT_RESOLVED, UPDATE_PROJECT_PENDING, UPDATE_PROJECT_REJECTED,
     CREATE_PROJECT_RESOLVED, CREATE_PROJECT_PENDING, CREATE_PROJECT_REJECTED
 } from '../types';
@@ -52,22 +51,6 @@ const projectReducer = (state = initialState, action) => {
             return { 
                 ...state, 
                 error: payload, 
-                status: ERROR 
-            };
-        }
-
-        case GET_PROJECTS_BY_ORG_RESOLVED: {
-            return { 
-                ...state, 
-                projectsForOrganization: payload, 
-                status: SUCCESS 
-            };
-        }
-
-        case GET_PROJECTS_BY_ORG_REJECTED: {
-            return { 
-                ...state, 
-                error: { ...payload }, 
                 status: ERROR 
             };
         }
