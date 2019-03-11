@@ -36,7 +36,7 @@ module.exports = {
             });
     },
 
-    getMultipleByIDs: (req, res, next) => {
+    getMultipleById: (req, res, next) => {
         const userIdArray = _.map(_.split(req.params.user_ids, ','), ObjectId);
 
         UserModel.find({ _id: { $in: userIdArray } })

@@ -48,10 +48,24 @@ const OrganizationSchema = new Schema({
         type: Date,
         default: null
     },
+    projectIds: {
+        type: [String],
+        default: []
+    },
+    // projects: {
+    //     type: [Schema.Types.ObjectId],
+    //     default: []
+    // },
     tags: {
         type: [String],
         default: []
-    }
+    },
+    memberIds: {
+        type: [String]
+    },
+    // members: {
+    //     type: [Object]
+    // },
 });
 
 OrganizationSchema.statics.getById = function (organizationId) {
