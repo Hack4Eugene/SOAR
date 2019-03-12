@@ -43,7 +43,22 @@ const UserSchema = new Schema({
                 required: 'Please submit the ID of the entity for access'
             }
         }
-    ]
+    ],
+    email: {
+        type: String
+    },
+    location: {
+        type: String
+    },
+    website: {
+        type: String
+    },
+    phoneNumber: {
+        type: String
+    },
+    description: {
+        type: String
+    }
 });
 
 UserSchema.statics.getAttendees = function (attendeeIds) {

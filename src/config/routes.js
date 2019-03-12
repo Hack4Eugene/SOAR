@@ -66,6 +66,8 @@ module.exports = {
         LOGIN: '/login',
 
         POST_USER: '/user',
+        
+        UPDATE_USER: '/user',
 
         DELETE_USER: '/user'
     }

@@ -146,7 +146,6 @@ const organizationReducer = (state = initialState, action) => {
         }
 
         case GET_ORG_BY_ID_RESOLVED: {
-            console.log('GET_ORG_BY_ID_RESOLVED', payload)
             const orgProjects = {
                 data: payload.data.projects,
                 status: NOT_STARTED

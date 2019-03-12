@@ -13,6 +13,7 @@ import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Jumbotron from 'react-bootstrap/Jumbotron';
 import defaultProfilePic from '../../../static/imgs/default-profile-pic.jpeg';
+import Loader from '../../global/Loader';
 
 import { SUCCESS, NOT_STARTED } from '../../../state/statusTypes';
 import { getOrganizationById, getOrganizationsById, updateOrganization, getOrgProjectsById } from '../../../state/actions/organizationActions';
@@ -247,6 +248,8 @@ class OrganizationPage extends Component {
     }
 
     render() {
+        const { organization, getOrgStatus, userId } = this.props;
+
         const { 
             name, 
             address, 
@@ -256,18 +259,16 @@ class OrganizationPage extends Component {
             members, 
             memberIds, 
             website 
-        } = this.props.organization;
+        } = organization;
 
-        const userIsMember = _.includes(memberIds, this.props.userId);
-
-        if (this.props.getOrgStatus !== SUCCESS) {
-            return <div>Loading</div>
-        }
+        if (getOrgStatus !== SUCCESS) return <Loader />;
+        
+        const userIsMember = _.includes(memberIds, userId);
 
         return (
             <div className="org-page">
                 {this.renderModal()}
-                {this.renderHeader(name, address, contactInformation, description)}
+                {this.renderHeader(name)}
                 <hr />
                 <div className="org-content">
                     <div className="side">
