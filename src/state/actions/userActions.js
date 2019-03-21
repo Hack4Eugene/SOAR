@@ -10,6 +10,9 @@ import {
     POST_USER_PENDING,
     POST_USER_REJECTED,
     POST_USER_RESOLVED,
+    UPDATE_USER_PENDING,
+    UPDATE_USER_REJECTED,
+    UPDATE_USER_RESOLVED,
     DELETE_USER_PENDING,
     DELETE_USER_RESOLVED,
     DELETE_USER_REJECTED
@@ -17,7 +20,7 @@ import {
 import { serviceRoutes } from '../../config/routes';
 import { loginUser } from './authenticationActions';
 
-const { POST_USER } = serviceRoutes;
+const { POST_USER, UPDATE_USER } = serviceRoutes;
 
 export const createUser = profile => {
     return (dispatch, getState) => {
@@ -43,6 +46,22 @@ export const createUser = profile => {
                 return;
             })
             .catch(err => dispatch({ type: POST_USER_REJECTED, payload: stripAxiosRequestFromError(err) }));
+    };
+};
+
+export const updateUser = (id, updates) => {
+    
+    return (dispatch, getState) => {
+        dispatch({ type: UPDATE_USER_PENDING });
+        
+        const state = getState();
+        const url = `${loadEndpoint(state.env, UPDATE_USER)}/${id}`;
+
+        HttpClient(getState())
+            .then(client => client.post(url, updates))
+            .then(result => dispatch({ type: UPDATE_USER_RESOLVED, payload: result.data }))
+            // .then(() => dispatch(getUserByID()))
+            .catch(err => dispatch({ type: UPDATE_USER_REJECTED, payload: err }));
     };
 };
 

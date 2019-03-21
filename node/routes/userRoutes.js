@@ -14,6 +14,8 @@ module.exports = function (app) {
 
     app.post(routes.POST_USER, createOrUpdate);
 
+    app.post(routes.UPDATE_USER, createOrUpdate);
+
     app.post(routes.CREATE_USER_ROLE, authenticate, addRolePermission, postUserRole);
 
     app.delete(routes.DELETE_USER_ROLE, authenticate, deleteUserRole);

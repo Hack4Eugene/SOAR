@@ -151,9 +151,9 @@ module.exports = {
             /*
              Updating a user
              */
-            authenticate(req, res, next, () => {
+            // authenticate(req, res, next, () => {
                 UserModel.findOne({ _id: req.params.user_id })
-                    .then(userRecord => {
+                .then(userRecord => {
                         if (_.isEmpty(userRecord)) {
                             throw new RequestError(`User ${req.params.user_id} not found`, 'NOT_FOUND');
                         }
@@ -167,37 +167,44 @@ module.exports = {
                         }
 
                         const updatedRecord = req.body;
+                        const userId = req.params.user_id;
+
                         if (!updatedRecord.password) {
-                            return UserModel.update({ _id: req.params.user_id }, updatedRecord)
+                            return UserModel.findByIdAndUpdate(ObjectId(userId), updatedRecord, { new: true })
                                 .then(result => {
-                                    result = result.toObject();
-                                    return res.status(200).send(_.omit(result, 'password'));
+                                    const resultObject = result.toObject();
+                                    delete resultObject.password;
+
+                                    return res.status(200).send(resultObject);
                                 })
-                                .catch(err => res.status(err.status || 500).send(err));
+                                .catch(err => {
+                                    res.status(err.status || 500).send(err)
+                                });
                         }
-                        //User is updating password
-                        getHash(password, SALT_ROUNDS)
-                            .then(hash => {
-                                return Object.assign({}, updatedRecord, { password: hash });
-                            })
-                            .then(updatedRecordWithHashedPassword => {
-                                UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
-                                    .then(newUserRecord => {
-                                        newUserRecord = newUserRecord.toObject();
-                                        res.status(200).send(_.omit(newUserRecord, 'password'));
-                                    })
-                                    .catch(err => {
-                                        throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
-                                    });
-                            })
-                            .catch(err => {
-                                throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
-                            });
                     })
+                        //User is updating password
+                    //     getHash(password, SALT_ROUNDS)
+                    //         .then(hash => {
+                    //             return Object.assign({}, updatedRecord, { password: hash });
+                    //         })
+                    //         .then(updatedRecordWithHashedPassword => {
+                    //             UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
+                    //                 .then(newUserRecord => {
+                    //                     newUserRecord = newUserRecord.toObject();
+                    //                     res.status(200).send(_.omit(newUserRecord, 'password'));
+                    //                 })
+                    //                 .catch(err => {
+                    //                     throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                    //                 });
+                    //         })
+                    //         .catch(err => {
+                    //             throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                    //         });
+                    // })
                     .catch(error => {
                         res.status(error.status || 500).send(error);
                     });
-            });
+            // });
         }
     },
 

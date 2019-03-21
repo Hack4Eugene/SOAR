@@ -15,7 +15,7 @@ import ExploreFeed from './views/components/Feeds/ExploreFeed';
 import AddOrganization from './views/pages/AddOrganization';
 import AddUser from './views/pages/AddUser';
 import LoginPage from './views/pages/Login';
-import ProfilePage from './views/pages/UserProfile';
+import ProfilePage from './views/pages/User';
 import ProjectPage from './views/pages/Project';
 import PrivateRoute from './views/hoc/requireAuth';
 import OrganizationPage from './views/pages/Organization';

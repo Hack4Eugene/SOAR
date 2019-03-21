@@ -1,0 +1,79 @@
+.user-page {
+    hr {
+        margin: 2rem 0;
+    }
+
+    .user-header {
+        display: flex;
+        flex-flow: column nowrap;
+        margin-bottom: 2rem;
+
+        .user-name {
+            margin: 0;
+        }
+    }
+
+    .user-content {
+        display: flex;
+        flex-flow: row nowrap;
+
+        .side {
+            flex: 1;
+            margin-right: 2rem;
+            flex-flow: column nowrap;
+
+            .edit-user-button {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            .contact {
+                margin-bottom: 2rem;
+            }
+        }
+        .main {
+            flex: 2;
+
+            .description {
+                margin-bottom: 2rem;
+
+                h5 {
+                    margin: 0;
+                }
+            }
+
+            .user-orgs {
+                margin-bottom: 2rem;
+        
+                h5 {
+                    margin: 0;
+                }
+        
+                .user-orgs-body {
+                    display: flex;
+                    flex-flow: column wrap;
+        
+                    .org-card {
+                        margin-bottom: 1rem;
+            
+                        .org-card-body {
+                            display: flex;
+                            flex-flow: column nowrap;
+                            align-items: flex-end;
+                            justify-content: space-between;
+
+                            .top {
+                                width: 100%;
+                            }
+        
+                            .org-view-button {
+                                width: 100%;
+                                margin-top: 1rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

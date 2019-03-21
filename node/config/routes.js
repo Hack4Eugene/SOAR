@@ -60,6 +60,8 @@ const endpoints = {
 
     POST_USER: '/user/:user_id?',
 
+    UPDATE_USER: '/user/:user_id',
+
     DELETE_USER: '/user/:user_id',
 
     CREATE_USER_ROLE: '/user/:user_id/role',

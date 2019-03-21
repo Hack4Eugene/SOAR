@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import { SUCCESS, ERROR } from '../../../../state/statusTypes';
 
-class EditOrganization extends Component {
+class EditUser extends Component {
     constructor(props) {
         super(props);
 
@@ -29,55 +29,24 @@ class EditOrganization extends Component {
     }
 
     render() {
-        console.log(this.props)
         return (
             <div>
                 <form className="d-flex flex-column" onSubmit={this.props.handleSubmit}>
                     <CustomField
-                        label="Name"
+                        label="Username"
+                        name="username"
+                        component="input"
+                        type="text"
+                    />
+                    <CustomField
+                        label="Full Name"
                         name="name"
                         component="input"
                         type="text"
                     />
                     <CustomField
-                        label="Street address"
-                        name="address.street"
-                        component="input"
-                        type="text"
-                    />
-                    <CustomField
-                        label="City"
-                        name="address.city"
-                        component="input"
-                        type="text"
-                    />
-                    <CustomField
-                        label="State"
-                        name="address.state"
-                        component="input"
-                        type="text"
-                    />
-                    <CustomField
-                        label="Zip code"
-                        name="address.zipcode"
-                        component="input"
-                        type="text"
-                    />
-                    <CustomField
-                        label="Country"
-                        name="address.country"
-                        component="input"
-                        type="text"
-                    />
-                    <CustomField
-                        label="Phone number"
-                        name="contactInformation.phoneNumber"
-                        component="input"
-                        type="text"
-                    />
-                    <CustomField
                         label="Email"
-                        name="contactInformation.email"
+                        name="email"
                         component="input"
                         type="text"
                     />
@@ -88,14 +57,26 @@ class EditOrganization extends Component {
                         type="text"
                     />
                     <CustomField
-                        label="Short description"
+                        label="Location"
+                        name="location"
+                        component="input"
+                        type="text"
+                    />
+                    <CustomField
+                        label="Phone Number"
+                        name="phoneNumber"
+                        component="input"
+                        type="text"
+                    />
+                    <CustomField
+                        label="About Me"
                         name="description"
                         component="textarea"
                         type="text"
                         rows={3}
                     />
                     <button className="mt-3 btn btn-primary" type="submit">Submit</button>
-                    {this.showError()}
+                    {/* {this.showError()} */}
                 </form>
             </div>
         );
@@ -112,16 +93,12 @@ const CustomField = props => {
 };
 
 const mapStateToProps = state => ({
-    organizations: _.get(state, 'organizations.data'),
-    organizationStatus: _.get(state, 'organizations.status'),
-    selectedOrg: _.get(state, 'organizations.selectedOrg'),
-    createOrgStatus: _.get(state, 'organizations.selectedOrg.status.create'),
-    updateOrgStatus: _.get(state, 'organizations.selectedOrg.status.update')
+    user: _.get(state, 'user.data', {})
 });
 
-EditOrganization = connect(mapStateToProps)(EditOrganization);
+EditUser = connect(mapStateToProps)(EditUser);
 
 export default reduxForm({
-    form: 'EditOrganization',
+    form: 'EditUser',
     enableReinitialize: true
-})(EditOrganization);
+})(EditUser);
