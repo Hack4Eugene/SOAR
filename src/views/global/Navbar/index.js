@@ -42,7 +42,7 @@ class Navbar extends Component {
     getNavigationLinks = () => (
         <div className="navbar mr-5">
             <div className="navbar-nav">
-                <Link className="text-success mr-4" to="/organizations">
+                {/* <Link className="text-success mr-4" to="/organizations">
                     <button type="button" className="btn btn-light">Organizations</button>
                 </Link>
                 <Link className="text-success mr-4" to="/projects">
@@ -50,7 +50,7 @@ class Navbar extends Component {
                 </Link>
                 <Link className="text-success mr-4" to="/events">
                     <button type="button" className="btn btn-light">Events</button>
-                </Link>
+                </Link> */}
                 <Link className="text-success mr-4" to="/explore">
                     <button type="button" className="btn btn-light">Explore</button>
                 </Link>
@@ -134,7 +134,7 @@ class Navbar extends Component {
                     className={
                         classNames('navbar navbar-white border-bottom',
                             {
-                                'justify-content-center': !isMobile
+                                'justify-content-space-between': !isMobile
                             }
                         )
                     }

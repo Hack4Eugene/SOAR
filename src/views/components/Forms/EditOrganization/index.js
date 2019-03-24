@@ -29,7 +29,6 @@ class EditOrganization extends Component {
     }
 
     render() {
-        console.log(this.props)
         return (
             <div>
                 <form className="d-flex flex-column" onSubmit={this.props.handleSubmit}>

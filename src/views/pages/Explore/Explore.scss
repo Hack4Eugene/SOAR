@@ -1,0 +1,48 @@
+.explore-page {
+    display: flex;
+    flex-flow: row nowrap;
+
+    .side {
+        flex: 1;
+        margin-right: 2rem;
+
+        .create-new-button {
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .search {
+            margin-bottom: 2rem;
+        }
+
+        .filter {
+            .filter-button {
+                width: 100%;
+                margin-top: 1rem;
+            }
+        }
+    }
+
+    .main {
+        flex: 2;
+
+        .categories-sort {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+
+            .sort {
+                display: flex;
+                flex-flow: row nowrap;
+                align-items: center;
+            }
+        }
+
+        .feed {
+            .card {
+                margin-bottom: 2rem;
+            }
+        }
+    }
+}

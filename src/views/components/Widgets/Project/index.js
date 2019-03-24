@@ -5,7 +5,7 @@ class ProjectCard extends Component {
     getDate = () => moment(this.props.startDate).utc().format('MMM D, YYYY');
     render() {
         return (
-            <div className="card text-center mb-4 ml-3 mr-3 w-100">
+            <div className="card text-center mb-4 w-100">
             <div className="card-header text-left">
                 Start date: {this.getDate()}
             </div>
