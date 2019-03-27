@@ -1,43 +1,56 @@
-nav a {
-  margin: 0 5px;
-}
+.navbar {
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    z-index: 2;
 
-.fa-1x {
-  font-size: 1.5rem;
-}
-.navbar-toggler.toggler-example {
-  cursor: pointer;
-}
-.dark-blue-text {
-  color: #0A38F5;
-}
-.dark-pink-text {
-  color: #AC003A;
-}
-.dark-amber-text {
-  color: #ff6f00;
-}
-.dark-teal-text {
-  color: #004d40;
-}
+    .container {
+        max-width: 1000px;
 
+        a:hover {
+            color: #28a745;
+            text-decoration: none;
+        }
 
-.react-calendar {
-  border: 0 !important;
-  border-radius: 0.25rem;
-}
+        i {
+            font-size: 1.25rem;
+            margin-right: 0.65rem;
+            color: #28a745;
+        }
 
-.react-calendar button {
-  border-radius: 0.25rem;
-}
+        .navbar-toggler {
+            &:focus {
+                outline: none;
+            }
+            &:active {
+                background-color: #edeff2;
+            }
+        }
 
-a:hover {
-  text-decoration: none;
-}
+        .right {
+            flex-flow: row nowrap;
+            justify-content: flex-end;
 
-.navbar .navbar-nav {
-  flex-direction: row !important;
-  .btn-light {
-    color: #28a745 !important;
-  }
+            a:first-of-type {
+                margin: 0 10px 0 0;
+            }
+        }
+
+        .dropdown-item {
+            a {
+                display: block;
+            }
+        
+            &:active {
+                background-color: #f8f9fa;
+            }
+        }
+    }
+
+    @media screen and (max-width: 767px) {
+        .dropdown-menu {
+            display: block;
+        }
+        .right.navbar-nav {
+            margin-bottom: 5px;
+        }
+    }
 }
