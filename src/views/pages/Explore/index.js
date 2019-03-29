@@ -16,9 +16,35 @@ import OrganizationFeed from '../../components/Feeds/OrganizationFeed';
 import { getOrganizations } from '../../../state/actions/organizationActions';
 import './Explore.scss';
 
+const categoryHashes = [
+    '#events', 
+    '#projects', 
+    '#organizations'
+];
+
 class Explore extends Component {
-    state = {
-        category: 'events'
+    constructor(props) {
+        super(props);
+
+        const category = categoryHashes.includes(props.location.hash)
+            ? props.location.hash.replace('#', '')
+            : 'events';
+
+        this.state = {
+            category
+        }
+    }
+    
+    componentDidUpdate(prevProps) {
+        if (this.props.location.hash !== prevProps.location.hash) {
+            const category = categoryHashes.includes(this.props.location.hash)
+                ? this.props.location.hash.replace('#', '')
+                : this.state.category;
+
+            if (category !== this.state.category) {
+                this.setState({ category })
+            }
+        }
     }
 
     renderAddButton() {

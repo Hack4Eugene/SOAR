@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import './global.scss';
-
-import Header from './views/global/Header';
-
+import Navbar from './views/global/Navbar';
 import OrganizationFeed from './views/components/Feeds/OrganizationFeed';
 import ProjectFeed from './views/components/Feeds/ProjectFeed';
 import EventFeed from './views/components/Feeds/EventFeed';
@@ -21,11 +18,13 @@ import PrivateRoute from './views/hoc/requireAuth';
 import OrganizationPage from './views/pages/Organization';
 import Lander from './views/pages/Lander';
 
+import './global.scss';
+
 class App extends Component {
     render() {
         return (
             <div>
-                <Header />
+                <Navbar />
                 <div className="site-content">
                     <Switch>
                         <Route path="/" exact component={Lander} />
