@@ -1,10 +1,8 @@
-.add-user-page {
-    display: flex;
-    flex-flow: column nowrap;
+.login-page {
     margin: auto;
     max-width: 600px;
 
-    .add-user-header {
+    .login-header {
         margin-bottom: 1rem;
 
         h2 {

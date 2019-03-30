@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import Loader from '../../global/Loader';
+import Loader from '../../components/Loader';
 
 import { getOrganizations } from '../../../state/actions/organizationActions';
 import { SUCCESS } from '../../../state/statusTypes';
@@ -36,7 +36,7 @@ class OrganizationFeed extends Component {
     renderOrgLinkButton(orgId) {
         return (
             <Link to={`/organization/${orgId}`}>
-                <Button variant="outline-secondary">
+                <Button variant="outline-success">
                     View
                 </Button>
             </Link>

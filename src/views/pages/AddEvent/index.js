@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { get } from 'lodash';
 
-import Card from '../../lib/Card';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
 
-import { createEvent } from '../../../state/actions/eventActions';
 import EditEvent from '../../components/Forms/EditEvent';
+import { createEvent } from '../../../state/actions/eventActions';
 import { SUCCESS } from '../../../state/statusTypes';
+
+import './AddEvent.scss';
 
 class AddEvent extends Component {
     submitEvent = () => {
@@ -18,9 +21,9 @@ class AddEvent extends Component {
     renderForm() {
         return (
             <Card>
-                <div className="card-body">
+                <Card.Body>
                     <EditEvent onSubmit={this.submitEvent} />
-                </div>
+                </Card.Body>
             </Card>
         );
     }
@@ -40,29 +43,19 @@ class AddEvent extends Component {
         }
 
         return (
-            <div className="container">                    
-                <div className="row justify-content-center">
-                    <div className="col-5">
-                        <h2 className="ml-3">Add Event</h2>
-                    </div>
-                    <div className="col-3">
-                        <Link to="/events">
-                            <button
-                                type="button" 
-                                className="btn btn-success float-right" 
-                                data-toggle="modal" 
-                                data-target="#exampleModal"
-                            >
-                                Back to Events
-                        </button>
-                        </Link>
-                    </div>
+            <div className="add-event-page">
+                <div className="add-event-header">
+                    <h2>Create Event</h2>
+                    <Link to="/explore#events">
+                        <Button
+                            type="button" 
+                            variant="outline-success"
+                        >
+                            Back to Events
+                        </Button>
+                    </Link>
                 </div>
-                <div className="row justify-content-center">
-                    <div className="col-8">
-                        {this.renderForm()}          
-                    </div>                  
-                </div>
+                {this.renderForm()}          
             </div>
         );
     }

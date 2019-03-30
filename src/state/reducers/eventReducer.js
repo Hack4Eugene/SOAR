@@ -3,6 +3,7 @@ import {
     CREATE_EVENT_RESOLVED, CREATE_EVENT_REJECTED,
     DELETE_EVENT_REJECTED, DELETE_EVENT_RESOLVED,
     GET_EVENTS_REJECTED, GET_EVENTS_RESOLVED,
+    GET_EVENTS_BY_ID_REJECTED, GET_EVENTS_BY_ID_RESOLVED,
     GET_EVENT_REJECTED, GET_EVENT_RESOLVED,
     INCREMENT_EVENT_FINISH, SET_EVENTS_FINISHED,
     UPDATE_EVENT_RESOLVED, UPDATE_EVENT_REJECTED
@@ -11,6 +12,10 @@ import {
 const initialState = {
     data: {},
     status: NOT_STARTED,
+    eventsById: {
+        data: {},
+        status: NOT_STARTED
+    },
     selectedEvent: {
         data: {},
         status: {
@@ -121,6 +126,26 @@ const eventReducer = (state = initialState, action) => {
                 ...state, 
                 error: payload.data, 
                 status: ERROR 
+            };
+        }
+
+        case GET_EVENTS_BY_ID_RESOLVED: {
+            return { 
+                ...state, 
+                eventsById: {
+                    data: payload, 
+                    status: SUCCESS 
+                }
+            };
+        }
+
+        case GET_EVENTS_BY_ID_REJECTED: {
+            return { 
+                ...state,
+                eventsById: {
+                    error: payload, 
+                    status: ERROR 
+                }
             };
         }
 

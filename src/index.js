@@ -6,18 +6,13 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly';
 import createBrowserHistory from 'history/createBrowserHistory';
-import ScrollTop from './ScrollTop';
 
 import persistLoggedInStateMiddleware, { persistState } from './state/middleware/authentication';
-
 import reducer from './state/reducers/rootReducer';
-
 import App from './app';
 
 const history = createBrowserHistory();
-
 const initialState = { env: window.ENVIRONMENT || 'local' };
-
 const middleware = applyMiddleware(thunk);
 const enhancer = compose(middleware, persistLoggedInStateMiddleware());
 
@@ -30,9 +25,7 @@ const store = createStore(
 ReactDOM.render(
     <Provider store={store}>
         <Router history={history}>
-            <ScrollTop>
-                <App />
-            </ScrollTop>
+            <App />
         </Router>
     </Provider>,
     document.getElementById('root')

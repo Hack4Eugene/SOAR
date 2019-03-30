@@ -85,7 +85,9 @@ class Explore extends Component {
                 <InputGroup>
                     <FormControl placeholder={`Search ${this.state.category}...`} />
                     <InputGroup.Append>
-                        <Button variant="outline-secondary">Search</Button>
+                        <Button variant="outline-secondary">
+                            <i className="fas fa-search" />
+                        </Button>
                     </InputGroup.Append>
                 </InputGroup>
             </div>
@@ -100,7 +102,6 @@ class Explore extends Component {
                         Tag filter
                     </Card.Header>
                     <Card.Body>
-                        <h5>Tags</h5>
                         <Button 
                             variant="outline-secondary"
                             className="filter-button"
@@ -179,8 +180,8 @@ class Explore extends Component {
         return (
             <div className="explore-page">
                 <div className="side">
-                    {this.renderAddButton()}
                     {this.renderSearch()}
+                    {this.renderAddButton()}
                     {this.renderFilter()}
                 </div>
                 <div className="main">

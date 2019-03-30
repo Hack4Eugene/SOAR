@@ -68,10 +68,23 @@ export const incrementEventsFinished = () => {
 
 export const getEventById = (eventId) => {
     return (dispatch, getState) => {
+        const url = `${loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)}`;
+
         HttpClient(getState(), dispatch)
-            .then(client => client.get(loadEndpoint(_.get(getState(), 'env'), `${GET_EVENT_BY_ID}/${eventId}`)))
+            .then(client => client.get(url))
             .then(result => dispatch({ type: GET_EVENT_RESOLVED, payload: result.data }))
             .catch(err => dispatch({ type: GET_EVENT_REJECTED, payload: err }));
+    };
+};
+
+export const getEventsById = (eventIds) => {
+    return (dispatch, getState) => {
+        const url = `${loadEndpoint(_.get(getState(), 'env'), `${GET_EVENTS_BY_ID}/${eventIds}`)}`;
+
+        HttpClient(getState(), dispatch)
+            .then(client => client.get(url))
+            .then(result => dispatch({ type: GET_EVENTS_BY_ID_RESOLVED, payload: result.data }))
+            .catch(err => dispatch({ type: GET_EVENTS_BY_ID_REJECTED, payload: err }));
     };
 };
 

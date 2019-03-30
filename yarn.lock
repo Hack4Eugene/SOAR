@@ -6636,6 +6636,10 @@ redux-devtools-extension@^2.13.2:
   version "2.13.5"
   resolved "https://registry.npmjs.org/redux-devtools-extension/-/redux-devtools-extension-2.13.5.tgz#3ff34f7227acfeef3964194f5f7fc2765e5c5a39"
 
+redux-form-validators@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/redux-form-validators/-/redux-form-validators-3.0.1.tgz#3b04bd981010770e7f4691714d5917fa1b5f359c"
+
 redux-form@^7.4.2:
   version "7.4.2"
   resolved "https://registry.npmjs.org/redux-form/-/redux-form-7.4.2.tgz#d6061088fb682eb9fc5fb9749bd8b102f03154b0"

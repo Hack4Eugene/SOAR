@@ -14,14 +14,15 @@ module.exports = {
             return EventModel.create(eventWithProject)
                 .then(newEventDocument => {
                     return ProjectModel.findOneAndUpdate({ 
-                        _id: req.body.project_id },
-                        { $push: { events: newEventDocument._id } 
+                        _id: req.body.projectId },
+                        { $push: { eventIds: newEventDocument._id } 
                     })
                     .then(projectDocument => {
                         res.status(200).send(newEventDocument);
                     });
                 })
                 .catch(error => {
+                    console.log('error :', error);
                     res.status(error.status || 500).send(error);
                 });
         } else {

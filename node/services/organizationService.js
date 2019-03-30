@@ -3,8 +3,6 @@ const _ = require('lodash');
 const OrganizationModel = mongoose.model('OrganizationModel');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
-
-// const { ObjectId } = mongoose;
 const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
@@ -74,7 +72,6 @@ module.exports = {
                     if (_.isEmpty(organizationRecord)) {
                         throw new RequestError(`Organization ${organizationId} not found`, 'NOT_FOUND');
                     }
-
                     OrganizationModel.findByIdAndUpdate(ObjectId(organizationId), req.body, { new: true })
                         .then(updatedDocument => res.status(200).send(updatedDocument))
                         .catch(err => {

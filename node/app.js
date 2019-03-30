@@ -16,16 +16,16 @@ require('./models/userModel');
 
 // mongoose connection
 mongoose.Promise = global.Promise;
-const ecanDB = 'mongodb://www.ecan-db.hnavarro-api.com/ECANdb';
+// const ecanDB = 'mongodb://www.ecan-db.hnavarro-api.com/ECANdb';
 
-// mongoose.connect('mongodb://localhost/ECANdb')
-mongoose.connect(ecanDB)
-    .then(client => { console.log('Connected to ECANdb'); })
-    .catch(err => {
-        console.error(`Unable to connect to ECANdb. Check if MongoDB instance is running
-					   Run mongodb instance in another terminal using: mongod
-                       ${err.stack || err }`);
-    });
+mongoose.connect('mongodb://127.0.0.1:27017')
+// mongoose.connect(ecanDB)
+//     .then(client => { console.log('Connected to ECANdb'); })
+//     .catch(err => {
+//         console.error(`Unable to connect to ECANdb. Check if MongoDB instance is running
+// 					   Run mongodb instance in another terminal using: mongod
+//                        ${err.stack || err }`);
+//     });
 
 //Initialize and use the passport JWT strategy
 app.use(passport.initialize());

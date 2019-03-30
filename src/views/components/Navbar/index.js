@@ -9,7 +9,7 @@ import BootNavbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 
-import './styles.scss';
+import './Navbar.scss';
 
 class Navbar extends Component {
     renderExplore() {
@@ -78,8 +78,7 @@ class Navbar extends Component {
 }
 
 const mapStateToProps = state => ({
-    isLoggedIn: _.get(state, 'authentication.isLoggedIn', false),
-    userName: _.get(state, 'user.data.name', null)
+    isLoggedIn: _.get(state, 'authentication.isLoggedIn', false)
 });
 
 export default connect(mapStateToProps)(Navbar);

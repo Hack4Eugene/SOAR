@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import Loader from '../../global/Loader';
+import Loader from '../../components/Loader';
 
 import { getEvents } from '../../../state/actions/eventActions';
 import { SUCCESS } from '../../../state/statusTypes';
@@ -36,7 +36,7 @@ class EventFeed extends Component {
     renderEventLinkButton(eventId) {
         return (
             <Link to={`/event/${eventId}`}>
-                <Button variant="outline-secondary">
+                <Button variant="outline-success">
                     View
                 </Button>
             </Link>

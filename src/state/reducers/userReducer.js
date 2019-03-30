@@ -35,6 +35,7 @@ const userReducer = (state = initialState, action) => {
                 },
                 status: {
                     ...state.status,
+                    create: NOT_STARTED,
                     get: SUCCESS
                 }
             };

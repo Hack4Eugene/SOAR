@@ -13,7 +13,7 @@ import Card from 'react-bootstrap/Card';
 import Modal from 'react-bootstrap/Modal';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Button from 'react-bootstrap/Button';
-import Loader from '../../global/Loader';
+import Loader from '../../components/Loader';
 import './User.scss';
 
 class User extends Component {
@@ -21,7 +21,7 @@ class User extends Component {
         super(props);
 
         this.state = {
-            showModal: false
+            showEditModal: false
         };
     }
 
@@ -35,7 +35,7 @@ class User extends Component {
         const updateComplete = this.props.updateUserStatus === SUCCESS && prevProps.updateUserStatus === LOADING;
 
         if (updateComplete) {
-            this.setState({ showModal: false })
+            this.setState({ showEditModal: false })
         }
     }
 
@@ -47,8 +47,8 @@ class User extends Component {
     renderModal() {
         return (
             <Modal 
-                show={this.state.showModal} 
-                onHide={() => this.setState({ showModal: false })}
+                show={this.state.showEditModal} 
+                onHide={() => this.setState({ showEditModal: false })}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Profile</Modal.Title>
@@ -56,6 +56,7 @@ class User extends Component {
 
                 <Modal.Body>
                     <EditUser
+                        existingUser
                         initialValues={this.props.user}
                         onSubmit={this.submitEdits}
                     />
@@ -77,7 +78,7 @@ class User extends Component {
             <Button 
                 variant="outline-success"
                 className="edit-user-button"
-                onClick={() => this.setState({ showModal: true })}
+                onClick={() => this.setState({ showEditModal: true })}
             >
                 Edit profile
             </Button>
@@ -174,13 +175,14 @@ class User extends Component {
         const { user, getUserStatus, updateUserStatus } = this.props;
         const { name, email, website, location, phoneNumber, description } = user;
         const hasContactInfo = email || website || phoneNumber || location;
+        const nameExists = !_.isUndefined(name) && !_.isEmpty(name);
 
         if (getUserStatus === LOADING || updateUserStatus === LOADING) return <Loader />;
 
         return (
             <div className="user-page">
                 {this.renderModal()}
-                {this.renderHeader(name)}
+                {this.renderHeader(nameExists ? name : email)}
                 <hr />
                 <div className="user-content">
                     <div className="side">
