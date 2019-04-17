@@ -1,32 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import './global.scss';
-
-import Header from './views/global/Header';
-
+import Navbar from './views/components/Navbar';
 import OrganizationFeed from './views/components/Feeds/OrganizationFeed';
 import ProjectFeed from './views/components/Feeds/ProjectFeed';
 import EventFeed from './views/components/Feeds/EventFeed';
-import Event from './views/pages/Event';
+import EventPage from './views/pages/Event';
 import AddEvent from './views/pages/AddEvent';
 import AddProject from './views/pages/AddProject';
-import ExploreFeed from './views/components/Feeds/ExploreFeed';
+import ExplorePage from './views/pages/Explore';
 import AddOrganization from './views/pages/AddOrganization';
 import AddUser from './views/pages/AddUser';
 import LoginPage from './views/pages/Login';
-import ProfilePage from './views/pages/UserProfile';
+import ProfilePage from './views/pages/User';
 import ProjectPage from './views/pages/Project';
-import PrivateRoute from './views/hoc/requireAuth';
+import PrivateRoute from './views/components/PrivateRoute';
 import OrganizationPage from './views/pages/Organization';
 import Lander from './views/pages/Lander';
+
+import './global.scss';
 
 class App extends Component {
     render() {
         return (
-            <div>
-                <Header />
-                <div className="mr-3 ml-3 mt-4 site-body">
+            <Fragment>
+                <Navbar />
+                <div className="site-content">
                     <Switch>
                         <Route path="/" exact component={Lander} />
                         <Route path="/login" component={LoginPage} />
@@ -35,8 +34,8 @@ class App extends Component {
                         <PrivateRoute path="/projects" component={ProjectFeed} />
                         <PrivateRoute path="/events" component={EventFeed} />
                         <PrivateRoute path="/organizations" component={OrganizationFeed} />
-                        <PrivateRoute path="/event/:id" component={Event} />
-                        <PrivateRoute path="/explore" component={ExploreFeed} />
+                        <PrivateRoute path="/event/:id" component={EventPage} />
+                        <PrivateRoute path="/explore" component={ExplorePage} />
                         <PrivateRoute path="/addevent" component={AddEvent} />
                         <PrivateRoute path="/addproject" component={AddProject} />
                         <PrivateRoute path="/addorganization" component={AddOrganization} />
@@ -46,7 +45,7 @@ class App extends Component {
                         <PrivateRoute path="/project/:id" component={ProjectPage} />
                     </Switch>
                 </div>
-            </div>
+            </Fragment>
         );
     }
 }

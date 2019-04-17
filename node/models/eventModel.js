@@ -8,42 +8,49 @@ const EventSchema = new Schema({
         type: String,
         required: 'Please enter the event name'
     },
+    date: {
+        type: Date,
+        required: 'Please enter the date'
+    },
+    startTime: {
+        type: String
+    },
+    endTime: {
+        type: String
+    },
+    address: {
+        street: {
+			type: String
+		},
+        city: {
+			type: String
+		},
+		state: {
+			type: String
+        },
+        zipCode: {
+            type: Number
+        },
+    },
+    projectId: {
+        type: String,
+        required: 'Please enter the parent project'
+    },
     description: {
         type: String
     },
-    details: {
-        type: String
-    },
-    location: {
-        type: String
-    },
-    date: {
-        type: Date
-    },
     project: {
-        type: Schema.Types.ObjectId,
-        required: 'Please enter the project.id'
+        type: Object
     },
-    // organization: {
-    //     type: Schema.Types.ObjectId,
-    //     required: 'objectId of the organization (that owns the event) is needed'
-    // },
-    // private: {
-    //     type: Boolean,
-    //     default: false
-    // },
+    attendeeIds: {
+        type: [String]
+    },
     tags: {
         type: [String]
     },
-    attendees: {
+    goals: {
         type: [String]
-    },
-    // goals: {
-    //     type: [{
-    //         text: String,
-    //         completed: Boolean
-    //     }]
-    // }
+    }
 });
 
 EventSchema.statics.getArrayOfEventsById = function (eventIdStringArray) {

@@ -5,14 +5,27 @@ const Schema = mongoose.Schema;
 mongoose.set('runValidators', true);
 
 const UserSchema = new Schema({
-    name: {
+    email: {
         type: String,
-        required: 'User\'s require names, kindly enter your name.'
-    },
-    username: {
-        type: String
+        required: 'Please enter an email address.'
     },
     password: {
+        type: String,
+        required: 'Please enter a password.'
+    },
+    name: {
+        type: String
+    },
+    zipCode: {
+        type: Number
+    },
+    website: {
+        type: String
+    },
+    phoneNumber: {
+        type: String
+    },
+    description: {
         type: String
     },
     createdAt: {
@@ -43,11 +56,15 @@ const UserSchema = new Schema({
                 required: 'Please submit the ID of the entity for access'
             }
         }
-    ]
+    ],
 });
 
-UserSchema.statics.getAttendeeDetails = function (attendeeIds) {
+UserSchema.statics.getAttendees = function (attendeeIds) {
     return this.find({ _id: { $in: attendeeIds } }, { name: 1 }).exec();
+};
+
+UserSchema.statics.getOrgMembers = function (memberIds) {
+    return this.find({ _id: { $in: memberIds } }, { name: 1 }).exec();
 };
 
 UserSchema.statics.addRole = function (userID, entity, entityID) {

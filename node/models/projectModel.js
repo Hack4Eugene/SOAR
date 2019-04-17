@@ -13,45 +13,28 @@ const ProjectSchema = new Schema({
     description: {
         type: String
     },
-    details: {
-        type: String
-    },
-    createDate: {
-        type: Date
-    },
-    startDate: {
-        type: Date
-    },
-    endDate: {
-        type: Date
+    organizationId: {
+        type: Schema.Types.String,
+        required: 'Organization is required'
     },
     organization: {
-        type: Schema.Types.ObjectId,
+        type: Object,
         required: 'objectId of the organization is needed'
     },
     alliance: {
         type: [Schema.Types.ObjectId],
         default: []
     },
-    status: {
-        type: String,
-        enum: ['not_started', 'in_progress', 'completed'],
-        default: 'not_started'
-    },
-    private: {
-        type: Boolean,
-        default: false
-    },
     tags: {
         type: [String]
     },
-    events: {
+    eventIds: {
         type: [Schema.Types.ObjectId]
     }
 });
 
 ProjectSchema.statics.addEventId = function (projectId, eventId) {
-    return this.findOneAndUpdate({ _id: ObjectId(projectId) }, { $push: { events: ObjectId(eventId) } }, { new: true }).exec();
+    return this.findOneAndUpdate({ _id: projectId }, { $push: { events: eventId } }, { new: true }).exec();
 };
 
 ProjectSchema.statics.getById = function (projectId) {
@@ -63,6 +46,13 @@ ProjectSchema.statics.getById = function (projectId) {
                     return project;
                 });
         });
+};
+
+ProjectSchema.statics.getMultipleById = function (projectIds) {
+    const projectIdObjectIdArray = _.map(projectIds, ObjectId);
+    return this.find({ _id: { $in: projectIdObjectIdArray } }).exec()
+        .then(projects => projects)
+        .catch(err => console.log(err));
 };
 
 module.exports = mongoose.model('ProjectModel', ProjectSchema);

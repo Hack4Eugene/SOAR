@@ -8,12 +8,13 @@ import {
     GET_ORGS_BY_ID_REJECTED, GET_ORGS_BY_ID_RESOLVED, GET_ORGS_BY_ID_PENDING,
     GET_ORG_BY_ID_REJECTED, GET_ORG_BY_ID_RESOLVED, GET_ORG_BY_ID_PENDING,
     GET_ORGS_REJECTED, GET_ORGS_RESOLVED, GET_ORGS_PENDING,
-    UPDATE_ORG_REJECTED, UPDATE_ORG_RESOLVED, UPDATE_ORG_PENDING
+    UPDATE_ORG_REJECTED, UPDATE_ORG_RESOLVED, UPDATE_ORG_PENDING,
+    GET_ORG_PROJECTS_BY_ID_PENDING, GET_ORG_PROJECTS_BY_ID_RESOLVED, GET_ORG_PROJECTS_BY_ID_REJECTED
 } from '../types';
 
 import { serviceRoutes } from '../../config/routes';
 
-const { GET_ORGANIZATIONS, POST_ORGANIZATION, GET_ORGANIZATIONS_BY_ID, GET_ORGANIZATION_BY_ID, UPDATE_ORGANIZATION } = serviceRoutes;
+const { GET_ORGANIZATIONS, POST_ORGANIZATION, GET_ORGANIZATIONS_BY_ID, GET_ORGANIZATION_BY_ID, UPDATE_ORGANIZATION, GET_ORG_PROJECTS_BY_ID } = serviceRoutes;
 
 export const getOrganizations = organizationIds => {
     return (dispatch, getState) => {
@@ -60,11 +61,17 @@ export const getOrganizationById = id => {
         HttpClient(getState())
             .then(client => client.get(url))
             .then(result => dispatch({ type: GET_ORG_BY_ID_RESOLVED, payload: result }))
-            .catch(err => dispatch({ type: GET_ORG_BY_ID_REJECTED, payload: err }));
+            .catch(err => {
+                console.log('err', err)
+                dispatch({ type: GET_ORG_BY_ID_REJECTED, payload: err })
+            });
     };
 };
 
 export const updateOrganization = (id, updates) => {
+    // Don't send project objects to service
+    if (updates.projects) delete updates.projects;
+
     return (dispatch, getState) => {
         dispatch({ type: UPDATE_ORG_PENDING });
         const url = `${loadEndpoint(_.get(getState(), 'env'), UPDATE_ORGANIZATION)}/${id}`;
@@ -75,4 +82,14 @@ export const updateOrganization = (id, updates) => {
             .then(() => dispatch(getOrganizationById(id)))
             .catch(err => dispatch({ type: UPDATE_ORG_REJECTED, payload: err }));
     };
+};
+
+export const getOrgProjectsById = projectIds => (dispatch, getState) => {
+    const state = getState();
+    const env = _.get(state, 'env', 'local');
+
+    HttpClient(state)
+        .then(client => client.get(`${loadEndpoint(env, GET_ORG_PROJECTS_BY_ID)}/${projectIds}`))
+        .then(result => dispatch({ type: GET_ORG_PROJECTS_BY_ID_RESOLVED, payload: result }))
+        .catch(err => dispatch({ type: GET_ORG_PROJECTS_BY_ID_REJECTED, payload: err }));
 };

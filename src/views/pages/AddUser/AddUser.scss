@@ -1,19 +1,14 @@
-.organization.select-confirmation {
-  font-weight: bold;
-  color: #222;
+.add-user-page {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: auto;
+    max-width: 600px;
 
-  i.fas.fa-times-circle {
-    color: #666;
-    transition: color .25s ease-in-out;
-    font-size: 18px;
+    .add-user-header {
+        margin-bottom: 1rem;
 
-    &:hover {
-      color: #222;
+        h2 {
+            margin: 0;
+        }
     }
-  }
-
-  &:hover {
-    background: #dddddd;
-    transition: background .25s ease-in-out;
-  }
 }

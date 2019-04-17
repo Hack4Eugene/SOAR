@@ -36,7 +36,7 @@ module.exports = {
             });
     },
 
-    getMultipleByIDs: (req, res, next) => {
+    getMultipleById: (req, res, next) => {
         const userIdArray = _.map(_.split(req.params.user_ids, ','), ObjectId);
 
         UserModel.find({ _id: { $in: userIdArray } })
@@ -53,11 +53,11 @@ module.exports = {
     },
 
     login: (req, res, next) => {
-        const { username, password } = req.body;
-        return UserModel.findOne({ username })
+        const { email, password } = req.body;
+        return UserModel.findOne({ email })
             .then(userRecord => {
                 if (_.isNull(userRecord)) {
-                    return res.status(404).send(new RequestError(`User ${username} not found`, 'NOT_FOUND'));
+                    return res.status(404).send(new RequestError(`User with email "${email}" not found`, 'NOT_FOUND'));
                 }
 
                 userRecord = userRecord.toObject();
@@ -65,7 +65,7 @@ module.exports = {
                 const { password: hash = null } = userRecord;
 
                 if (hash === null) {
-                    return res.status(401).send(new RequestError('There was an error authenticating these credentials', 'ACCESS_DENIED'));
+                    return res.status(401).send(new RequestError('There was an error during authentication', 'ACCESS_DENIED'));
                 }
 
                 //Check the password against the hash
@@ -82,11 +82,11 @@ module.exports = {
                             }, { user: _.omit(userRecord, 'password') }));
                         }
 
-                        return res.status(401).send(new RequestError('Password does not match', 'ACCESS_DENIED'));
+                        return res.status(401).send(new RequestError('Password is incorrect', 'ACCESS_DENIED'));
                     });
             })
             .catch(error => {
-                res.status(error.status || 500).send({ msg: 'No user for this usename was found in the Database' });
+                res.status(error.status || 500).send({ msg: `User with email "${email}" not found` });
             });
     },
 
@@ -123,17 +123,17 @@ module.exports = {
     },
 
     createOrUpdate: (req, res, next) => {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
         if (!req.params.user_id) {
             /*
              Creating a User
              */
-            //Lookup the username
+            //Lookup the email
             UserModel
-                .find({ username })
-                .then(usersWithUsername => {
-                    if (_.isArray(usersWithUsername) && usersWithUsername.length > 0) {
-                        throw new RequestError(`Username: ${username} has been taken.`, 'BAD_REQUEST');
+                .find({ email })
+                .then(usersWithEmail => {
+                    if (_.isArray(usersWithEmail) && usersWithEmail.length > 0) {
+                        throw new RequestError(`Email: ${email} already exists.`, 'BAD_REQUEST');
                     }
                 })
                 .then(() => getHash(password, SALT_ROUNDS))
@@ -151,53 +151,60 @@ module.exports = {
             /*
              Updating a user
              */
-            authenticate(req, res, next, () => {
+            // authenticate(req, res, next, () => {
                 UserModel.findOne({ _id: req.params.user_id })
-                    .then(userRecord => {
+                .then(userRecord => {
                         if (_.isEmpty(userRecord)) {
-                            throw new RequestError(`User ${req.params.user_id} not found`, 'NOT_FOUND');
+                            throw new RequestError(`User with email ${req.params.user_id} not found`, 'NOT_FOUND');
                         }
 
-                        //Lookup the username for someone with a different id so you could still pass in your current username and have it not freak out
-                        return UserModel.find({ username, _id: { $ne: req.params.user_id } }).count();
+                        //Lookup the email for someone with a different id so you could still pass in your current email and have it not freak out
+                        return UserModel.find({ email, _id: { $ne: req.params.user_id } }).count();
                     })
                     .then(userRes => {
                         if (!_.isUndefined(userRes) && _.isInteger(userRes) && userRes > 0) {
-                            throw new RequestError('Username has been taken', 'BAD_REQUEST');
+                            throw new RequestError(`Email: ${email} already exists.`, 'BAD_REQUEST');
                         }
 
                         const updatedRecord = req.body;
+                        const userId = req.params.user_id;
+
                         if (!updatedRecord.password) {
-                            return UserModel.update({ _id: req.params.user_id }, updatedRecord)
+                            return UserModel.findByIdAndUpdate(ObjectId(userId), updatedRecord, { new: true })
                                 .then(result => {
-                                    result = result.toObject();
-                                    return res.status(200).send(_.omit(result, 'password'));
+                                    const resultObject = result.toObject();
+                                    delete resultObject.password;
+
+                                    return res.status(200).send(resultObject);
                                 })
-                                .catch(err => res.status(err.status || 500).send(err));
+                                .catch(err => {
+                                    res.status(err.status || 500).send(err)
+                                });
                         }
-                        //User is updating password
-                        getHash(password, SALT_ROUNDS)
-                            .then(hash => {
-                                return Object.assign({}, updatedRecord, { password: hash });
-                            })
-                            .then(updatedRecordWithHashedPassword => {
-                                UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
-                                    .then(newUserRecord => {
-                                        newUserRecord = newUserRecord.toObject();
-                                        res.status(200).send(_.omit(newUserRecord, 'password'));
-                                    })
-                                    .catch(err => {
-                                        throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
-                                    });
-                            })
-                            .catch(err => {
-                                throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
-                            });
                     })
+                        //User is updating password
+                    //     getHash(password, SALT_ROUNDS)
+                    //         .then(hash => {
+                    //             return Object.assign({}, updatedRecord, { password: hash });
+                    //         })
+                    //         .then(updatedRecordWithHashedPassword => {
+                    //             UserModel.update({ _id: req.params.user_id }, updatedRecordWithHashedPassword)
+                    //                 .then(newUserRecord => {
+                    //                     newUserRecord = newUserRecord.toObject();
+                    //                     res.status(200).send(_.omit(newUserRecord, 'password'));
+                    //                 })
+                    //                 .catch(err => {
+                    //                     throw new RequestError(`Failed to update record in DB: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                    //                 });
+                    //         })
+                    //         .catch(err => {
+                    //             throw new RequestError(`Failed to get password hash: ${err}`, 'INTERNAL_SERVICE_ERROR')
+                    //         });
+                    // })
                     .catch(error => {
                         res.status(error.status || 500).send(error);
                     });
-            });
+            // });
         }
     },
 

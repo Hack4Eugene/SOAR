@@ -1,6 +1,8 @@
 const _ = require('lodash');
+const mongoose = require('mongoose');
 const ProjectModel = require('../models/projectModel');
 const EventModel = require('../models/eventModel');
+const OrganizationModel = require('../models/organizationModel');
 const ObjectId = require('mongodb').ObjectId;
 const RequestError = require('../lib/Errors');
 
@@ -24,10 +26,11 @@ module.exports = {
 
         try {
             const project = await ProjectModel.getById(projectID);
-            const eventArray = await EventModel.getArrayOfEventsById(project.events);
+            const eventsArray = await EventModel.getArrayOfEventsById(project.eventIds);
+            
             const result = {
                 ...project,
-                eventRecords: _.map(eventArray, event => event.toObject())
+                events: _.map(eventsArray, event => event.toObject())
             };
 
             res.status(200).send(result);
@@ -36,33 +39,56 @@ module.exports = {
         }
     },
 
-    getProjectsByOrganization(req, res) {
-        return ProjectModel.find({ 'organization.id': ObjectId(req.params.organization_id) })
-            .then(projectDocuments => res.status(200).send(projectDocuments))
-            .catch(error => {
-                res.status(error.status || 500).send(error);
-            });
+    async getMultipleById(req, res) {
+        const array = _.split(req.params.project_ids, ',');
+        try {
+            const projects = await ProjectModel.getMultipleById(_.split(req.params.project_ids, ','))
+            res.status(200).send(projects)
+        } catch(err) {
+            throw res.status(err.status || 500).send(err);
+        }
     },
 
-    createOrUpdate(req, res) {
-        const { project_id: projectID } = req.params;
+    async createOrUpdate(req, res) {
+        const { project_id: projectId } = req.params;
+        const organization = await OrganizationModel.getById(req.body.organizationId)
+        const projectWithOrg = { ...req.body, organization }; 
 
-        if (!projectID) {
-            return ProjectModel.create(req.body)
-                .then(newProjectDocument => res.status(200).send(newProjectDocument))
+        // Update Project ids on Organization
+        const updateProjectIdsOnOrg = (id) => {
+            if (!_.includes(organization.projectIds, id)) {
+                const orgProjectIds = [ id, ...organization.projectIds ]
+                
+                OrganizationModel.findByIdAndUpdate(ObjectId(req.body.organizationId), { projectIds: orgProjectIds }, { new: true })
+                .then(updatedDocument => {
+                    res.status(200).send(updatedDocument)
+                })
+                .catch(err => res.status(err.status || 500).send(err));
+            }
+        }
+
+        if (!projectId) {
+            return ProjectModel.create(projectWithOrg)
+                .then(newProjectDocument => {
+                    res.status(200).send(newProjectDocument)
+                    updateProjectIdsOnOrg(newProjectDocument._id)
+                })
                 .catch(error => {
                     res.status(error.status || 500).send(error);
                 });
         }
 
-        ProjectModel.findOne({ _id: projectID })
+        ProjectModel.findOne({ _id: projectId })
             .then(foundProjectDocument => {
                 if (foundProjectDocument === null) {
-                    throw new RequestError(`Project ${projectID} not found`, 'NOT_FOUND');
+                    throw new RequestError(`Project ${projectId} not found`, 'NOT_FOUND');
                 }
-
-                ProjectModel.findByIdAndUpdate(ObjectId(projectID), req.body, { new: true })
-                    .then(updatedDocument => res.status(200).send(updatedDocument))
+                
+                ProjectModel.findByIdAndUpdate(projectId, projectWithOrg, { new: true })
+                    .then(updatedDocument => {
+                        res.status(200).send(updatedDocument)
+                        updateProjectIdsOnOrg(projectId)
+                    })
                     .catch(err => res.status(err.status || 500).send(err));
             })
             .catch(error => {

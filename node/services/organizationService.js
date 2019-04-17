@@ -3,8 +3,6 @@ const _ = require('lodash');
 const OrganizationModel = mongoose.model('OrganizationModel');
 const UserModel = mongoose.model('UserModel');
 const RequestError = require('../lib/Errors');
-
-// const { ObjectId } = mongoose;
 const ObjectId = require('mongodb').ObjectId;
 
 module.exports = {
@@ -18,14 +16,20 @@ module.exports = {
             });
     },
 
-    getByID(req, res, next) {
-        OrganizationModel.find({ _id: req.params.organization_id })
-            .then(organizationRecord => {
-                res.status(200).send(organizationRecord);
-            })
-            .catch(error => {
-                res.status(error.status || 500).send(error);
-            });
+    async getByID(req, res, next) {
+        try {
+            const organization = await OrganizationModel
+                .findById(req.params.organization_id)
+                .then(organization => organization.toObject())
+
+            const members = await UserModel.find({ _id: { $in: organization.memberIds } }, '-password')
+            const orgWithMembers = _.assign(organization, { members })
+
+            res.status(200).send(orgWithMembers)
+        } catch(error) {
+            console.log(error)
+            res.status(error.status || 500).send(error);
+        }
     },
 
     getMultipleByID(req, res, next) {
@@ -39,8 +43,8 @@ module.exports = {
     },
 
     createOrUpdate(req, res, next) {
-        const { organization_id: organizationID } = req.params;
-        if (!organizationID) {
+        const { organization_id: organizationId } = req.params;
+        if (!organizationId) {
             const newOrganization = _.omitBy(req.body, function (key, value) {
                 return key === 'userId';
             });
@@ -63,15 +67,17 @@ module.exports = {
                     res.status(error.status || 500).send(error);
                 });
         } else {
-            return OrganizationModel.findOne({ _id: organizationID })
+            return OrganizationModel.findOne({ _id: organizationId })
                 .then(organizationRecord => {
                     if (_.isEmpty(organizationRecord)) {
-                        throw new RequestError(`Organization ${organizationID} not found`, 'NOT_FOUND');
+                        throw new RequestError(`Organization ${organizationId} not found`, 'NOT_FOUND');
                     }
-
-                    OrganizationModel.findByIdAndUpdate(ObjectId(organizationID), req.body, { new: true })
+                    OrganizationModel.findByIdAndUpdate(ObjectId(organizationId), req.body, { new: true })
                         .then(updatedDocument => res.status(200).send(updatedDocument))
-                        .catch(err => res.status(err.status || 500).send(err));
+                        .catch(err => {
+                            console.log('err', err)
+                            res.status(err.status || 500).send(err)
+                        });
                 })
                 .catch(error => {
                     res.status(error.status || 500).send(error);

@@ -19,14 +19,18 @@ module.exports = {
 
         UPDATE_ORGANIZATION: '/organization',
 
+        GET_ORG_PROJECTS_BY_ID: '/organization/projectIds',
+
         /*
          * Project endpoints
          */
         GET_PROJECTS: '/projects',
 
         GET_PROJECT_BY_ID: '/project',
+        
+        GET_PROJECT_BY_ID: '/project',
 
-        GET_PROJECTS_BY_ORGANIZATION: '/projects/by/organization',
+        // GET_PROJECTS_BY_ORGANIZATION: '/projects/by/organization',
 
         POST_PROJECT: '/project',
 
@@ -62,6 +66,8 @@ module.exports = {
         LOGIN: '/login',
 
         POST_USER: '/user',
+        
+        UPDATE_USER: '/user',
 
         DELETE_USER: '/user'
     }

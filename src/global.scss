@@ -1,3 +1,85 @@
-i {
-  cursor: pointer;
+html {
+    overflow-y: scroll;
+}
+
+a {
+    color: inherit;
+}
+
+.site-content {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+form, .form-group {
+    hr {
+        margin: 1.5rem 0;
+        border-top-color: transparent;
+    }
+
+    .submit-row {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        align-items: flex-end;
+
+        small {
+            height: max-content;
+        }
+    }
+
+    .related-fields-container {
+        border: 1px solid rgba(0,0,0,.125);
+        background-color: rgba(0,0,0,.025);
+        border-radius: .25rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+
+        .required-text {
+            float: right;
+            color: rgba(0,0,0,.5);
+            margin: -0.75rem -0.5rem 0 0;
+        }
+    }
+
+    .form-error-text {
+        color: red;
+        font-variant: small-caps;
+    }
+
+    .form-label {
+        color: gray;
+        font-variant: small-caps;
+    }
+
+    .form-tags {
+        display: flex;
+        flex-flow: row wrap;
+        margin-top: 0.5rem;
+
+        .tag {
+            display: flex;
+            flex-flow: row nowrap;
+            margin: 0 0.5rem 0.5rem 0;
+
+            .text {
+                font-weight: 500;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+
+            .delete {
+                color: #6c757d;
+                border: 1px solid #6c757d;
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
+
+                &:hover {
+                    color: red;
+                    cursor: pointer;
+                }
+            }
+        }
+    }
 }

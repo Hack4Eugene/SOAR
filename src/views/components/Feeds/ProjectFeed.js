@@ -3,79 +3,61 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
-import { incrementEventsFinished, setEventsFinished } from '../../../state/actions/eventActions';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Loader from '../../components/Loader';
+
 import { getProjects } from '../../../state/actions/projectActions';
-
-import ProjectCard from '../Widgets/Project';
 import { SUCCESS } from '../../../state/statusTypes';
-
-const mapStateToProps = (state) => ({
-    projects: _.get(state, 'projects', {}),
-    events: _.get(state, 'events', {}),
-    animationVal: _.get(state, 'events.animationVal', null),
-    numFinishedEvents: _.get(state, 'events.numFinishedEvents', null)
-});
 
 class ProjectFeed extends Component {
     componentDidMount() {
-    /*
-        this.props.setEventsFinished(dummyAPIData.eventsFinished);
-        setInterval(_.throttle(this.props.incrementEventsFinished, 10), 250);
-    */
         this.props.getProjects();
     }
 
-    mapProjects = () => this.props.projects.status === SUCCESS && (
-        _.map(this.props.projects.data, (project) => (
-            <ProjectCard
-                title={project.name}
-                startDate={project.startDate}
-                link={<Link className="btn btn-primary float-left" to={`/project/${project._id}`}>More details</Link>}
-                key={project._id}
-            >
-                <p className="text-left">{project.description}</p>
-            </ProjectCard>
-        ))
-    );
+    renderProjects() {
+        const { projects } = this.props;
 
-    showAddProjectButton() {
-        return (
-            <div className="col-4">
-                <Link to="/addproject" >
-                    <button 
-                        type="button" 
-                        className="btn btn-success float-right" 
-                        data-toggle="modal" 
-                        data-target="#exampleModal"
-                    >
-                        Add new project
-                    </button>
-                </Link>
-            </div>
-        );
+        if (projects.status !== SUCCESS) {
+            return <Loader />
+        }
+
+        return _.map(projects.data, (project, i) => (
+            <Card className="project-card" key={`project-${i}`}>
+                <Card.Body>
+                    <h5>{project.name}</h5>
+                    <p>{project.description}</p>
+                    {this.renderProjectLinkButton(project._id)}
+                </Card.Body>
+            </Card>
+        ))
     }
 
-    showFeedHeader() {
+    renderProjectLinkButton(projectId) {
         return (
-            <div className="col-8">
-                <h2>Projects You Are Involved In</h2>
-            </div>
-        )
+            <Link to={`/project/${projectId}`}>
+                <Button variant="outline-success">
+                    View
+                </Button>
+            </Link>
+        );
     }
 
     render() {
         return (
-            <div className="container">
-                <div className="row mb-2">
-                    {this.showFeedHeader()}
-                    {this.showAddProjectButton()}
-                </div>
-                <div className="row">
-                    {this.mapProjects()}
-                </div>
+            <div className="projects-feed">
+                {this.renderProjects()}
             </div>
         );
     }
 }
 
-export default connect(mapStateToProps, { incrementEventsFinished, setEventsFinished, getProjects })(ProjectFeed);
+const mapStateToProps = state => ({
+    projects: _.get(state, 'projects', {})
+});
+
+const mapDispatchToProps = { 
+    getProjects 
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectFeed);

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const ObjectId = require('mongodb').ObjectId;
 const Schema = mongoose.Schema;
 
 const OrganizationSchema = new Schema({
@@ -18,11 +18,8 @@ const OrganizationSchema = new Schema({
 			type: String
         },
         zipcode: {
-            type: String
+            type: Number
         },
-		country: {
-			type: String
-		}
     },
     contactInformation: {
         phoneNumber: {
@@ -48,10 +45,30 @@ const OrganizationSchema = new Schema({
         type: Date,
         default: null
     },
+    projectIds: {
+        type: [String],
+        default: []
+    },
+    projects: {
+        type: [Object],
+        default: []
+    },
     tags: {
         type: [String],
         default: []
-    }
+    },
+    memberIds: {
+        type: [String]
+    },
+    // members: {
+    //     type: [Object]
+    // },
 });
+
+OrganizationSchema.statics.getById = function (organizationId) {
+    return this.findOne({ _id: organizationId })
+        .then(res => res)
+        .catch(err => err)
+};
 
 module.exports = mongoose.model('OrganizationModel', OrganizationSchema);

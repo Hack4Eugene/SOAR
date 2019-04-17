@@ -5,6 +5,9 @@ import {
     POST_USER_PENDING,
     POST_USER_REJECTED,
     POST_USER_RESOLVED,
+    UPDATE_USER_PENDING,
+    UPDATE_USER_REJECTED,
+    UPDATE_USER_RESOLVED,
     DELETE_USER_RESOLVED,
     DELETE_USER_REJECTED,
     DELETE_USER_PENDING
@@ -13,8 +16,11 @@ import {
 const initialState = {
     user: {
         data: {},
-        status: NOT_STARTED,
-        deleted_status: NOT_STARTED
+        status: {
+            get: NOT_STARTED,
+            create: NOT_STARTED,
+            update: NOT_STARTED
+        }
     }
 };
 
@@ -27,14 +33,21 @@ const userReducer = (state = initialState, action) => {
                 data: {
                     ...payload.user
                 },
-                status: SUCCESS
+                status: {
+                    ...state.status,
+                    create: NOT_STARTED,
+                    get: SUCCESS
+                }
             };
         }
 
         case LOGIN_USER_REJECTED: {
             return {
                 error: payload,
-                status: ERROR
+                status: {
+                    ...state.status,
+                    get: ERROR
+                }
             };
         }
 
@@ -43,13 +56,19 @@ const userReducer = (state = initialState, action) => {
                 data: {
                     ...payload
                 },
-                status: SUCCESS
+                status: {
+                    ...state.status,
+                    create: SUCCESS
+                }
             };
         }
 
         case POST_USER_PENDING: {
             return {
-                status: LOADING
+                status: {
+                    ...state.status,
+                    create: LOADING
+                }
             };
         }
 
@@ -58,7 +77,43 @@ const userReducer = (state = initialState, action) => {
                 error: {
                     ...payload
                 },
-                status: ERROR
+                status: {
+                    ...state.status,
+                    create: ERROR
+                }
+            };
+        }
+
+        case UPDATE_USER_RESOLVED: {
+            return {
+                data: {
+                    ...payload
+                },
+                status: {
+                    ...state.status,
+                    update: SUCCESS
+                }
+            };
+        }
+
+        case UPDATE_USER_PENDING: {
+            return {
+                status: {
+                    ...state.status,
+                    update: LOADING
+                }
+            };
+        }
+
+        case UPDATE_USER_REJECTED: {
+            return {
+                error: {
+                    ...payload
+                },
+                status: {
+                    ...state.status,
+                    update: ERROR
+                }
             };
         }
 
@@ -67,13 +122,19 @@ const userReducer = (state = initialState, action) => {
                 data: {
                     ...payload
                 },
-                deleted_status: SUCCESS
+                status: {
+                    ...state.status,
+                    delete: SUCCESS
+                }
             };
         }
 
         case DELETE_USER_PENDING: {
             return {
-                deleted_status: LOADING
+                status: {
+                    ...state.status,
+                    delete: LOADING
+                }
             };
         }
 
@@ -82,7 +143,10 @@ const userReducer = (state = initialState, action) => {
                 error: {
                     ...payload
                 },
-                deleted_status: ERROR
+                status: {
+                    ...state.status,
+                    delete: ERROR
+                }
             };
         }
 

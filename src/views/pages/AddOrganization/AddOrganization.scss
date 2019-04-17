@@ -1,0 +1,13 @@
+.add-organization-page {
+    display: flex;
+    flex-flow: column nowrap;
+    margin: auto;
+    max-width: 600px;
+
+    .add-organization-header {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+}

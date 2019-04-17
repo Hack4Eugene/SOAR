@@ -3,69 +3,62 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
-import { getOrganizations } from '../../../state/actions/organizationActions';
-import { OrganizationItem } from '../Widgets/Organization';
-import { SUCCESS } from '../../../state/statusTypes';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import Loader from '../../components/Loader';
 
-const mapStateToProps = (state) => ({
-    organizations: _.get(state, 'organizations', {})
-});
+import { getOrganizations } from '../../../state/actions/organizationActions';
+import { SUCCESS } from '../../../state/statusTypes';
 
 class OrganizationFeed extends Component {
     componentDidMount() {
-    /*
-        this.props.setEventsFinished(dummyAPIData.eventsFinished);
-        setInterval(_.throttle(this.props.incrementEventsFinished, 10), 250);
-    */
         this.props.getOrganizations();
     }
 
-    mapOrganizations = () => this.props.organizations.status === SUCCESS && (
-        _.map(this.props.organizations.data, (organization) => (
-            <div className="mb-4 ml-3 mr-3 w-100" key={organization._id}>
-                <OrganizationItem organization={organization} />
-            </div>
-        ))
-    );
+    renderOrgs() {
+        const { organizations } = this.props;
 
-    showAddOrganizationButton() {
-        return (
-            <div className="col-4">
-                <Link to="/addorganization" >
-                    <button 
-                        type="button" 
-                        className="btn btn-success float-right" 
-                        data-toggle="modal" 
-                        data-target="#exampleModal"
-                    >
-                        Add new organization
-                    </button>
-                </Link>
-            </div>
-        );
+        if (organizations.status !== SUCCESS) {
+            return <Loader />
+        }
+
+        return _.map(organizations.data, (org, i) => (
+            <Card className="organization-card" key={`org-${i}`}>
+                <Card.Body>
+                    <h5>{org.name}</h5>
+                    <p>{org.description}</p>
+                    {this.renderOrgLinkButton(org._id)}
+                </Card.Body>
+            </Card>
+        ))
     }
 
-    showFeedHeader() {
+    renderOrgLinkButton(orgId) {
         return (
-            <div className="col-8">
-                <h2>Organizations</h2>
-            </div>
-        )
+            <Link to={`/organization/${orgId}`}>
+                <Button variant="outline-success">
+                    View
+                </Button>
+            </Link>
+        );
     }
 
     render() {
         return (
-            <div className="container">
-                <div className="row mb-2">
-                    {this.showFeedHeader()}
-                    {this.showAddOrganizationButton()}
-                </div>
-                <div className="row">
-                    {this.mapOrganizations()}
-                </div>
+            <div className="organizations-feed">
+                {this.renderOrgs()}
             </div>
         );
     }
 }
 
-export default connect(mapStateToProps, { getOrganizations })(OrganizationFeed);
+const mapStateToProps = state => ({
+    organizations: _.get(state, 'organizations', {})
+});
+
+const mapDispatchToProps = { 
+    getOrganizations 
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizationFeed);
+
