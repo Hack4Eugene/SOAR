@@ -26,12 +26,11 @@ module.exports = {
 
         try {
             const project = await ProjectModel.getById(projectID);
-            // const organizationDetailed = await OrganizationModel.getById(project.organization)
-            const eventArray = await EventModel.getArrayOfEventsById(project.events);
+            const eventsArray = await EventModel.getArrayOfEventsById(project.eventIds);
+            
             const result = {
                 ...project,
-                // organizationDetailed,
-                eventRecords: _.map(eventArray, event => event.toObject())
+                events: _.map(eventsArray, event => event.toObject())
             };
 
             res.status(200).send(result);
@@ -53,13 +52,12 @@ module.exports = {
     async createOrUpdate(req, res) {
         const { project_id: projectId } = req.params;
         const organization = await OrganizationModel.getById(req.body.organizationId)
-        const orgProjectIds = [ projectId, ...organization.projectIds ]
         const projectWithOrg = { ...req.body, organization }; 
 
         // Update Project ids on Organization
-        const updateProjectIdsOnOrg = () => {
-            if (!_.includes(organization.projectIds, projectId)) {
-                const orgProjectIds = [ projectId, ...organization.projectIds ]
+        const updateProjectIdsOnOrg = (id) => {
+            if (!_.includes(organization.projectIds, id)) {
+                const orgProjectIds = [ id, ...organization.projectIds ]
                 
                 OrganizationModel.findByIdAndUpdate(ObjectId(req.body.organizationId), { projectIds: orgProjectIds }, { new: true })
                 .then(updatedDocument => {
@@ -73,7 +71,7 @@ module.exports = {
             return ProjectModel.create(projectWithOrg)
                 .then(newProjectDocument => {
                     res.status(200).send(newProjectDocument)
-                    updateProjectIdsOnOrg()
+                    updateProjectIdsOnOrg(newProjectDocument._id)
                 })
                 .catch(error => {
                     res.status(error.status || 500).send(error);
@@ -89,7 +87,7 @@ module.exports = {
                 ProjectModel.findByIdAndUpdate(projectId, projectWithOrg, { new: true })
                     .then(updatedDocument => {
                         res.status(200).send(updatedDocument)
-                        updateProjectIdsOnOrg()
+                        updateProjectIdsOnOrg(projectId)
                     })
                     .catch(err => res.status(err.status || 500).send(err));
             })

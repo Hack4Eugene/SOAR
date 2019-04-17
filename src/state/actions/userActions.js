@@ -28,12 +28,12 @@ export const createUser = profile => {
         const state = getState();
         const url = loadEndpoint(state.env, POST_USER);
         const credentials = {
-            username: profile.username,
+            email: profile.email,
             password: profile.password
         };
 
         let logUserIn = false;
-        if (credentials.username && credentials.password) {
+        if (credentials.email && credentials.password) {
             logUserIn = true;
         }
 

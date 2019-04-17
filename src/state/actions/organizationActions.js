@@ -69,6 +69,9 @@ export const getOrganizationById = id => {
 };
 
 export const updateOrganization = (id, updates) => {
+    // Don't send project objects to service
+    if (updates.projects) delete updates.projects;
+
     return (dispatch, getState) => {
         dispatch({ type: UPDATE_ORG_PENDING });
         const url = `${loadEndpoint(_.get(getState(), 'env'), UPDATE_ORGANIZATION)}/${id}`;

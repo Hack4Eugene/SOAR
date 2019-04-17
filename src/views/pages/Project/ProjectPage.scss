@@ -15,9 +15,8 @@
     }
     .project-details-card {
         margin-bottom: 2rem;
-        // border-color: #28a745;
     }
-    .journey-card {
+    .events-card {
         margin-bottom: 2rem;
         border-color: #28a745;
 
@@ -126,7 +125,7 @@
                     .event-card-body {
                         display: flex;
                         flex-flow: column nowrap;
-                        align-items: flex-end;
+                        align-items: flex-start;
 
                         .top {
                             width: 100%;
@@ -140,7 +139,7 @@
             margin-bottom: 2rem;
         }
 
-        .event-card {
+        .event-card-body {
             margin-bottom: 1rem;
 
             .event-view-button {

@@ -3,26 +3,21 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import moment from 'moment';
-// import {
-//     StaticGoogleMap,
-//     Marker,
-// } from 'react-static-google-map';
-
-import { NOT_STARTED, SUCCESS, ERROR } from '../../../state/statusTypes';
-import { getEventById, updateEvent } from '../../../state/actions/eventActions.js';
-import EditEvent from '../../components/Forms/EditEvent';
 
 import Card from 'react-bootstrap/Card';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Jumbotron from 'react-bootstrap/Jumbotron';
+import Modal from 'react-bootstrap/Modal';
+import ListGroup from 'react-bootstrap/ListGroup';
 
-import Loader from '../../global/Loader';
+import { SUCCESS } from '../../../state/statusTypes';
+import { getEventById, updateEvent } from '../../../state/actions/eventActions.js';
+import EditEvent from '../../components/Forms/EditEvent';
+
+import Loader from '../../components/Loader';
 import eventImage from '../../../static/imgs/sat-market.jpg';
-import eventMap from '../../../static/imgs/event-map.png';
 import defaultProfilePic from '../../../static/imgs/default-profile-pic.jpeg';
-// import ToolBar from '../../lib/ToolBar';
-import Modal from '../../lib/Modal';
 
 import './EventPage.scss';
 
@@ -30,7 +25,7 @@ class EventPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showEditEventModal: false
+            showEditModal: false
         };
     }
 
@@ -40,12 +35,12 @@ class EventPage extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const isModalShown = this.state.showEditEventModal;
+        const isModalShown = this.state.showEditModal;
         const isNewEventData = prevProps.event !== this.props.event;
         const isNewDataFinal = this.props.updateEventStatus === SUCCESS;
 
         if (isModalShown && isNewEventData && isNewDataFinal) {
-            this.setState({ showEditEventModal: false }); //eslint-disable-line react/no-did-update-set-state
+            this.setState({ showEditModal: false });
         }
     }
 
@@ -53,18 +48,6 @@ class EventPage extends Component {
         const updates = _.get(this.props.form, 'values', {});
         this.props.updateEvent(this.props.event._id, updates)
     };
-
-    // showEventMap = () => (
-    //     <div className="fill">
-    //         <StaticGoogleMap size="600x600">
-    //             <Marker.Group label="T" color="brown">
-    //                 <Marker location="40.737102,-73.990318" />
-    //                 <Marker location="40.749825,-73.987963" />
-    //             </Marker.Group>
-    //         </StaticGoogleMap>
-    //     </div>
-        
-    // );
 
     updateEventAttendance = () => {
         const obj = {
@@ -75,7 +58,7 @@ class EventPage extends Component {
 
     toggleModal = () => {
         this.setState({ 
-            showEditEventModal: !this.state.showEditEventModal 
+            showEditModal: !this.state.showEditModal 
         })
     }
 
@@ -88,16 +71,25 @@ class EventPage extends Component {
         })
 
         return (
-            <Modal show={this.state.showEditEventModal} hide={() => this.setState({ showEditEventModal: false })}>
-                <EditEvent
-                    initialValues={event}
-                    onSubmit={this.submitEdits}
-                />
+            <Modal 
+                show={this.state.showEditModal} 
+                onHide={() => this.setState({ showEditModal: false })}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Event</Modal.Title>
+                </Modal.Header>
+                
+                <Modal.Body>
+                    <EditEvent
+                        initialValues={event}
+                        onSubmit={this.submitEdits}
+                    />
+                </Modal.Body>
             </Modal>
         )
     }
 
-    renderHeader(name, description, project) {
+    renderHeader(name, project) {
         return (
             <Fragment>
                 <Button 
@@ -110,22 +102,20 @@ class EventPage extends Component {
                 <Jumbotron className="event-jumbotron">
                     <h1>{name}</h1>
                     <i>Part of the <Link to={`/project/${project._id}`} style={{ textDecoration: 'underline' }}>{project.name}</Link> project</i>
-                    <hr />
-                    <p style={{ margin: 0 }}>{description}</p>
                 </Jumbotron>
                 <img className="event-image" src={eventImage} alt="event image" />
             </Fragment>
         );
     }
 
-    renderDetails(details) {
-        if (details) {
+    renderDescription(description) {
+        if (description) {
             return (
-                <Card className="event-details-card">
+                <Card className="event-description-card">
                     <Card.Header>
-                        <h5 style={{ margin: 0 }}>Details</h5>
+                        <h5 style={{ margin: 0 }}>Description</h5>
                     </Card.Header>
-                    <Card.Body>{details}</Card.Body>
+                    <Card.Body>{description}</Card.Body>
                 </Card>
             );
         }
@@ -167,27 +157,35 @@ class EventPage extends Component {
         );
     }
 
-    renderEventDateLocation(date, location) {
+    renderEventDateLocation(date, startTime, endTime, address) {
+        const { street, city, state, zipCode } = address;
+        const formattedStartTime = moment(startTime, 'HH:mm').format('h:mm a');
+        const formattedEndTime = !_.isUndefined(endTime) ? ` - ${moment(endTime, 'HH:mm').format('h:mm a')}` : '';
+
         return (
-            <Card className="date-location-card">
-                <Card.Body>
-                    <div>
-                        <i className="fa fa-calendar" />
-                        {moment(date).format('dddd, MMMM D, YYYY')}
-                    </div>
-                    <hr />
-                    <div>
-                        <i className="fa fa-clock" />
-                        {moment(date).format('h:mm a')}
-                    </div>
-                    <hr />
-                    <div>
-                        <i className="fa fa-map-marker" />
-                        {location}
-                    </div>
-                </Card.Body>
-                <Card.Img variant="bottom" src={eventMap} />
-            </Card>
+            <div className="date-location-card">
+                <Card>
+                    <Card.Body>
+                        <ListGroup variant="flush">
+                            <ListGroup.Item>
+                                <i className="fa fa-calendar" />
+                                {moment(date).format('ddd, MMMM D, YYYY')}
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                <i className="fa fa-clock" />
+                                {`${formattedStartTime}${formattedEndTime}`}
+                            </ListGroup.Item>
+                            <ListGroup.Item className="event-address">
+                                <i className="fa fa-map-marker" />
+                                <div>
+                                    <div>{street}</div>
+                                    <div>{`${city}, ${state} ${zipCode}`}</div>
+                                </div>
+                            </ListGroup.Item>
+                        </ListGroup>
+                    </Card.Body>
+                </Card>
+            </div>
         );
     }
 
@@ -216,23 +214,36 @@ class EventPage extends Component {
     
     render() {
         const { event, userId, getEventStatus } = this.props;
-        const { name, date, location, description, details, attendeeIds, attendees, project, goals } = event;
-        const isAttending = _.includes(attendeeIds, userId);
 
         if (getEventStatus !== SUCCESS) return <Loader />
+
+        const { 
+            name, 
+            date, 
+            startTime, 
+            endTime, 
+            address, 
+            description, 
+            attendeeIds, 
+            attendees, 
+            project, 
+            goals 
+        } = event;
+
+        const isAttending = _.includes(attendeeIds, userId);
 
         return (
             <Fragment>
                 {this.renderModal()}
                 <div className="event-page">
                     <div className="main">
-                        {this.renderHeader(name, description, project)}
-                        {this.renderDetails(details)}
+                        {this.renderHeader(name, project)}
+                        {this.renderDescription(description)}
                         {this.renderGoals(goals)}
                     </div>
                     <div className="side">
                         {this.renderAttendanceControl(isAttending)}
-                        {this.renderEventDateLocation(date, location)}
+                        {this.renderEventDateLocation(date, startTime, endTime, address)}
                         {this.renderAttendees(attendees)}
                     </div>
                 </div>

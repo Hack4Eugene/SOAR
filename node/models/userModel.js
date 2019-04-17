@@ -5,14 +5,27 @@ const Schema = mongoose.Schema;
 mongoose.set('runValidators', true);
 
 const UserSchema = new Schema({
-    name: {
+    email: {
         type: String,
-        required: 'User\'s require names, kindly enter your name.'
-    },
-    username: {
-        type: String
+        required: 'Please enter an email address.'
     },
     password: {
+        type: String,
+        required: 'Please enter a password.'
+    },
+    name: {
+        type: String
+    },
+    zipCode: {
+        type: Number
+    },
+    website: {
+        type: String
+    },
+    phoneNumber: {
+        type: String
+    },
+    description: {
         type: String
     },
     createdAt: {
@@ -44,21 +57,6 @@ const UserSchema = new Schema({
             }
         }
     ],
-    email: {
-        type: String
-    },
-    location: {
-        type: String
-    },
-    website: {
-        type: String
-    },
-    phoneNumber: {
-        type: String
-    },
-    description: {
-        type: String
-    }
 });
 
 UserSchema.statics.getAttendees = function (attendeeIds) {

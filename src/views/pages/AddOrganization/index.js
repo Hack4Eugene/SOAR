@@ -3,10 +3,14 @@ import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { get, cloneDeep } from 'lodash';
 
-import Card from '../../lib/Card';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+
 import { SUCCESS } from '../../../state/statusTypes';
 import { addOrganization } from '../../../state/actions/organizationActions';
 import EditOrganization from '../../components/Forms/EditOrganization';
+
+import './AddOrganization.scss';
 
 class AddOrganization extends Component {
     submitOrganization = () => {
@@ -17,9 +21,9 @@ class AddOrganization extends Component {
     renderForm() {
         return (
             <Card>
-                <div className="card-body">
+                <Card.Body>
                     <EditOrganization onSubmit={this.submitOrganization} />
-                </div>
+                </Card.Body>
             </Card>
         );
     }
@@ -39,29 +43,19 @@ class AddOrganization extends Component {
         }
 
         return (
-            <div className="container">                    
-                <div className="row justify-content-center">
-                    <div className="col-5">
-                        <h2 className="ml-3">Add Organization</h2>
-                    </div>
-                    <div className="col-3">
-                        <Link to="/organizations">
-                            <button
-                                type="button" 
-                                className="btn btn-success float-right" 
-                                data-toggle="modal" 
-                                data-target="#exampleModal"
-                            >
-                                Back to Organizations
-                            </button>
-                        </Link>
-                    </div>
+            <div className="add-organization-page">
+                <div className="add-organization-header">
+                    <h2>Create Organization</h2>
+                    <Link to="/explore#organizations">
+                        <Button
+                            type="button" 
+                            variant="outline-success"
+                        >
+                            Back to Organizations
+                        </Button>
+                    </Link>
                 </div>
-                <div className="row justify-content-center">
-                    <div className="col-8">
-                        {this.renderForm()}          
-                    </div>                  
-                </div>
+                {this.renderForm()}          
             </div>
         );
     }

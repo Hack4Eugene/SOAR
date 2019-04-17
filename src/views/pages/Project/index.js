@@ -8,14 +8,14 @@ import Card from 'react-bootstrap/Card';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Jumbotron from 'react-bootstrap/Jumbotron';
+import Modal from 'react-bootstrap/Modal';
 
 import { getProjectById, updateProject } from '../../../state/actions/projectActions';
 import { getOrganizationById } from '../../../state/actions/organizationActions';
 import { getEventsById } from '../../../state/actions/eventActions';
 import { NOT_STARTED, SUCCESS } from '../../../state/statusTypes';
 
-import Loader from '../../global/Loader';
-import Modal from '../../lib/Modal';
+import Loader from '../../components/Loader';
 import EditProject from '../../components/Forms/EditProject';
 import parkImg from '../../../static/imgs/food.jpg';
 
@@ -26,7 +26,7 @@ class Project extends Component {
         super(props);
         this.state = {
             filteredEvents: props.events,
-            showEditProjectModal: false
+            showEditModal: false
         };
     }
 
@@ -36,12 +36,20 @@ class Project extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const isModalShown = this.state.showEditProjectModal;
+        const isModalShown = this.state.showEditModal;
         const isNewProjectData = prevProps.project !== this.props.project;
         const isNewDataFinal = this.props.updateProjectStatus === SUCCESS;
 
         if (isModalShown && isNewProjectData && isNewDataFinal) {
-            this.setState({ showEditProjectModal: false });
+            this.setState({ showEditModal: false });
+        }
+
+        if (
+            this.props.getProjectStatus === SUCCESS 
+            && !_.isEmpty(this.props.project.eventIds) 
+            && this.props.eventsByIdStatus !== SUCCESS
+        ) {
+            this.props.getEventsById(this.props.project.eventIds)
         }
     }
 
@@ -52,7 +60,7 @@ class Project extends Component {
 
     toggleModal = () => {
         this.setState({ 
-            showEditProjectModal: !this.state.showEditProjectModal 
+            showEditModal: !this.state.showEditModal 
         })
     }
 
@@ -66,18 +74,24 @@ class Project extends Component {
 
         return (
             <Modal 
-                show={this.state.showEditProjectModal} 
-                hide={() => this.setState({ showEditProjectModal: !this.state.showEditProjectModal })}
+                show={this.state.showEditModal} 
+                onHide={() => this.setState({ showEditModal: false })}
             >
-                <EditProject
-                    initialValues={project}
-                    onSubmit={this.submitEdits}
-                />
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Project</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <EditProject
+                        initialValues={project}
+                        onSubmit={this.submitEdits}
+                    />
+                </Modal.Body>
             </Modal>
         );
     }
 
-    renderHeader(name, organization, tagline) {
+    renderHeader(name, organization, description) {
         const { name: orgName, _id: orgId } = organization;
 
         return (
@@ -92,37 +106,28 @@ class Project extends Component {
                 <Jumbotron className="project-jumbotron">
                     <h1>{name}</h1>
                     <i>Project led by <Link to={`/organization/${orgId}`} style={{ textDecoration: 'underline' }}>{orgName}</Link></i>
-                    <hr />
-                    <p style={{ margin: 0 }}>{tagline}</p>
+                    { description &&
+                        <Fragment>
+                            <hr />
+                            <p style={{ margin: 0 }}>{description}</p>
+                        </Fragment>
+                    }
                 </Jumbotron>
                 <img className="project-image" src={parkImg} alt="project image" />
             </Fragment>
         );
     }
 
-    renderDetails(details) {
-        if (details) {
-            return (
-                <Card className="project-details-card">
-                    <Card.Header>
-                        <h5 style={{ margin: 0 }}>Details</h5>
-                    </Card.Header>
-                    <Card.Body>{details}</Card.Body>
-                </Card>
-            );
-        }
-    }
-
     renderEvents(events) {
-        if (!_.isEmpty(events)) {
+        if (events && events.length) {
             return (
-                <Card className="journey-card">
+                <Card className="events-card">
                     <Card.Header>
                         <div className="header">
                             <h5 style={{ margin: 0 }}>Our Journey</h5>
                             <div>
                                 <span><i className="fas fa-circle" />Past</span>
-                                <span><i className="fas fa-adjust" />Present</span>
+                                <span><i className="fas fa-adjust" />Today</span>
                                 <span><i className="far fa-circle" />Future</span>
                             </div>
                         </div>
@@ -147,7 +152,7 @@ class Project extends Component {
 
     renderEventRow(event, index) {
         return (
-            <div className="event-row">
+            <div className="event-row" key={`event-${index}`}>
                 {this.renderEventDate(event, index)}
                 {this.renderEventNode(event)}
                 {this.renderEventDescription(event, index)}
@@ -229,7 +234,7 @@ class Project extends Component {
     }
 
     renderOrganizationCard(org, index) {
-        const { name, id, tagline } = org;
+        const { name, _id, tagline } = org;
 
         return (
             <Card key={index} className="organization-card">
@@ -241,7 +246,7 @@ class Project extends Component {
                             {_.truncate(tagline, { 'length': 150 })}
                         </Card.Text>
                     </div>
-                    <Link to={`/organization/${id}`}>
+                    <Link to={`/organization/${_id}`}>
                         <Button 
                             variant="outline-success"
                             className="org-view-button"
@@ -255,13 +260,11 @@ class Project extends Component {
     }
 
     render() {
-        const { project, organization, getProjectStatus } = this.props;
+        const { project, organization, getProjectStatus, eventsById } = this.props;
 
         const {
             name,
             description,
-            details,
-            eventRecords: events,
             alliance_data: alliance
         } = project;
 
@@ -271,8 +274,7 @@ class Project extends Component {
             <div className="project-page">
                 {this.renderModal()}
                 {this.renderHeader(name, organization, description)}
-                {this.renderDetails(details)}
-                {this.renderEvents(events)}
+                {this.renderEvents(eventsById)}
                 {this.renderAlliance(alliance)}
             </div>
         )
@@ -286,8 +288,10 @@ const mapStateToProps = (state) => ({
     organizations: _.get(state, 'organizations.data', {}),
     organization: _.get(state, 'projects.selectedProject.data.organization', {}),
     organizationId: _.get(state, 'organizations.selectedOrg.data.organizationId', {}),
-    projectEvents: _.get(state, 'projects.selectedProject.data.eventRecords', []),
-    form: _.get(state, 'form.EditProject')
+    projectEvents: _.get(state, 'projects.selectedProject.data.events', []),
+    eventsById: _.get(state, 'events.eventsById.data', []),
+    eventsByIdStatus: _.get(state, 'events.eventsById.status', NOT_STARTED),
+    form: _.get(state, 'form.EditProject'),
 });
 
 const mapDispatchToProps = {

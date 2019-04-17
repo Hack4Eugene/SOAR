@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import _, { get, map } from 'lodash';
-
-import ToolBar from '../../lib/ToolBar';
-import Modal from '../../lib/Modal';
-import EditOrganization from '../../components/Forms/EditOrganization';
+import _ from 'lodash';
 
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
-import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
-import Jumbotron from 'react-bootstrap/Jumbotron';
-import defaultProfilePic from '../../../static/imgs/default-profile-pic.jpeg';
-import Loader from '../../global/Loader';
+import Modal from 'react-bootstrap/Modal';
 
+import EditOrganization from '../../components/Forms/EditOrganization';
 import { SUCCESS, NOT_STARTED } from '../../../state/statusTypes';
-import { getOrganizationById, getOrganizationsById, updateOrganization, getOrgProjectsById } from '../../../state/actions/organizationActions';
+import { 
+    getOrganizationById, 
+    getOrganizationsById, 
+    updateOrganization, 
+    getOrgProjectsById 
+} from '../../../state/actions/organizationActions';
 
+import defaultProfilePic from '../../../static/imgs/default-profile-pic.jpeg';
+import Loader from '../../components/Loader';
 import './Organization.scss';
 
 class OrganizationPage extends Component {
@@ -40,6 +41,7 @@ class OrganizationPage extends Component {
             && this.props.getOrgProjectsStatus === NOT_STARTED
             && !_.isEmpty(this.props.organization.projectIds)
         ) {
+
             this.props.getOrgProjectsById(this.props.organization.projectIds)
         }
 
@@ -73,12 +75,18 @@ class OrganizationPage extends Component {
         return (
             <Modal 
                 show={this.state.showEditOrgModal} 
-                hide={() => this.setState({ showEditOrgModal: !this.state.showEditOrgModal })}
+                onHide={() => this.setState({ showEditOrgModal: false })}
             >
-                <EditOrganization
-                    initialValues={this.props.organization}
-                    onSubmit={this.submitEdits}
-                />
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Organization</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <EditOrganization
+                        initialValues={this.props.organization}
+                        onSubmit={this.submitEdits}
+                    />
+                </Modal.Body>
             </Modal>
         );
     }
@@ -92,40 +100,46 @@ class OrganizationPage extends Component {
     }
 
     renderContactInfo(address, website, contactInformation) {
-        const { city, state } = address;
-        const { email, phoneNumber } = contactInformation;
+        const { city, state } = address || {}
+        const { email, phoneNumber } = contactInformation || {};
+        const hasContactInfo = (city && state) || email || phoneNumber;
 
-        return (
-            <div className="contact">
-                <Card>
-                    <Card.Body>
-                        <ListGroup variant="flush">
-                            <ListGroup.Item>
-                                <div>{`${city}, ${state}`}</div>
-                            </ListGroup.Item>
-                            {
-                                email && 
-                                <ListGroup.Item>
-                                    <div>{email}</div>
-                                </ListGroup.Item>
-                            }
-                            {
-                                website && 
-                                <ListGroup.Item>
-                                    <a href={`https://${website}`}>{website}</a>
-                                </ListGroup.Item>
-                            }
-                            {
-                                phoneNumber && 
-                                <ListGroup.Item>
-                                    <div>{phoneNumber}</div>
-                                </ListGroup.Item>
-                            }
-                        </ListGroup>
-                    </Card.Body>
-                </Card>
-            </div>
-        );
+        if (hasContactInfo) {
+            return (
+                <div className="contact">
+                    <Card>
+                        <Card.Body>
+                            <ListGroup variant="flush">
+                                {   
+                                    city && state &&
+                                    <ListGroup.Item>
+                                        <div>{`${city}, ${state}`}</div>
+                                    </ListGroup.Item>
+                                }
+                                {
+                                    email && 
+                                    <ListGroup.Item>
+                                        <div>{email}</div>
+                                    </ListGroup.Item>
+                                }
+                                {
+                                    website && 
+                                    <ListGroup.Item>
+                                        <a href={`https://${website}`}>{website}</a>
+                                    </ListGroup.Item>
+                                }
+                                {
+                                    phoneNumber && 
+                                    <ListGroup.Item>
+                                        <div>{phoneNumber}</div>
+                                    </ListGroup.Item>
+                                }
+                            </ListGroup>
+                        </Card.Body>
+                    </Card>
+                </div>
+            );
+        }
     }
 
     renderJoinButton(userIsMember) {
@@ -160,18 +174,22 @@ class OrganizationPage extends Component {
     }
 
     renderDescription(description) {
-        return (
-            <div className="description">
-                <Card>
-                    <Card.Header>
-                        <h5>Mission Statement</h5>
-                    </Card.Header>
-                    <Card.Body>
-                        {description}
-                    </Card.Body>
-                </Card>
-            </div>
-        );
+        const hasDescription = description && !_.isEmpty(description);
+
+        if (hasDescription) {
+            return (
+                <div className="description">
+                    <Card>
+                        <Card.Header>
+                            <h5>Mission Statement</h5>
+                        </Card.Header>
+                        <Card.Body>
+                            {description}
+                        </Card.Body>
+                    </Card>
+                </div>
+            );
+        }
     }
 
     renderProjects(projects) {
@@ -288,12 +306,12 @@ class OrganizationPage extends Component {
 }
 
 const mapStateToProps = (state) => ({
-    events: get(state, 'events', {}),
-    posts: get(state, 'posts', {}),
-    user: get(state, 'user', {}),
-    organization: get(state, 'organizations.selectedOrg.data', {}),
-    projects: get(state, 'organizations.selectedOrg.data.projects.data', []),
-    projectsStatus: get(state, 'projects.projectsForOrganization.statusText', NOT_STARTED),
+    events: _.get(state, 'events', {}),
+    posts: _.get(state, 'posts', {}),
+    user: _.get(state, 'user', {}),
+    organization: _.get(state, 'organizations.selectedOrg.data', {}),
+    projects: _.get(state, 'organizations.selectedOrg.data.projects.data', []),
+    projectsStatus: _.get(state, 'projects.projectsForOrganization.statusText', NOT_STARTED),
     updateOrgStatus: _.get(state, 'organizations.selectedOrg.status.update'),
     getOrgStatus: _.get(state, 'organizations.selectedOrg.status.get'),
     getOrgProjectsStatus: _.get(state, 'organizations.selectedOrg.data.projects.status', NOT_STARTED),

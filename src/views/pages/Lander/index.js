@@ -1,6 +1,6 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import birdVideo from './bird-flocks.mp4';
-import './styles.scss';
+import './Lander.scss';
 
 const Lander = () => {
     return (

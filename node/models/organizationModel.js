@@ -18,11 +18,8 @@ const OrganizationSchema = new Schema({
 			type: String
         },
         zipcode: {
-            type: String
+            type: Number
         },
-		country: {
-			type: String
-		}
     },
     contactInformation: {
         phoneNumber: {
@@ -52,10 +49,10 @@ const OrganizationSchema = new Schema({
         type: [String],
         default: []
     },
-    // projects: {
-    //     type: [Schema.Types.ObjectId],
-    //     default: []
-    // },
+    projects: {
+        type: [Object],
+        default: []
+    },
     tags: {
         type: [String],
         default: []
